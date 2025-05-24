@@ -19,7 +19,14 @@ const { title } = Astro.props;
     <div class="app-container">
       <!-- Menu Bar -->
       <header class="menu-bar">
-        <h1>Log Timeline Viewer</h1>
+        <div class="menu-left">
+          <button class="hamburger-menu" id="hamburger-menu" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <h1>Deep-Time Timeline Visualization</h1>
+        </div>
         <nav>
           <button id="zoom-in" class="nav-button">Zoom In</button>
           <button id="zoom-out" class="nav-button">Zoom Out</button>
@@ -29,7 +36,7 @@ const { title } = Astro.props;
 
       <div class="content-wrapper">
         <!-- Left Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
           <h2>Time Presets</h2>
           <ul class="preset-list">
             <li><button class="preset-button" data-years="100">100 years</button></li>
@@ -41,6 +48,9 @@ const { title } = Astro.props;
             <li><button class="preset-button" data-years="13800000000">Age of Universe</button></li>
           </ul>
         </aside>
+        
+        <!-- Mobile overlay for sidebar -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
         <!-- Main Content Area -->
         <main class="main-content">
@@ -50,6 +60,78 @@ const { title } = Astro.props;
     </div>
   </body>
 </html>
+
+<script>
+  // Hamburger menu functionality
+  function initHamburgerMenu() {
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    if (!hamburgerMenu || !sidebar || !sidebarOverlay) {
+      return;
+    }
+
+    function toggleSidebar() {
+      const isOpen = sidebar.classList.contains('open');
+      
+      if (isOpen) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      sidebarOverlay.classList.add('show');
+      hamburgerMenu.classList.add('active');
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('show');
+      hamburgerMenu.classList.remove('active');
+      document.body.style.overflow = ''; // Restore scrolling
+    }
+
+    // Event listeners
+    hamburgerMenu.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar when clicking a preset button on mobile
+    const presetButtons = sidebar.querySelectorAll('.preset-button');
+    presetButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          closeSidebar();
+        }
+      });
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        closeSidebar();
+      }
+    });
+
+    // Handle escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+        closeSidebar();
+      }
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHamburgerMenu);
+  } else {
+    initHamburgerMenu();
+  }
+</script>
 
 <style>
   :root {
@@ -91,6 +173,50 @@ const { title } = Astro.props;
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
+    position: relative;
+    z-index: 1001;
+  }
+
+  .menu-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1002;
+  }
+
+  .hamburger-menu span {
+    width: 24px;
+    height: 3px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
+  }
+
+  .hamburger-menu.active span:first-child {
+    transform: rotate(45deg);
+  }
+
+  .hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  .hamburger-menu.active span:third-child {
+    transform: rotate(-45deg);
   }
 
   .menu-bar h1 {
@@ -130,6 +256,19 @@ const { title } = Astro.props;
     border-right: 1px solid var(--border);
     padding: 20px;
     overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
   }
 
   .sidebar h2 {
@@ -178,5 +317,66 @@ const { title } = Astro.props;
     padding: 20px;
     overflow: auto;
     background-color: var(--background);
+  }
+
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .hamburger-menu {
+      display: flex;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      height: calc(100vh - var(--header-height));
+      transform: translateX(-100%);
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sidebar-overlay.show {
+      display: block;
+    }
+
+    .content-wrapper {
+      width: 100%;
+    }
+
+    .main-content {
+      width: 100%;
+      padding: 15px;
+    }
+
+    .menu-bar {
+      padding: 0 15px;
+    }
+
+    .menu-bar h1 {
+      font-size: 1.3rem;
+    }
+
+    .nav-button {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .menu-bar nav {
+      gap: 5px;
+    }
+
+    .nav-button {
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    .menu-bar h1 {
+      font-size: 1.1rem;
+    }
   }
 </style>
