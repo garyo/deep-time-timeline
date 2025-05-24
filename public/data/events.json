@@ -80,6 +80,11 @@
     "significance": 7
   },
   {
+    "name": "Transistor invented",
+    "date": "1947-12-23",
+    "significance": 9
+  },
+  {
     "name": "Nuclear weapons (Hiroshima)",
     "date": "1945-08-06",
     "significance": 6
@@ -135,7 +140,7 @@
     "significance": 5
   },
   {
-    "name": "End of apartheid",
+    "name": "End of apartheid in SA",
     "date": "1994",
     "significance": 4
   },
@@ -155,7 +160,7 @@
     "significance": 4
   },
   {
-    "name": "Internet",
+    "name": "Internet developed",
     "date": "1984",
     "significance": 4
   },
@@ -200,6 +205,11 @@
     "significance": 7
   },
   {
+    "name": "Printing Press invented",
+    "date": "1440",
+    "significance": 10
+  },
+  {
     "name": "Enlightenment peaks",
     "date": "1750",
     "significance": 6
@@ -235,9 +245,9 @@
     "significance": 6
   },
   {
-    "name": "Darwin’s Origin published",
+    "name": "Darwin’s Origin of Species published",
     "date": "1859",
-    "significance": 7
+    "significance": 7.5
   },
   {
     "name": "US Civil War",
@@ -262,7 +272,7 @@
   {
     "name": "Industrial Revolution",
     "date": "1775",
-    "significance": 8
+    "significance": 9
   },
 
   {
@@ -328,7 +338,7 @@
   {
     "name": "Fall of Rome",
     "date": "476",
-    "significance": 7
+    "significance": 8
   },
   {
     "name": "Islam founded",
@@ -363,7 +373,7 @@
   {
     "name": "Black Death peaks",
     "date": "1347",
-    "significance": 6
+    "significance": 7
   },
 
   {

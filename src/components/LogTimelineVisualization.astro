@@ -52,9 +52,35 @@ const {
     left: 0;
   }
 
+ .left-time::after {
+   content: '';
+   position: absolute;
+   bottom: -14px;
+   left: 0px;
+   width: 0;
+   height: 0;
+   border-top: 8px solid #2a2a2a;
+   border-left: 8px solid #2a2a2a;
+   border-right: 8px solid transparent;
+   border-bottom: 8px solid transparent;
+ }
+
   .right-time {
     right: 0;
   }
+
+ .right-time::after {
+   content: '';
+   position: absolute;
+   bottom: -14px;
+   right: 0px;
+   width: 0;
+   height: 0;
+   border-top: 8px solid #2a2a2a;
+   border-right: 8px solid #2a2a2a;
+   border-left: 8px solid transparent;
+   border-bottom: 8px solid transparent;
+ }
 
   #timeline-svg {
     border: 1px solid #3a3a3a;

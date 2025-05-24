@@ -129,7 +129,7 @@ export function initializeTimeline(
   function getOpacity(significance: number, threshold: number) {
     threshold = Math.min(threshold, 9.9) // prevent div-by-0
     const minOpacity = 0.05
-    return remap(significance, threshold, 10, minOpacity, 1)
+    return Math.pow(remap(significance, threshold, 10, minOpacity, 1), 0.8)
   }
 
   function getSignificanceThreshold(nVisibleEvents: number): number {
@@ -190,6 +190,16 @@ export function initializeTimeline(
           .append('text')
           .attr('x', textOffsetX + 1)
           .attr('y', textOffsetY + 1)
+          .attr('text-anchor', 'start')
+          .attr('fill', 'black')
+          .attr('font-size', '11px')
+          .attr('transform', slant)
+          .attr('opacity', opacity)
+          .text(event.name)
+        textGroup
+          .append('text')
+          .attr('x', textOffsetX - 1)
+          .attr('y', textOffsetY - 1)
           .attr('text-anchor', 'start')
           .attr('fill', 'black')
           .attr('font-size', '11px')
