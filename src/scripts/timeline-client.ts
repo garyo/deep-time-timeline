@@ -324,10 +324,12 @@ export function initializeTimeline(
       // This shouldn't happen since loadEventsFromFile has fallbacks
     })
 
-  // Mouse event handling
+  // Mouse and touch event handling
   let isPanning = false
   let startX = 0
   let startTime: DeepTime | null = null
+  let lastTouchDistance = 0
+  let touchStartTime: DeepTime | null = null
 
   // Attach mouse events to the background rect
   backgroundRect
@@ -409,9 +411,129 @@ export function initializeTimeline(
     redrawTimeline()
   })
 
+  // Touch event handling
+  function getTouchDistance(touches: TouchList): number {
+    if (touches.length < 2) return 0
+    const touch1 = touches[0]
+    const touch2 = touches[1]
+    const dx = touch2.clientX - touch1.clientX
+    const dy = touch2.clientY - touch1.clientY
+    return Math.sqrt(dx * dx + dy * dy)
+  }
+
+  function getTouchCenter(touches: TouchList): [number, number] {
+    if (touches.length === 1) {
+      const rect = (backgroundRect.node() as Element).getBoundingClientRect()
+      return [touches[0].clientX - rect.left, touches[0].clientY - rect.top]
+    }
+    const touch1 = touches[0]
+    const touch2 = touches[1]
+    const rect = (backgroundRect.node() as Element).getBoundingClientRect()
+    return [
+      (touch1.clientX + touch2.clientX) / 2 - rect.left,
+      (touch1.clientY + touch2.clientY) / 2 - rect.top
+    ]
+  }
+
+  // Add touch events to the background rect
+  backgroundRect
+    .on('touchstart', function (event) {
+      event.preventDefault()
+      const touches = event.touches
+      
+      if (touches.length === 1) {
+        // Single touch - start panning
+        isPanning = true
+        const [x] = getTouchCenter(touches)
+        startX = x
+        startTime = timeline.getTimeAtPixel(x)
+        touchStartTime = timeline.getTimeAtPixel(x)
+        backgroundRect.style('cursor', 'grabbing')
+        
+        // Show hover line
+        hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
+      } else if (touches.length === 2) {
+        // Two touches - prepare for zoom
+        isPanning = false
+        lastTouchDistance = getTouchDistance(touches)
+        const [x] = getTouchCenter(touches)
+        touchStartTime = timeline.getTimeAtPixel(x)
+      }
+    })
+    .on('touchmove', function (event) {
+      event.preventDefault()
+      const touches = event.touches
+      
+      if (touches.length === 1 && isPanning && startTime) {
+        // Single touch - pan
+        const [x] = getTouchCenter(touches)
+        
+        // Update hover line
+        hoverLine.attr('x1', x).attr('x2', x)
+        
+        // Update hover info
+        const time = timeline.getTimeAtPixel(x)
+        const hoverInfo = document.getElementById('hover-info')
+        if (hoverInfo) {
+          if (time.year > -1e5)
+            hoverInfo.textContent = `Position: ${time.toRelativeString()} (${time.toLocaleString(
+              undefined,
+              { era: 'short' }
+            )})`
+          else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
+        }
+        
+        // Pan to follow touch
+        timeline.panToPosition(startTime, x)
+        redrawTimeline()
+      } else if (touches.length === 2) {
+        // Two touches - zoom
+        const currentDistance = getTouchDistance(touches)
+        const [x] = getTouchCenter(touches)
+        
+        if (lastTouchDistance > 0) {
+          const factor = currentDistance / lastTouchDistance
+          timeline.zoomAroundPixel(factor, x)
+          redrawTimeline()
+        }
+        
+        lastTouchDistance = currentDistance
+      }
+    })
+    .on('touchend touchcancel', function (event) {
+      event.preventDefault()
+      const touches = event.touches
+      
+      if (touches.length === 0) {
+        // All touches ended
+        isPanning = false
+        startTime = null
+        touchStartTime = null
+        lastTouchDistance = 0
+        backgroundRect.style('cursor', 'grab')
+        
+        // Hide hover line and info
+        hoverLine.attr('opacity', 0)
+        const hoverInfo = document.getElementById('hover-info')
+        if (hoverInfo) {
+          hoverInfo.textContent = ''
+        }
+      } else if (touches.length === 1 && lastTouchDistance > 0) {
+        // Went from two touches to one - restart single touch mode
+        isPanning = true
+        const [x] = getTouchCenter(touches)
+        startX = x
+        startTime = timeline.getTimeAtPixel(x)
+        lastTouchDistance = 0
+        
+        // Show hover line
+        hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
+      }
+    })
+
   // Handle window resize
   window.addEventListener('resize', () => {
-    const newWidth = container.clientWidth - 40
+    const newWidth = container.clientWidth
     svg.attr('width', newWidth)
 
     // Create new timeline with same time span
