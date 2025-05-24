@@ -84,7 +84,10 @@ export async function loadEventsFromFile(): Promise<ProcessedEvent[]> {
 /**
  * Check if the events file has changed using HEAD request (efficient)
  */
-export async function checkEventsFileChanged(): Promise<{ changed: boolean; events?: ProcessedEvent[] }> {
+export async function checkEventsFileChanged(): Promise<{
+  changed: boolean
+  events?: ProcessedEvent[]
+}> {
   try {
     const possiblePaths = [
       '/src/data/events.json',
@@ -96,20 +99,27 @@ export async function checkEventsFileChanged(): Promise<{ changed: boolean; even
     for (const path of possiblePaths) {
       try {
         // First, do a lightweight HEAD request to check Last-Modified
-        const headResponse = await fetch(`${path}?t=${Date.now()}`, { method: 'HEAD' })
+        const headResponse = await fetch(`${path}?t=${Date.now()}`, {
+          method: 'HEAD'
+        })
         if (headResponse.ok) {
-          const currentModified = headResponse.headers.get('Last-Modified') || ''
-          
+          const currentModified =
+            headResponse.headers.get('Last-Modified') || ''
+
           // If we have a Last-Modified header and it hasn't changed, no need to download
-          if (lastModified && currentModified && currentModified === lastModified) {
+          if (
+            lastModified &&
+            currentModified &&
+            currentModified === lastModified
+          ) {
             return { changed: false }
           }
-          
+
           // File might have changed, download and check content
           const response = await fetch(`${path}?t=${Date.now()}`)
           if (response.ok) {
             const text = await response.text()
-            
+
             // Check if content has actually changed
             if (text !== lastEventsJson) {
               console.log('Events file has changed, reloading...')
@@ -131,7 +141,7 @@ export async function checkEventsFileChanged(): Promise<{ changed: boolean; even
         continue
       }
     }
-    
+
     return { changed: false }
   } catch (error) {
     console.warn('Failed to check events file:', error)
@@ -149,7 +159,7 @@ export class EventFileWatcher {
 
   constructor(
     onFileChange: (events: ProcessedEvent[]) => void,
-    checkInterval: number       // msec
+    checkInterval: number // msec
   ) {
     this.onFileChange = onFileChange
     this.checkInterval = checkInterval

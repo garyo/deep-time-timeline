@@ -1,6 +1,11 @@
 import * as d3 from 'd3'
 import { LogTimeline, DeepTime } from '../log-timeline'
-import { loadEventsFromFile, loadEventsFromAPI, EventUpdater, EventFileWatcher } from './events'
+import {
+  loadEventsFromFile,
+  loadEventsFromAPI,
+  EventUpdater,
+  EventFileWatcher
+} from './events'
 import type { ProcessedEvent } from './events'
 
 export function initializeTimeline(
@@ -326,7 +331,9 @@ export function initializeTimeline(
 
   // Function to handle base events update
   function handleBaseEventsUpdate(newBaseEvents: ProcessedEvent[]) {
-    console.log(`File watcher detected change: ${newBaseEvents.length} base events`)
+    console.log(
+      `File watcher detected change: ${newBaseEvents.length} base events`
+    )
     baseEvents = newBaseEvents
     handleEventUpdate()
   }
