@@ -41,6 +41,11 @@ export function processEvents(events: TimelineEvent[]): ProcessedEvent[] {
 /**
  * Load base events from the local JSON file (always called)
  */
+// Track last known events for change detection
+let lastEventsJson: string = ''
+let lastModified: string = ''
+let fileCheckInterval: number | null = null
+
 export async function loadEventsFromFile(): Promise<ProcessedEvent[]> {
   try {
     // Try different potential paths for the events file
@@ -53,9 +58,13 @@ export async function loadEventsFromFile(): Promise<ProcessedEvent[]> {
 
     for (const path of possiblePaths) {
       try {
-        const response = await fetch(path)
+        // Add timestamp to bypass cache for change detection
+        const response = await fetch(`${path}?t=${Date.now()}`)
         if (response.ok) {
-          const events: TimelineEvent[] = await response.json()
+          const text = await response.text()
+          lastEventsJson = text // Store for change detection
+          lastModified = response.headers.get('Last-Modified') || '' // Store timestamp
+          const events: TimelineEvent[] = JSON.parse(text)
           console.log(`Successfully loaded events from ${path}`)
           return processEvents(events)
         }
@@ -69,6 +78,104 @@ export async function loadEventsFromFile(): Promise<ProcessedEvent[]> {
   } catch (error) {
     console.warn('Failed to load base events from file:', error)
     return getFallbackEvents()
+  }
+}
+
+/**
+ * Check if the events file has changed using HEAD request (efficient)
+ */
+export async function checkEventsFileChanged(): Promise<{ changed: boolean; events?: ProcessedEvent[] }> {
+  try {
+    const possiblePaths = [
+      '/src/data/events.json',
+      '/data/events.json',
+      './data/events.json',
+      '../data/events.json'
+    ]
+
+    for (const path of possiblePaths) {
+      try {
+        // First, do a lightweight HEAD request to check Last-Modified
+        const headResponse = await fetch(`${path}?t=${Date.now()}`, { method: 'HEAD' })
+        if (headResponse.ok) {
+          const currentModified = headResponse.headers.get('Last-Modified') || ''
+          
+          // If we have a Last-Modified header and it hasn't changed, no need to download
+          if (lastModified && currentModified && currentModified === lastModified) {
+            return { changed: false }
+          }
+          
+          // File might have changed, download and check content
+          const response = await fetch(`${path}?t=${Date.now()}`)
+          if (response.ok) {
+            const text = await response.text()
+            
+            // Check if content has actually changed
+            if (text !== lastEventsJson) {
+              console.log('Events file has changed, reloading...')
+              lastEventsJson = text
+              lastModified = response.headers.get('Last-Modified') || ''
+              const events: TimelineEvent[] = JSON.parse(text)
+              return {
+                changed: true,
+                events: processEvents(events)
+              }
+            } else {
+              // Content same but timestamp different - update timestamp
+              lastModified = response.headers.get('Last-Modified') || ''
+              return { changed: false }
+            }
+          }
+        }
+      } catch {
+        continue
+      }
+    }
+    
+    return { changed: false }
+  } catch (error) {
+    console.warn('Failed to check events file:', error)
+    return { changed: false }
+  }
+}
+
+/**
+ * File watcher for events.json
+ */
+export class EventFileWatcher {
+  private checkInterval: number
+  private intervalId: number | null = null
+  private onFileChange: (events: ProcessedEvent[]) => void
+
+  constructor(
+    onFileChange: (events: ProcessedEvent[]) => void,
+    checkInterval: number       // msec
+  ) {
+    this.onFileChange = onFileChange
+    this.checkInterval = checkInterval
+  }
+
+  start() {
+    if (this.intervalId) {
+      this.stop()
+    }
+
+    this.intervalId = window.setInterval(async () => {
+      const result = await checkEventsFileChanged()
+      if (result.changed && result.events) {
+        this.onFileChange(result.events)
+      }
+    }, this.checkInterval)
+
+    console.log(`Started file watcher, checking every ${this.checkInterval}ms`)
+  }
+
+  stop() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId)
+      this.intervalId = null
+      console.log('Stopped file watcher')
+    }
   }
 }
 
