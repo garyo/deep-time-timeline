@@ -411,4 +411,16 @@ const { title } = Astro.props;
       font-size: 1.1rem;
     }
   }
+ /* rotated mobile: squeeze things in */
+ @media (max-height: 400px) {
+   .menu-bar {
+     height: 38px;
+   }
+   .main-content {
+     padding: 5px;
+   }
+   .sidebar {
+     width: calc(var(--sidebar-width) * 0.7);
+   }
+ }
 </style>

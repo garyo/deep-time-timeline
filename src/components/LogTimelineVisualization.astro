@@ -25,32 +25,32 @@ const {
 </div>
 
 <style>
-  .timeline-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-  }
+ .timeline-container {
+   width: 100%;
+   height: 100%;
+   position: relative;
+ }
 
-  .timeline-controls {
-    position: relative;
-    height: 40px;
-    margin-bottom: 20px;
-  }
+ .timeline-controls {
+   position: relative;
+   height: 40px;
+   margin-bottom: 20px;
+ }
 
-  .time-display {
-    position: absolute;
-    top: 0;
-    font-size: 14px;
-    color: #e0e0e0;
-    background-color: #2a2a2a;
-    padding: 8px 12px;
-    border-radius: 4px;
-    /*     border: 1px solid #3a3a3a; */
-  }
+ .time-display {
+   position: absolute;
+   top: 0;
+   font-size: 14px;
+   color: #e0e0e0;
+   background-color: #2a2a2a;
+   padding: 8px 12px;
+   border-radius: 4px;
+   /*     border: 1px solid #3a3a3a; */
+ }
 
-  .left-time {
-    left: 0;
-  }
+ .left-time {
+   left: 0;
+ }
 
  .left-time::after {
    content: '';
@@ -65,9 +65,9 @@ const {
    border-bottom: 8px solid transparent;
  }
 
-  .right-time {
-    right: 0;
-  }
+ .right-time {
+   right: 0;
+ }
 
  .right-time::after {
    content: '';
@@ -82,26 +82,37 @@ const {
    border-bottom: 8px solid transparent;
  }
 
-  #timeline-svg {
-    border: 1px solid #3a3a3a;
-    border-radius: 4px;
-    background-color: #1a1a1a;
-    display: block;
-  }
+ #timeline-svg {
+   border: 1px solid #3a3a3a;
+   border-radius: 4px;
+   background-color: #1a1a1a;
+   display: block;
+ }
 
-  .timeline-info {
-    margin-top: 20px;
-    text-align: center;
-    color: #b0b0b0;
-    font-size: 14px;
-  }
+ .timeline-info {
+   margin-top: 20px;
+   text-align: center;
+   color: #b0b0b0;
+   font-size: 14px;
+ }
 
-  .hover-info {
-    margin-top: 10px;
-    color: #4a9eff;
-    font-weight: 500;
-    min-height: 20px;
-  }
+ .hover-info {
+   margin-top: 10px;
+   color: #4a9eff;
+   font-weight: 500;
+   min-height: 20px;
+ }
+ /* rotated mobile: squeeze things in */
+ @media (max-height: 400px) {
+   .timeline-controls {
+     margin-top: 0px;
+     margin-bottom: 8px;
+   }
+   .timeline-info {
+     margin-top: 0px;
+   }
+ }
+
 </style>
 
 <script>
