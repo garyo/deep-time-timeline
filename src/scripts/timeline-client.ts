@@ -133,10 +133,22 @@ export function initializeTimeline(
     return Math.pow(remap(significance, threshold, 10, minOpacity, 1), 0.8)
   }
 
-  function getSignificanceThreshold(nVisibleEvents: number): number {
-    const density = nVisibleEvents / timeline.pixelWidth
-    const maxDensity = 0.08 // more than this gets visually crowded
-    return remap(density, 0, maxDensity, 0, 9)
+  function getLocalSignificanceThreshold(x: number, allVisibleEvents: {x: number, significance: number}[]): number {
+    // Define a window around this position to calculate local density
+    const windowSize = 50 // pixels - adjust this to control how "local" the threshold is
+    const halfWindow = windowSize / 2
+    
+    // Count events within the window
+    const eventsInWindow = allVisibleEvents.filter(event => 
+      Math.abs(event.x - x) <= halfWindow
+    )
+    
+    // Calculate local density
+    const localDensity = eventsInWindow.length / windowSize
+    const maxDensity = 0.15 // raise to allow more; at this density the threshold will be maxed out
+    
+    // Get threshold (0-10) from local density
+    return remap(localDensity, 0, maxDensity, 0, 10)
   }
 
   // Draw events if they're in range
@@ -144,81 +156,80 @@ export function initializeTimeline(
     // Remove existing events
     g.selectAll('.event-marker').remove()
 
-    // Count visible events
-    let nVisibleEvents = 0
+    // First pass: collect all visible events with their positions
+    const visibleEvents: {x: number, event: ProcessedEvent, significance: number}[] = []
     allEvents.forEach((event) => {
       if (timeline.isTimeInRange(event.date)) {
-        nVisibleEvents++
+        const x = timeline.getPixelPosition(event.date)
+        visibleEvents.push({x, event, significance: event.significance})
       }
     })
-    const significanceThreshold = getSignificanceThreshold(nVisibleEvents)
+
+    // Create a simplified array for threshold calculation
+    const eventPositions = visibleEvents.map(ve => ({x: ve.x, significance: ve.significance}))
 
     // Draw in significance order, highest last so they show up on top
-    const events = allEvents.sort((a, b) => {
+    const sortedVisibleEvents = visibleEvents.sort((a, b) => {
       return a.significance - b.significance
     })
 
-    events.forEach((event) => {
-      if (timeline.isTimeInRange(event.date)) {
-        const x = timeline.getPixelPosition(event.date)
+    sortedVisibleEvents.forEach(({x, event}) => {
+      const eventGroup = g
+        .append('g')
+        .attr('class', 'event-marker')
+        .attr('transform', `translate(${x}, ${axis_position})`)
+        .style('pointer-events', 'none') // Don't block mouse events
 
-        const eventGroup = g
-          .append('g')
-          .attr('class', 'event-marker')
-          .attr('transform', `translate(${x}, ${axis_position})`)
-          .style('pointer-events', 'none') // Don't block mouse events
+      // Calculate local opacity based on local significance threshold
+      const localThreshold = getLocalSignificanceThreshold(x, eventPositions)
+      const opacity = getOpacity(event.significance, localThreshold)
 
-        // Calculate opacity based on significance (1-10 scale)
-        // Higher significance = more opaque
-        const opacity = getOpacity(event.significance, significanceThreshold)
+      // Event marker
+      eventGroup
+        .append('circle')
+        .attr('r', 4)
+        .attr('fill', '#ff9f1a')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 1)
+        .attr('opacity', opacity)
 
-        // Event marker
-        eventGroup
-          .append('circle')
-          .attr('r', 4)
-          .attr('fill', '#ff9f1a')
-          .attr('stroke', '#fff')
-          .attr('stroke-width', 1)
-          .attr('opacity', opacity)
-
-        // Event label -- duplicated with black drop shadow first
-        const textOffsetX = 5 // Start 5px to the right of the dot
-        const textOffsetY = -5 // Start 5px above the dot (Y is + down)
-        const slant = `rotate(-35)` // Slant up and right
-        const textGroup = eventGroup.append('g').attr('class', 'text-pair')
-        // shadow
-        textGroup
-          .append('text')
-          .attr('x', textOffsetX + 1)
-          .attr('y', textOffsetY + 1)
-          .attr('text-anchor', 'start')
-          .attr('fill', 'black')
-          .attr('font-size', '11px')
-          .attr('transform', slant)
-          .attr('opacity', opacity)
-          .text(event.name)
-        textGroup
-          .append('text')
-          .attr('x', textOffsetX - 1)
-          .attr('y', textOffsetY - 1)
-          .attr('text-anchor', 'start')
-          .attr('fill', 'black')
-          .attr('font-size', '11px')
-          .attr('transform', slant)
-          .attr('opacity', opacity)
-          .text(event.name)
-        // main text
-        textGroup
-          .append('text')
-          .attr('x', textOffsetX)
-          .attr('y', textOffsetY)
-          .attr('text-anchor', 'start')
-          .attr('fill', '#e0e0e0')
-          .attr('font-size', '11px')
-          .attr('transform', slant)
-          .attr('opacity', opacity)
-          .text(event.name)
-      }
+      // Event label -- duplicated with black drop shadow first
+      const textOffsetX = 5 // Start 5px to the right of the dot
+      const textOffsetY = -5 // Start 5px above the dot (Y is + down)
+      const slant = `rotate(-35)` // Slant up and right
+      const textGroup = eventGroup.append('g').attr('class', 'text-pair')
+      // shadow
+      textGroup
+        .append('text')
+        .attr('x', textOffsetX + 1)
+        .attr('y', textOffsetY + 1)
+        .attr('text-anchor', 'start')
+        .attr('fill', 'black')
+        .attr('font-size', '11px')
+        .attr('transform', slant)
+        .attr('opacity', opacity)
+        .text(event.name)
+      textGroup
+        .append('text')
+        .attr('x', textOffsetX - 1)
+        .attr('y', textOffsetY - 1)
+        .attr('text-anchor', 'start')
+        .attr('fill', 'black')
+        .attr('font-size', '11px')
+        .attr('transform', slant)
+        .attr('opacity', opacity)
+        .text(event.name)
+      // main text
+      textGroup
+        .append('text')
+        .attr('x', textOffsetX)
+        .attr('y', textOffsetY)
+        .attr('text-anchor', 'start')
+        .attr('fill', '#e0e0e0')
+        .attr('font-size', '11px')
+        .attr('transform', slant)
+        .attr('opacity', opacity)
+        .text(event.name)
     })
   }
 
