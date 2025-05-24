@@ -570,9 +570,29 @@
     "significance": 4
   },
   {
+    "name": "First art (shell beads)",
+    "date": "-75000",
+    "significance": 5
+  },
+  {
     "name": "Controlled fire use",
     "date": "-790000",
     "significance": 7
+  },
+  {
+    "name": "Last interglacial period (Eemian)",
+    "date": "-125000",
+    "significance": 6
+  },
+  {
+    "name": "Earliest clothing use",
+    "date": "-100000",
+    "significance": 5
+  },
+  {
+    "name": "First use of ochre pigment",
+    "date": "-164000",
+    "significance": 5
   },
   {
     "name": "Neanderthals appear",
@@ -580,12 +600,12 @@
     "significance": 6
   },
   {
-    "name": "Dinosaur extinction",
+    "name": "K-Pg dinosaur extinction event",
     "date": "-66.0e6",
     "significance": 9
   },
   {
-    "name": "Moon forms",
+    "name": "Moon is formed",
     "date": "-4.510e9",
     "significance": 6
   },
@@ -628,6 +648,21 @@
     "name": "Cambrian explosion",
     "date": "-541e6",
     "significance": 9
+  },
+  {
+    "name": "Cretaceous Period begins",
+    "date": "-145e6",
+    "significance": 6
+  },
+  {
+    "name": "Archaeopteryx & early birds",
+    "date": "-150e6",
+    "significance": 5
+  },
+  {
+    "name": "First flowering plants",
+    "date": "-160e6",
+    "significance": 5
   },
   {
     "name": "First land plants",
@@ -675,9 +710,19 @@
     "significance": 6
   },
   {
-    "name": "Earth formation",
+    "name": "Earth is formed",
     "date": "-4.54e9",
     "significance": 10
+  },
+  {
+    "name": "Solar systems create metals",
+    "date": "-8e9",
+    "significance": 5
+  },
+  {
+    "name": "Large spiral galaxies form",
+    "date": "-9e9",
+    "significance": 5
   },
   {
     "name": "First atoms",
@@ -690,12 +735,17 @@
     "significance": 5
   },
   {
-    "name": "Milky Way forms",
+    "name": "Milky Way structure matures",
+    "date": "-5.5e9",
+    "significance": 6
+  },
+  {
+    "name": "Milky Way is formed",
     "date": "-13.0e9",
     "significance": 6
   },
   {
-    "name": "Solar System forms",
+    "name": "Solar System is formed",
     "date": "-4.6e9",
     "significance": 7
   },
