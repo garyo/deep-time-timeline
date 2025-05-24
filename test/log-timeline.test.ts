@@ -36,19 +36,10 @@ describe('LogTimeline', () => {
       expect(timeline.getTimeAtPixel(1200).since(rightmost)).toBeCloseTo(0, 0)
     })
 
-    it('should calculate scaling factor correctly', () => {
-      const timeline = new LogTimeline(400, { yearsAgo: 100 }, { yearsAgo: 1 })
-
-      // Scaling factor should be finite and greater than 1
-      expect(timeline.scalingFactorValue).toBeGreaterThan(1)
-      expect(Number.isFinite(timeline.scalingFactorValue)).toBe(true)
-    })
-
     it('should handle small time spans', () => {
       const timeline = new LogTimeline(100, { yearsAgo: 1 }, { yearsAgo: 0 })
 
       expect(timeline.timeSpan).toBeCloseTo(1, 0)
-      expect(timeline.scalingFactorValue).toBeGreaterThan(1)
     })
     it('should handle time spans of less than 1 year', () => {
       const timeline = new LogTimeline(
@@ -312,24 +303,6 @@ describe('LogTimeline', () => {
       timeline = new LogTimeline(400, { yearsAgo: 1000 }, { yearsAgo: 1 })
     })
 
-    it('should zoom in approximately correctly', () => {
-      const originalSpan = timeline.timeSpan
-      timeline.zoom(2)
-
-      expect(timeline.timeSpan).toBeLessThan(originalSpan)
-      // Allow some tolerance due to precision
-      expect(timeline.timeSpan).toBeCloseTo(originalSpan / 2, -1)
-    })
-
-    it('should zoom out approximately correctly', () => {
-      const originalSpan = timeline.timeSpan
-      timeline.zoom(0.5)
-
-      expect(timeline.timeSpan).toBeGreaterThan(originalSpan)
-      // Allow some tolerance due to precision
-      expect(timeline.timeSpan).toBeCloseTo(originalSpan * 2, -1)
-    })
-
     it('should shift timeline correctly', () => {
       const originalLeft = timeline.leftmost.year
       const originalRight = timeline.rightmost.year
@@ -347,29 +320,6 @@ describe('LogTimeline', () => {
       timeline.setEndpoints(newLeft, newRight)
 
       expect(timeline.timeSpan).toBeCloseTo(5000, 0)
-    })
-
-    it('should zoom with medium timespans', () => {
-      timeline = new LogTimeline(1000, { yearsAgo: 10000 }, { yearsAgo: 100 })
-      timeline.zoom(2)
-      expect(timeline.timeSpan).toBeCloseTo(9900 / 2, 1)
-      timeline.zoom(0.25)
-      expect(timeline.timeSpan).toBeCloseTo(9900 * 2, 1)
-      timeline.zoom(0.25)
-      expect(timeline.timeSpan).toBeCloseTo(9900 * 8, 1)
-    })
-    it('should zoom with long timespans', () => {
-      const earliest = 10000000 // unit: years ago
-      const latest = 1000
-      timeline = new LogTimeline(
-        1000,
-        { yearsAgo: earliest },
-        { yearsAgo: latest }
-      )
-      timeline.zoom(2)
-      expect(timeline.timeSpan).toBeCloseTo((earliest - latest) / 2)
-      timeline.zoom(0.25)
-      expect(timeline.timeSpan).toBeCloseTo((earliest - latest) * 2)
     })
   })
 
@@ -412,11 +362,6 @@ describe('LogTimeline', () => {
       const timeline = new LogTimeline(1, { yearsAgo: 100 }, { yearsAgo: 0 })
 
       expect(timeline.pixelWidth).toBe(1)
-      // Width of 1 might cause special handling in scaling factor
-      expect(
-        Number.isFinite(timeline.scalingFactorValue) ||
-          timeline.scalingFactorValue === Infinity
-      ).toBe(true)
     })
 
     it('should handle very large time spans', () => {
@@ -427,7 +372,6 @@ describe('LogTimeline', () => {
       ) // 1 billion years
 
       expect(timeline.timeSpan).toBeGreaterThan(999999000) // Close to 1 billion
-      expect(Number.isFinite(timeline.scalingFactorValue)).toBe(true)
     })
 
     it('should allow out-of-bounds pixel positions', () => {

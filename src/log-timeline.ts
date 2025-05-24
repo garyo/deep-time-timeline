@@ -9,7 +9,6 @@ class LogTimeline {
   private rightmostTime!: DeepTime
   private refTime: DeepTime = new DeepTime() // = now
   private readonly width: number
-  private scalingFactor: number = 1.0 // TODO not really needed?
 
   /**
    * LogTimeline constructor
@@ -76,29 +75,6 @@ class LogTimeline {
 
     this.leftmostTime = newLeftmost
     this.rightmostTime = newRightmost
-
-    // Recalculate scaling factor
-    this.scalingFactor = this.calculateScalingFactor()
-  }
-
-  // Method to zoom in (factor>1) or out (factor<1)
-  // factor=0.5 zooms out by 2
-  // TODO remove this, doesn't work well
-  public zoom(factor: number): void {
-    if (factor <= 0) {
-      throw new Error('Zoom factor must be positive')
-    }
-
-    // Calculate the new span in minutes
-    const currentSpanMinutes =
-      this.rightmostTime.minutesSince1970 - this.leftmostTime.minutesSince1970
-    const newSpanMinutes = currentSpanMinutes / factor
-
-    // Create new leftmost time
-    const newLeftmost = this.rightmostTime.subtract({
-      minutes: Math.round(newSpanMinutes)
-    })
-    this.setEndpoints(newLeftmost, this.rightmostTime)
   }
 
   // Method to zoom around a specific time point
@@ -294,11 +270,6 @@ class LogTimeline {
     return this.refTime.subtract({ minutes: Math.round(minutesFromNow) })
   }
 
-  // Getters for readonly properties
-  public get scalingFactorValue(): number {
-    return this.scalingFactor
-  }
-
   /** Time span in years */
   public get timeSpan(): number {
     const timeDiff = this.rightmostTime.since(this.leftmostTime)
@@ -368,9 +339,7 @@ class LogTimeline {
   }
 
   toString(): string {
-    return `LogTimeline(${this.width}px, ${this.leftmostTime} - ${
-      this.rightmostTime
-    }, scale=${this.scalingFactor.toFixed(2)}`
+    return `LogTimeline(${this.width}px, ${this.leftmostTime} - ${this.rightmostTime}`
   }
 
   // Generate ticks for timeline display
