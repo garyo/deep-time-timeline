@@ -84,6 +84,10 @@ describe('DeepTime', () => {
       const longTime = new DeepTime('1000 BC')
       expect(longTime.year).toBe(-999) // 1000 BC is year -999 in ISO 8601
     })
+    it('should create from exponential year string', () => {
+      const longTime = new DeepTime('-1.23e6')
+      expect(longTime.year).toBe(-1_230_000)
+    })
 
     it('should copy construct from another DeepTime', () => {
       const original = new DeepTime({ year: 2020 })

@@ -1,7 +1,42 @@
 [
   {
+    "name": "First gene-therapy cure",
+    "date": "2025-04-01",
+    "significance": 5
+  },
+  {
+    "name": "HIV vaccine trials succeed",
+    "date": "2025-05-16",
+    "significance": 4
+  },
+  {
+    "name": "India Moon landing",
+    "date": "2023-08-23",
+    "significance": 3
+  },
+  {
+    "name": "Same-sex marriage legal in US",
+    "date": "2015-06-26",
+    "significance": 5
+  },
+  {
+    "name": "CRISPR treats sickle cell",
+    "date": "2023-12-08",
+    "significance": 5
+  },
+  {
+    "name": "Malaria vaccine approved by WHO",
+    "date": "2021-10-06",
+    "significance": 5
+  },
+  {
+    "name": "Renewables surpass coal",
+    "date": "2022-06-01",
+    "significance": 4
+  },
+  {
     "name": "COVID-19 pandemic",
-    "date": "2019",
+    "date": "2019-03-01",
     "significance": 7
   },
   {
@@ -21,7 +56,7 @@
   },
   {
     "name": "World War I",
-    "date": "1914",
+    "date": "1914-07-28",
     "significance": 8
   },
   {
@@ -31,18 +66,23 @@
   },
   {
     "name": "Great Depression",
-    "date": "1929",
+    "date": "1929-10-01",
     "significance": 6
   },
   {
     "name": "World War II",
-    "date": "1939",
+    "date": "1939-09-01",
     "significance": 8
   },
   {
-    "name": "Nuclear weapons",
-    "date": "1945",
+    "name": "World War II ends",
+    "date": "1945-09-02",
     "significance": 7
+  },
+  {
+    "name": "Nuclear weapons (Hiroshima)",
+    "date": "1945-08-06",
+    "significance": 6
   },
   {
     "name": "United Nations",
@@ -111,7 +151,7 @@
   },
   {
     "name": "Global financial crisis",
-    "date": "2008",
+    "date": "2008-09-15",
     "significance": 4
   },
   {
@@ -392,6 +432,11 @@
     "significance": 8
   },
   {
+    "name": "Bronze Age begins",
+    "date": "3300BC",
+    "significance": 7
+  },
+  {
     "name": "Assyrian empire peak",
     "date": "900BC",
     "significance": 6
@@ -481,22 +526,27 @@
   },
   {
     "name": "First monkeys",
-    "date": "-40000000",
+    "date": "-40e6",
     "significance": 5
   },
   {
     "name": "First apes",
-    "date": "-25000000",
+    "date": "-25e6",
     "significance": 6
   },
   {
+    "name": "Paleolithic Stone Tools",
+    "date": "-2.6e6",
+    "significance": 7
+  },
+  {
     "name": "First hominids",
-    "date": "-6000000",
+    "date": "-6.0e6",
     "significance": 7
   },
   {
     "name": "Australopithecus appears",
-    "date": "-4000000",
+    "date": "-4.0e6",
     "significance": 6
   },
   {
@@ -506,7 +556,7 @@
   },
   {
     "name": "Homo erectus migrates",
-    "date": "-1800000",
+    "date": "-1.8e6",
     "significance": 4
   },
   {
@@ -521,132 +571,127 @@
   },
   {
     "name": "Dinosaur extinction",
-    "date": "66000000BC",
+    "date": "-66.0e6",
     "significance": 9
   },
   {
     "name": "Moon forms",
-    "date": "-4510000000",
+    "date": "-4.510e9",
     "significance": 6
   },
   {
     "name": "First oceans form",
-    "date": "-4200000000",
+    "date": "-4.2e9",
     "significance": 7
   },
   {
     "name": "Earliest life",
-    "date": "-3800000000",
+    "date": "-3.8e9",
     "significance": 10
   },
   {
     "name": "Photosynthesis begins",
-    "date": "-3500000000",
+    "date": "-3.5e9",
     "significance": 7
   },
   {
     "name": "Oxygenation of atmosphere",
-    "date": "-2400000000",
+    "date": "-2.4e9",
     "significance": 7
   },
   {
     "name": "Eukaryotes evolve",
-    "date": "-2000000000",
+    "date": "-2.0e9",
     "significance": 5
   },
   {
     "name": "Multicellular life",
-    "date": "-1000000000",
+    "date": "-1.0e9",
     "significance": 6
   },
   {
     "name": "First animals",
-    "date": "-600000000",
+    "date": "-600e6",
     "significance": 7
   },
   {
     "name": "Cambrian explosion",
-    "date": "-541000000",
+    "date": "-541e6",
     "significance": 9
   },
   {
     "name": "First land plants",
-    "date": "-470000000",
+    "date": "-470e6",
     "significance": 6
   },
   {
     "name": "First land animals",
-    "date": "-428000000",
+    "date": "-428e6",
     "significance": 7
   },
   {
     "name": "First insects",
-    "date": "-400000000",
+    "date": "-400e6",
     "significance": 5
   },
   {
     "name": "Amphibians appear",
-    "date": "-370000000",
+    "date": "-370e6",
     "significance": 5
   },
   {
     "name": "First reptiles",
-    "date": "-310000000",
+    "date": "-310e6",
     "significance": 5
   },
   {
     "name": "Permian extinction",
-    "date": "-252000000",
+    "date": "-252e6",
     "significance": 8
   },
   {
     "name": "Dinosaurs dominate",
-    "date": "-230000000",
+    "date": "-230e6",
     "significance": 7
   },
   {
     "name": "First mammals",
-    "date": "-200000000",
+    "date": "-200e6",
     "significance": 7
   },
   {
     "name": "First primates",
-    "date": "-55000000",
+    "date": "-55e6",
     "significance": 6
   },
   {
     "name": "Earth formation",
-    "date": "-4540000000",
+    "date": "-4.54e9",
     "significance": 10
   },
   {
     "name": "First atoms",
-    "date": "-13700000000",
+    "date": "-13.7e9",
     "significance": 5
   },
   {
     "name": "First stars form",
-    "date": "-13500000000",
+    "date": "-13.5e9",
     "significance": 5
   },
   {
     "name": "Milky Way forms",
-    "date": "-13000000000",
+    "date": "-13.0e9",
     "significance": 6
   },
   {
     "name": "Solar System forms",
-    "date": "-4600000000",
-    "significance": 7
-  },
-  {
-    "name": "Sun forms",
-    "date": "-4600000000",
+    "date": "-4.6e9",
     "significance": 7
   },
   {
     "name": "Big Bang",
-    "date": "-13800000000",
+    "date": "-13.8e9",
     "significance": 10
   }
 ]

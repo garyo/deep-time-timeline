@@ -148,6 +148,13 @@ export class DeepTime {
       return
     }
 
+    // Try parsing it as a number -- this should allow -1.2e6 for 1.2Mya
+    const year = parseFloat(input)
+    if (!Number.isNaN(year)) {
+      this.setFromYear(year)
+      return
+    }
+
     throw new Error(`Unable to parse DeepTime from string: ${input}`)
   }
 
