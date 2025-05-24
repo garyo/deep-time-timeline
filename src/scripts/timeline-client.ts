@@ -51,6 +51,7 @@ export function initializeTimeline(
     .attr('y2', 0)
     .attr('stroke', '#4a9eff')
     .attr('stroke-width', 2)
+    .style('pointer-events', 'none') // Don't block mouse events
 
   // Add hover line (initially hidden)
   const hoverLine = g
