@@ -1,0 +1,101 @@
+---
+export interface Props {
+  initialYearsAgo?: number;
+  apiUrl?: string;
+  autoUpdateInterval?: number; // Auto-update interval in milliseconds (0 to disable)
+}
+
+const { 
+  initialYearsAgo = 10000, 
+  apiUrl = 'https://example.com/api/significant-events',
+  autoUpdateInterval = 5000 
+} = Astro.props;
+---
+
+<div class="timeline-container" data-initial-years-ago={initialYearsAgo} data-api-url={apiUrl} data-auto-update-interval={autoUpdateInterval}>
+  <div class="timeline-controls">
+    <div class="time-display left-time" id="left-time">Loading...</div>
+    <div class="time-display right-time" id="right-time">Loading...</div>
+  </div>
+  <svg id="timeline-svg" width="100%" height="200"></svg>
+  <div class="timeline-info">
+    <p>Mouse over the timeline to see times. Click and drag to pan. Scroll to zoom in.</p>
+    <p id="hover-info" class="hover-info">&nbsp;</p>
+  </div>
+</div>
+
+<style>
+  .timeline-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .timeline-controls {
+    position: relative;
+    height: 40px;
+    margin-bottom: 20px;
+  }
+
+  .time-display {
+    position: absolute;
+    top: 0;
+    font-size: 14px;
+    color: #e0e0e0;
+    background-color: #2a2a2a;
+    padding: 8px 12px;
+    border-radius: 4px;
+    /*     border: 1px solid #3a3a3a; */
+  }
+
+  .left-time {
+    left: 0;
+  }
+
+  .right-time {
+    right: 0;
+  }
+
+  #timeline-svg {
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    display: block;
+  }
+
+  .timeline-info {
+    margin-top: 20px;
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 14px;
+  }
+
+  .hover-info {
+    margin-top: 10px;
+    color: #4a9eff;
+    font-weight: 500;
+    min-height: 20px;
+  }
+</style>
+
+<script>
+  import { initializeTimeline } from '../scripts/timeline-client';
+
+  // Wait for DOM to load before initializing
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.querySelector('.timeline-container') as HTMLElement;
+      const initialYearsAgo = parseInt(container.dataset.initialYearsAgo || '10000');
+      const apiUrl = container.dataset.apiUrl || 'https://example.com/api/significant-events';
+      const autoUpdateInterval = parseInt(container.dataset.autoUpdateInterval || '5000');
+      initializeTimeline(container, initialYearsAgo, apiUrl, autoUpdateInterval);
+    });
+  } else {
+    // DOM already loaded
+    const container = document.querySelector('.timeline-container') as HTMLElement;
+    const initialYearsAgo = parseInt(container.dataset.initialYearsAgo || '10000');
+    const apiUrl = container.dataset.apiUrl || 'https://example.com/api/significant-events';
+    const autoUpdateInterval = parseInt(container.dataset.autoUpdateInterval || '5000');
+    initializeTimeline(container, initialYearsAgo, apiUrl, autoUpdateInterval);
+  }
+</script>

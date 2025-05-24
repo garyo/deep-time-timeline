@@ -1,0 +1,34 @@
+---
+// Example usage of LogTimelineVisualization component
+import LogTimelineVisualization from '../components/LogTimelineVisualization.astro';
+---
+
+<html>
+<head>
+  <title>Timeline Example</title>
+</head>
+<body>
+  <!-- Basic usage with default settings (auto-update every 5 seconds) -->
+  <LogTimelineVisualization initialYearsAgo={13800000000} />
+  
+  <!-- With custom API endpoint and faster auto-update -->
+  <LogTimelineVisualization 
+    initialYearsAgo={10000} 
+    apiUrl="https://your-api.com/api/events"
+    autoUpdateInterval={3000}
+  />
+  
+  <!-- Recent history with slower auto-update -->
+  <LogTimelineVisualization 
+    initialYearsAgo={100} 
+    apiUrl="https://your-api.com/api/recent-events"
+    autoUpdateInterval={10000}
+  />
+  
+  <!-- Disable auto-update for static display -->
+  <LogTimelineVisualization 
+    initialYearsAgo={1000} 
+    autoUpdateInterval={0}
+  />
+</body>
+</html>

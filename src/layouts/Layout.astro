@@ -1,0 +1,182 @@
+---
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Menu Bar -->
+      <header class="menu-bar">
+        <h1>Log Timeline Viewer</h1>
+        <nav>
+          <button id="zoom-in" class="nav-button">Zoom In</button>
+          <button id="zoom-out" class="nav-button">Zoom Out</button>
+          <button id="reset-view" class="nav-button">Reset View</button>
+        </nav>
+      </header>
+
+      <div class="content-wrapper">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+          <h2>Time Presets</h2>
+          <ul class="preset-list">
+            <li><button class="preset-button" data-years="100">100 years</button></li>
+            <li><button class="preset-button" data-years="1000">1,000 years</button></li>
+            <li><button class="preset-button" data-years="10000">10,000 years</button></li>
+            <li><button class="preset-button" data-years="100000">100,000 years</button></li>
+            <li><button class="preset-button" data-years="1000000">1 million years</button></li>
+            <li><button class="preset-button" data-years="4540000000">Age of Earth</button></li>
+            <li><button class="preset-button" data-years="13800000000">Age of Universe</button></li>
+          </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+          <slot />
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  :root {
+    --header-height: 60px;
+    --sidebar-width: 250px;
+    --background: #1a1a1a;
+    --surface: #2a2a2a;
+    --text: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --accent: #4a9eff;
+    --accent-hover: #3a8eef;
+    --border: #3a3a3a;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: var(--background);
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .menu-bar {
+    height: var(--header-height);
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  .menu-bar h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .menu-bar nav {
+    display: flex;
+    gap: 10px;
+  }
+
+  .nav-button {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+
+  .nav-button:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .content-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .sidebar h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .preset-list,
+  .event-list {
+    list-style: none;
+    margin-bottom: 30px;
+  }
+
+  .preset-list li {
+    margin-bottom: 5px;
+  }
+
+  .preset-button {
+    width: 100%;
+    background-color: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+
+  .preset-button:hover {
+    background-color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .event-list li {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    padding-left: 10px;
+    border-left: 2px solid var(--border);
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 20px;
+    overflow: auto;
+    background-color: var(--background);
+  }
+</style>
