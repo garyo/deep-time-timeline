@@ -133,20 +133,23 @@ export function initializeTimeline(
     return Math.pow(remap(significance, threshold, 10, minOpacity, 1), 0.8)
   }
 
-  function getLocalSignificanceThreshold(x: number, allVisibleEvents: {x: number, significance: number}[]): number {
+  function getLocalSignificanceThreshold(
+    x: number,
+    allVisibleEvents: { x: number; significance: number }[]
+  ): number {
     // Define a window around this position to calculate local density
     const windowSize = 50 // pixels - adjust this to control how "local" the threshold is
     const halfWindow = windowSize / 2
-    
+
     // Count events within the window
-    const eventsInWindow = allVisibleEvents.filter(event => 
-      Math.abs(event.x - x) <= halfWindow
+    const eventsInWindow = allVisibleEvents.filter(
+      (event) => Math.abs(event.x - x) <= halfWindow
     )
-    
+
     // Calculate local density
     const localDensity = eventsInWindow.length / windowSize
     const maxDensity = 0.15 // raise to allow more; at this density the threshold will be maxed out
-    
+
     // Get threshold (0-10) from local density
     return remap(localDensity, 0, maxDensity, 0, 10)
   }
@@ -157,23 +160,30 @@ export function initializeTimeline(
     g.selectAll('.event-marker').remove()
 
     // First pass: collect all visible events with their positions
-    const visibleEvents: {x: number, event: ProcessedEvent, significance: number}[] = []
+    const visibleEvents: {
+      x: number
+      event: ProcessedEvent
+      significance: number
+    }[] = []
     allEvents.forEach((event) => {
       if (timeline.isTimeInRange(event.date)) {
         const x = timeline.getPixelPosition(event.date)
-        visibleEvents.push({x, event, significance: event.significance})
+        visibleEvents.push({ x, event, significance: event.significance })
       }
     })
 
     // Create a simplified array for threshold calculation
-    const eventPositions = visibleEvents.map(ve => ({x: ve.x, significance: ve.significance}))
+    const eventPositions = visibleEvents.map((ve) => ({
+      x: ve.x,
+      significance: ve.significance
+    }))
 
     // Draw in significance order, highest last so they show up on top
     const sortedVisibleEvents = visibleEvents.sort((a, b) => {
       return a.significance - b.significance
     })
 
-    sortedVisibleEvents.forEach(({x, event}) => {
+    sortedVisibleEvents.forEach(({ x, event }) => {
       const eventGroup = g
         .append('g')
         .attr('class', 'event-marker')
@@ -238,6 +248,66 @@ export function initializeTimeline(
     updateTimeLabels()
     drawTicks()
     drawEvents()
+  }
+
+  // Animation function for smooth panning
+  function animatePanTo(
+    targetTime: DeepTime,
+    targetPixel: number,
+    duration: number = 200
+  ) {
+    // Cancel any existing animation
+    if (animationId) {
+      cancelAnimationFrame(animationId)
+      animationId = null
+    }
+
+    const startTimestamp = performance.now()
+    const initialLeftTime = timeline.leftmost
+    const initialRightTime = timeline.rightmost
+
+    // Calculate what the final timeline state should be
+    const tempTimeline = new LogTimeline(
+      timeline.pixelWidth,
+      initialLeftTime,
+      initialRightTime
+    )
+    tempTimeline.panToPosition(targetTime, targetPixel)
+    const finalLeftTime = tempTimeline.leftmost
+    const finalRightTime = tempTimeline.rightmost
+
+    function animate() {
+      const currentTime = performance.now()
+      const elapsed = currentTime - startTimestamp
+      const progress = Math.min(elapsed / duration, 1)
+
+      // Ease out for smooth deceleration
+      const eased = 1 - Math.pow(1 - progress, 3)
+
+      // Interpolate between initial and final timeline states
+      const leftMinutes =
+        initialLeftTime.minutesSince1970 +
+        (finalLeftTime.minutesSince1970 - initialLeftTime.minutesSince1970) *
+          eased
+      const rightMinutes =
+        initialRightTime.minutesSince1970 +
+        (finalRightTime.minutesSince1970 - initialRightTime.minutesSince1970) *
+          eased
+
+      timeline.setEndpoints(
+        { minutesSinceEpoch: leftMinutes },
+        { minutesSinceEpoch: rightMinutes }
+      )
+      redrawTimeline()
+
+      if (progress < 1) {
+        animationId = requestAnimationFrame(animate)
+      } else {
+        animationId = null
+      }
+    }
+
+    animationId = requestAnimationFrame(animate)
   }
 
   // Function to handle event updates
@@ -342,6 +412,7 @@ export function initializeTimeline(
   let startTime: DeepTime | null = null
   let lastTouchDistance = 0
   let touchStartTime: DeepTime | null = null
+  let animationId: number | null = null
 
   // Attach mouse events to the background rect
   backgroundRect
@@ -406,6 +477,12 @@ export function initializeTimeline(
     const isZoom = Math.abs(deltaY) > Math.abs(deltaX)
 
     if (isZoom) {
+      // Cancel any existing pan animation for zoom
+      if (animationId) {
+        cancelAnimationFrame(animationId)
+        animationId = null
+      }
+
       // Calculate zoom factor
       // Negative deltaY = scroll up = zoom in
       // Positive deltaY = scroll down = zoom out
@@ -414,13 +491,29 @@ export function initializeTimeline(
 
       // Zoom around the mouse position
       timeline.zoomAroundPixel(factor, x)
+      redrawTimeline()
     } else {
-      // pan
-      const t = timeline.getTimeAtPixel(x - deltaX)
-      timeline.panToPosition(t, x)
+      // Pan - check if we should animate
+      const targetTime = timeline.getTimeAtPixel(x - deltaX)
+      const currentTime = timeline.getTimeAtPixel(x)
+
+      // Calculate pan distance in pixels
+      const panDistance = Math.abs(deltaX)
+      const animationThreshold = 50 // pixels - animate pans larger than this
+
+      if (panDistance > animationThreshold) {
+        // Large pan - animate it
+        animatePanTo(targetTime, x, 100) // 150ms duration for responsiveness
+      } else {
+        // Small pan - immediate
+        if (animationId) {
+          cancelAnimationFrame(animationId)
+          animationId = null
+        }
+        timeline.panToPosition(targetTime, x)
+        redrawTimeline()
+      }
     }
-    // Update display
-    redrawTimeline()
   })
 
   // Touch event handling
@@ -452,7 +545,7 @@ export function initializeTimeline(
     .on('touchstart', function (event) {
       event.preventDefault()
       const touches = event.touches
-      
+
       if (touches.length === 1) {
         // Single touch - start panning
         isPanning = true
@@ -461,7 +554,7 @@ export function initializeTimeline(
         startTime = timeline.getTimeAtPixel(x)
         touchStartTime = timeline.getTimeAtPixel(x)
         backgroundRect.style('cursor', 'grabbing')
-        
+
         // Show hover line
         hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
       } else if (touches.length === 2) {
@@ -475,14 +568,14 @@ export function initializeTimeline(
     .on('touchmove', function (event) {
       event.preventDefault()
       const touches = event.touches
-      
+
       if (touches.length === 1 && isPanning && startTime) {
         // Single touch - pan
         const [x] = getTouchCenter(touches)
-        
+
         // Update hover line
         hoverLine.attr('x1', x).attr('x2', x)
-        
+
         // Update hover info
         const time = timeline.getTimeAtPixel(x)
         const hoverInfo = document.getElementById('hover-info')
@@ -494,7 +587,7 @@ export function initializeTimeline(
             )})`
           else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
         }
-        
+
         // Pan to follow touch
         timeline.panToPosition(startTime, x)
         redrawTimeline()
@@ -502,20 +595,20 @@ export function initializeTimeline(
         // Two touches - zoom
         const currentDistance = getTouchDistance(touches)
         const [x] = getTouchCenter(touches)
-        
+
         if (lastTouchDistance > 0) {
           const factor = currentDistance / lastTouchDistance
           timeline.zoomAroundPixel(factor, x)
           redrawTimeline()
         }
-        
+
         lastTouchDistance = currentDistance
       }
     })
     .on('touchend touchcancel', function (event) {
       event.preventDefault()
       const touches = event.touches
-      
+
       if (touches.length === 0) {
         // All touches ended
         isPanning = false
@@ -523,7 +616,7 @@ export function initializeTimeline(
         touchStartTime = null
         lastTouchDistance = 0
         backgroundRect.style('cursor', 'grab')
-        
+
         // Hide hover line and info
         hoverLine.attr('opacity', 0)
         const hoverInfo = document.getElementById('hover-info')
@@ -537,7 +630,7 @@ export function initializeTimeline(
         startX = x
         startTime = timeline.getTimeAtPixel(x)
         lastTouchDistance = 0
-        
+
         // Show hover line
         hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
       }
