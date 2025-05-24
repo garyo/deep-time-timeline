@@ -37,16 +37,22 @@ const { title } = Astro.props;
       <div class="content-wrapper">
         <!-- Left Sidebar -->
         <aside class="sidebar" id="sidebar">
-          <h2>Time Presets</h2>
-          <ul class="preset-list">
-            <li><button class="preset-button" data-years="100">100 years</button></li>
-            <li><button class="preset-button" data-years="1000">1,000 years</button></li>
-            <li><button class="preset-button" data-years="10000">10,000 years</button></li>
-            <li><button class="preset-button" data-years="100000">100,000 years</button></li>
-            <li><button class="preset-button" data-years="1000000">1 million years</button></li>
-            <li><button class="preset-button" data-years="4540000000">Age of Earth</button></li>
-            <li><button class="preset-button" data-years="13800000000">Age of Universe</button></li>
-          </ul>
+          <div class="sidebar-content">
+            <h2>Time Presets</h2>
+            <ul class="preset-list">
+              <li><button class="preset-button" data-years="100">100 years</button></li>
+              <li><button class="preset-button" data-years="1000">1,000 years</button></li>
+              <li><button class="preset-button" data-years="10000">10,000 years</button></li>
+              <li><button class="preset-button" data-years="100000">100,000 years</button></li>
+              <li><button class="preset-button" data-years="1000000">1 million years</button></li>
+              <li><button class="preset-button" data-years="4540000000">Age of Earth</button></li>
+              <li><button class="preset-button" data-years="13800000000">Age of Universe</button></li>
+            </ul>
+          </div>
+          
+          <div class="sidebar-footer">
+            By <a href="https://oberbrunner.com" target="_blank" rel="noopener noreferrer">Gary Oberbrunner</a>
+          </div>
         </aside>
         
         <!-- Mobile overlay for sidebar -->
@@ -254,10 +260,36 @@ const { title } = Astro.props;
     width: var(--sidebar-width);
     background-color: var(--surface);
     border-right: 1px solid var(--border);
-    padding: 20px;
+    padding: 0;
     overflow-y: auto;
     transition: transform 0.3s ease-in-out;
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+ .sidebar-footer {
+   padding: 15px 20px;
+   border-top: 1px solid var(--border);
+   background-color: var(--surface);
+   font-size: 0.8rem;
+   text-align: center;
+ }
+
+  .sidebar-footer a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .sidebar-footer a:hover {
+    color: var(--accent);
   }
 
   .sidebar-overlay {
