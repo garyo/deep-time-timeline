@@ -308,6 +308,31 @@ class LogTimeline {
     // The caller should redraw the timeline after updating refTime
   }
 
+  /**
+   * Reset the rightmost time to the current time (now)
+   * Maintains the same time span by adjusting the leftmost time accordingly
+   * @returns true if the timeline was changed, false otherwise
+   */
+  public resetRightmostToNow(): boolean {
+    const now = new DeepTime()
+    
+    // If rightmost is already at now (within 1 minute), do nothing
+    if (now.equals(this.rightmostTime)) {
+      return false
+    }
+    
+    // Calculate the current time span in minutes
+    const timeSpanMinutes = this.rightmostTime.since(this.leftmostTime)
+    
+    // Set new rightmost to now
+    this.rightmostTime = now
+    
+    // Adjust leftmost to maintain the same time span
+    this.leftmostTime = now.subtract({ minutes: timeSpanMinutes })
+    
+    return true
+  }
+
   // Bounds checking and utility methods
   public isTimeInRange(
     time: DeepTime | Temporal.ZonedDateTime | Date
