@@ -12,7 +12,7 @@
     "test:run": "vitest run",
     "test:watch": "vitest --watch",
     "test-timeline": "node --loader tsx log-timeline.ts",
-    "format": "prettier --write '{src,test}/**/*.{ts,tsx,js,jsx,json,md}'"
+    "format": "prettier --write '{src,test}/**/*.{ts,tsx,js,jsx,json,md,astro}'"
   },
   "dependencies": {
     "@astrojs/solid-js": "5.1.0",
@@ -26,12 +26,14 @@
   "devDependencies": {
     "@types/d3": "^7.4.3",
     "@vitest/ui": "^3.1.4",
+    "prettier-plugin-astro": "^0.14.1",
     "tsx": "^4.16.5",
     "vitest": "^3.1.4"
   },
   "prettier": {
     "singleQuote": true,
     "semi": false,
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "plugins": ["prettier-plugin-astro"]
   }
 }

@@ -1,9 +1,9 @@
 ---
 export interface Props {
-  title: string;
+  title: string
 }
 
-const { title } = Astro.props;
+const { title } = Astro.props
 ---
 
 <!doctype html>
@@ -20,7 +20,11 @@ const { title } = Astro.props;
       <!-- Menu Bar -->
       <header class="menu-bar">
         <div class="menu-left">
-          <button class="hamburger-menu" id="hamburger-menu" aria-label="Toggle menu">
+          <button
+            class="hamburger-menu"
+            id="hamburger-menu"
+            aria-label="Toggle menu"
+          >
             <span></span>
             <span></span>
             <span></span>
@@ -31,7 +35,11 @@ const { title } = Astro.props;
           <button id="zoom-in" class="nav-button">Zoom In</button>
           <button id="zoom-out" class="nav-button">Zoom Out</button>
           <button id="reset-view" class="nav-button">Reset View</button>
-          <button id="about-button" class="nav-button about-button" aria-label="About">?</button>
+          <button
+            id="about-button"
+            class="nav-button about-button"
+            aria-label="About">?</button
+          >
         </nav>
       </header>
 
@@ -41,64 +49,110 @@ const { title } = Astro.props;
           <div class="sidebar-content">
             <h2>Time Presets</h2>
             <ul class="preset-list">
-              <li><button class="preset-button" data-years="100">100 years</button></li>
-              <li><button class="preset-button" data-years="1000">1,000 years</button></li>
-              <li><button class="preset-button" data-years="10000">10,000 years</button></li>
-              <li><button class="preset-button" data-years="100000">100,000 years</button></li>
-              <li><button class="preset-button" data-years="1000000">1 million years</button></li>
-              <li><button class="preset-button" data-years="4540000000">Age of Earth</button></li>
-              <li><button class="preset-button" data-years="13800000000">Age of Universe</button></li>
+              <li>
+                <button class="preset-button" data-years="100">100 years</button
+                >
+              </li>
+              <li>
+                <button class="preset-button" data-years="1000"
+                  >1,000 years</button
+                >
+              </li>
+              <li>
+                <button class="preset-button" data-years="10000"
+                  >10,000 years</button
+                >
+              </li>
+              <li>
+                <button class="preset-button" data-years="100000"
+                  >100,000 years</button
+                >
+              </li>
+              <li>
+                <button class="preset-button" data-years="1000000"
+                  >1 million years</button
+                >
+              </li>
+              <li>
+                <button class="preset-button" data-years="4540000000"
+                  >Age of Earth</button
+                >
+              </li>
+              <li>
+                <button class="preset-button" data-years="13800000000"
+                  >Age of Universe</button
+                >
+              </li>
             </ul>
           </div>
-          
+
           <div class="sidebar-footer">
-            By <a href="https://oberbrunner.com" target="_blank" rel="noopener noreferrer">Gary Oberbrunner</a>
+            By <a
+              href="https://oberbrunner.com"
+              target="_blank"
+              rel="noopener noreferrer">Gary Oberbrunner</a
+            >
           </div>
         </aside>
-        
+
         <!-- Mobile overlay for sidebar -->
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
-        
+
         <!-- Help/About popup -->
         <div id="about-popup" class="about-popup">
           <div class="about-popup-content">
-            <button id="close-about" class="close-about" aria-label="Close about">&times;</button>
+            <button
+              id="close-about"
+              class="close-about"
+              aria-label="Close about">&times;</button
+            >
             <div class="about-content">
               <h2>About This App</h2>
               <!-- About content will go here -->
-              <p>This app is based on a paper log-scale geologic timeline I created with a friend
-                in junior high school in the 1970s,
-                on an adding-machine tape.
-                We took the logarithms of the dates of all kinds of paleological events,
-                plotted them on the 40' long tape, and hung it up in the classroom.
-                We realized we could fit the Big Bang, dinosaurs, and what we ate for breakfast that day on the same scale!
-                I still have that tape somewhere, and
-                I've been wanting to create an interactive version for many many years.
+              <p>
+                This app is based on a paper log-scale geologic timeline I
+                created with a friend in junior high school in the 1970s, on an
+                adding-machine tape. We took the logarithms of the dates of all
+                kinds of paleological events, plotted them on the 40' long tape,
+                and hung it up in the classroom. We realized we could fit the
+                Big Bang, dinosaurs, and what we ate for breakfast that day on
+                the same scale! I still have that tape somewhere, and I've been
+                wanting to create an interactive version for many many years.
               </p>
               <p>
-                The idea of a <a href="https://en.wikipedia.org/wiki/Logarithm" target="_blank">log-scaled</a>
-                timeline is that ancient events are compressed, and recent events take up more space.
-                We humans are naturally oriented toward
-                short-term thinking: tomorrow, next week, a human lifetime.
-                This app puts that in context, so you can
-                see how the present smoothly fades into the very deepest past.
+                The idea of a <a
+                  href="https://en.wikipedia.org/wiki/Logarithm"
+                  target="_blank">log-scaled</a
+                >
+                timeline is that ancient events are compressed, and recent events
+                take up more space. We humans are naturally oriented toward short-term
+                thinking: tomorrow, next week, a human lifetime. This app puts that
+                in context, so you can see how the present smoothly fades into the
+                very deepest past.
               </p>
               <p>
-                With this app you can zoom in on any time period in the history of the universe.
-                Significant events from politics, art, science, and nature fade in as you zoom into them.
-                It also has a "news feed" so new events will populate in on the right edge every now and then.
+                With this app you can zoom in on any time period in the history
+                of the universe. Significant events from politics, art, science,
+                and nature fade in as you zoom into them. It also has a "news
+                feed" so new events will populate in on the right edge every now
+                and then.
               </p>
               <p>
                 For more on Deep Time thinking, check out
-                <a href="https://longnowboston.org" target="_blank">Long Now Boston</a>, a group I work with
-                to promote long-term thinking about some of the biggest problems and ideas.
+                <a href="https://longnowboston.org" target="_blank"
+                  >Long Now Boston</a
+                >, a group I work with to promote long-term thinking about some
+                of the biggest problems and ideas.
               </p>
               <p>
-                Of course any collection of historical events will be opinionated;
-                I chose this set, and their significances, based on my own preferences.
-                Since this is a completely open-source app under an MIT license, you
-                are welcome to
-                <a href="https://github.com/garyo/deep-time-timeline" target="_blank">inspect the data and code</a>
+                Of course any collection of historical events will be
+                opinionated; I chose this set, and their significances, based on
+                my own preferences. Since this is a completely open-source app
+                under an MIT license, you are welcome to
+                <a
+                  href="https://github.com/garyo/deep-time-timeline"
+                  target="_blank">inspect the data and code</a
+                >
                 and even make your own version.
               </p>
               <p style="font-size: 0.8rem; margin-top: 20px">
@@ -118,302 +172,305 @@ const { title } = Astro.props;
 </html>
 
 <script>
-// Hamburger menu functionality
-function initHamburgerMenu() {
-  const hamburgerMenu = document.getElementById('hamburger-menu');
-  const sidebar = document.getElementById('sidebar');
-  const sidebarOverlay = document.getElementById('sidebar-overlay');
+  // Hamburger menu functionality
+  function initHamburgerMenu() {
+    const hamburgerMenu = document.getElementById('hamburger-menu')
+    const sidebar = document.getElementById('sidebar')
+    const sidebarOverlay = document.getElementById('sidebar-overlay')
 
-  if (!hamburgerMenu || !sidebar || !sidebarOverlay) {
-    return;
-  }
-
-  function toggleSidebar() {
-    const isOpen = sidebar.classList.contains('open');
-    
-    if (isOpen) {
-      closeSidebar();
-    } else {
-      openSidebar();
+    if (!hamburgerMenu || !sidebar || !sidebarOverlay) {
+      return
     }
-  }
 
-  function openSidebar() {
-    sidebar.classList.add('open');
-    sidebarOverlay.classList.add('show');
-    hamburgerMenu.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-  }
+    function toggleSidebar() {
+      const isOpen = sidebar.classList.contains('open')
 
-  function closeSidebar() {
-    sidebar.classList.remove('open');
-    sidebarOverlay.classList.remove('show');
-    hamburgerMenu.classList.remove('active');
-    document.body.style.overflow = ''; // Restore scrolling
-  }
-
-  // Event listeners
-  hamburgerMenu.addEventListener('click', toggleSidebar);
-  sidebarOverlay.addEventListener('click', closeSidebar);
-
-  // Close sidebar when clicking a preset button on mobile
-  const presetButtons = sidebar.querySelectorAll('.preset-button');
-  presetButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      if (window.innerWidth <= 768) {
-        closeSidebar();
+      if (isOpen) {
+        closeSidebar()
+      } else {
+        openSidebar()
       }
-    });
-  });
-
-  // Handle window resize
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) {
-      closeSidebar();
     }
-  });
 
-  // Handle escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-      closeSidebar();
+    function openSidebar() {
+      sidebar.classList.add('open')
+      sidebarOverlay.classList.add('show')
+      hamburgerMenu.classList.add('active')
+      document.body.style.overflow = 'hidden' // Prevent background scrolling
     }
-  });
-}
 
-// About popup functionality
-function initAboutPopup() {
-  const aboutButton = document.getElementById('about-button');
-  const aboutPopup = document.getElementById('about-popup');
-  const closeAbout = document.getElementById('close-about');
-  
-  if (!aboutButton || !aboutPopup || !closeAbout) {
-    return;
+    function closeSidebar() {
+      sidebar.classList.remove('open')
+      sidebarOverlay.classList.remove('show')
+      hamburgerMenu.classList.remove('active')
+      document.body.style.overflow = '' // Restore scrolling
+    }
+
+    // Event listeners
+    hamburgerMenu.addEventListener('click', toggleSidebar)
+    sidebarOverlay.addEventListener('click', closeSidebar)
+
+    // Close sidebar when clicking a preset button on mobile
+    const presetButtons = sidebar.querySelectorAll('.preset-button')
+    presetButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          closeSidebar()
+        }
+      })
+    })
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        closeSidebar()
+      }
+    })
+
+    // Handle escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+        closeSidebar()
+      }
+    })
   }
-  
-  function openAboutPopup() {
-    aboutPopup.classList.add('show');
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-  }
-  
-  function closeAboutPopup() {
-    aboutPopup.classList.remove('show');
-    document.body.style.overflow = ''; // Restore scrolling
-  }
-  
-  // Event listeners
-  aboutButton.addEventListener('click', openAboutPopup);
-  closeAbout.addEventListener('click', closeAboutPopup);
-  
-  // Close on click outside content
-  aboutPopup.addEventListener('click', (e) => {
-    if (e.target === aboutPopup) {
-      closeAboutPopup();
-    }
-  });
-  
-  // Close on escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && aboutPopup.classList.contains('show')) {
-      closeAboutPopup();
-    }
-  });
-}
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    initHamburgerMenu();
-    initAboutPopup();
-  });
-} else {
-  initHamburgerMenu();
-  initAboutPopup();
-}
+  // About popup functionality
+  function initAboutPopup() {
+    const aboutButton = document.getElementById('about-button')
+    const aboutPopup = document.getElementById('about-popup')
+    const closeAbout = document.getElementById('close-about')
+
+    if (!aboutButton || !aboutPopup || !closeAbout) {
+      return
+    }
+
+    function openAboutPopup() {
+      aboutPopup.classList.add('show')
+      document.body.style.overflow = 'hidden' // Prevent background scrolling
+    }
+
+    function closeAboutPopup() {
+      aboutPopup.classList.remove('show')
+      document.body.style.overflow = '' // Restore scrolling
+    }
+
+    // Event listeners
+    aboutButton.addEventListener('click', openAboutPopup)
+    closeAbout.addEventListener('click', closeAboutPopup)
+
+    // Close on click outside content
+    aboutPopup.addEventListener('click', (e) => {
+      if (e.target === aboutPopup) {
+        closeAboutPopup()
+      }
+    })
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && aboutPopup.classList.contains('show')) {
+        closeAboutPopup()
+      }
+    })
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      initHamburgerMenu()
+      initAboutPopup()
+    })
+  } else {
+    initHamburgerMenu()
+    initAboutPopup()
+  }
 </script>
 
 <style>
   :root {
-  --header-height: 60px;
-  --sidebar-width: 250px;
-  --background: #1a1a1a;
-  --surface: #2a2a2a;
-  --text: #e0e0e0;
-  --text-secondary: #b0b0b0;
-  --accent: #4a9eff;
-  --accent-hover: #3a8eef;
-  --border: #3a3a3a;
+    --header-height: 60px;
+    --sidebar-width: 250px;
+    --background: #1a1a1a;
+    --surface: #2a2a2a;
+    --text: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --accent: #4a9eff;
+    --accent-hover: #3a8eef;
+    --border: #3a3a3a;
   }
 
   * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 
   body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background-color: var(--background);
-  color: var(--text);
-  overflow: hidden;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+    background-color: var(--background);
+    color: var(--text);
+    overflow: hidden;
   }
 
   .app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
   }
 
   .menu-bar {
-  height: var(--header-height);
-  background-color: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  position: relative;
-  z-index: 1001;
+    height: var(--header-height);
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1001;
   }
 
   .menu-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
 
   .hamburger-menu {
-  display: none;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 24px;
-  height: 24px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  z-index: 1002;
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1002;
   }
 
   .hamburger-menu span {
-  width: 24px;
-  height: 3px;
-  background: var(--text);
-  border-radius: 2px;
-  transition: all 0.3s linear;
-  position: relative;
-  transform-origin: 1px;
+    width: 24px;
+    height: 3px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
   }
 
   .hamburger-menu.active span:first-child {
-  transform: rotate(45deg);
+    transform: rotate(45deg);
   }
 
   .hamburger-menu.active span:nth-child(2) {
-  opacity: 0;
-  transform: translateX(20px);
+    opacity: 0;
+    transform: translateX(20px);
   }
 
   .hamburger-menu.active span:third-child {
-  transform: rotate(-45deg);
+    transform: rotate(-45deg);
   }
 
   .menu-bar h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 600;
   }
 
   .menu-bar nav {
-  display: flex;
-  gap: 10px;
+    display: flex;
+    gap: 10px;
   }
 
   .nav-button {
-  background-color: var(--accent);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
   }
 
   .nav-button:hover {
-  background-color: var(--accent-hover);
+    background-color: var(--accent-hover);
   }
-  
+
   .about-button {
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  
+
   .about-popup {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 2000;
-  align-items: center;
-  justify-content: center;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
   }
-  
+
   .about-popup.show {
-  display: flex;
+    display: flex;
   }
-  
+
   .about-popup-content {
-  background-color: var(--surface);
-  border-radius: 8px;
-  width: 80%;
-  max-width: 700px;
-  max-height: 80vh;
-  position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+    background-color: var(--surface);
+    border-radius: 8px;
+    width: 80%;
+    max-width: 700px;
+    max-height: 80vh;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
-  
+
   .close-about {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-size: 24px;
-  cursor: pointer;
-  z-index: 1;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1;
   }
-  
+
   .about-content {
-  padding: 25px;
-  overflow-y: auto;
-  max-height: 80vh;
-  font-size: 0.9rem;
-  line-height: 1.5;
+    padding: 25px;
+    overflow-y: auto;
+    max-height: 80vh;
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
-  
+
   .about-content h2 {
-  margin-bottom: 15px;
-  color: var(--accent);
+    margin-bottom: 15px;
+    color: var(--accent);
   }
 
   .about-content a {
-  color: var(--link);
+    color: var(--link);
   }
   .about-content p {
-  margin-bottom: 8px;
+    margin-bottom: 8px;
   }
 
   .content-wrapper {
@@ -440,13 +497,13 @@ if (document.readyState === 'loading') {
     overflow-y: auto;
   }
 
- .sidebar-footer {
-   padding: 15px 20px;
-   border-top: 1px solid var(--border);
-   background-color: var(--surface);
-   font-size: 0.8rem;
-   text-align: center;
- }
+  .sidebar-footer {
+    padding: 15px 20px;
+    border-top: 1px solid var(--border);
+    background-color: var(--surface);
+    font-size: 0.8rem;
+    text-align: center;
+  }
 
   .sidebar-footer a {
     color: var(--text-secondary);
@@ -579,16 +636,16 @@ if (document.readyState === 'loading') {
       font-size: 1.1rem;
     }
   }
- /* rotated mobile: squeeze things in */
- @media (max-height: 400px) {
-   .menu-bar {
-     height: 38px;
-   }
-   .main-content {
-     padding: 5px;
-   }
-   .sidebar {
-     width: calc(var(--sidebar-width) * 0.7);
-   }
- }
+  /* rotated mobile: squeeze things in */
+  @media (max-height: 400px) {
+    .menu-bar {
+      height: 38px;
+    }
+    .main-content {
+      padding: 5px;
+    }
+    .sidebar {
+      width: calc(var(--sidebar-width) * 0.7);
+    }
+  }
 </style>

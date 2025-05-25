@@ -1,27 +1,46 @@
 ---
 export interface Props {
-  initialYearsAgo?: number;
-  apiUrl?: string;
-  autoUpdateInterval?: number; // Auto-update interval in milliseconds (0 to disable)
+  initialYearsAgo?: number
+  apiUrl?: string
+  autoUpdateInterval?: number // Auto-update interval in milliseconds (0 to disable)
 }
 
-const { 
-  initialYearsAgo = 10000, 
+const {
+  initialYearsAgo = 10000,
   apiUrl = 'https://timeline-events-api.garyo.workers.dev',
-  autoUpdateInterval = 5000 
-} = Astro.props;
+  autoUpdateInterval = 5000
+} = Astro.props
 ---
 
-<div class="timeline-container" data-initial-years-ago={initialYearsAgo} data-api-url={apiUrl} data-auto-update-interval={autoUpdateInterval}>
+<div
+  class="timeline-container"
+  data-initial-years-ago={initialYearsAgo}
+  data-api-url={apiUrl}
+  data-auto-update-interval={autoUpdateInterval}
+>
   <div class="timeline-controls">
     <div class="time-display left-time" id="left-time">Loading...</div>
     <div class="time-display right-time" id="right-time">Loading...</div>
-    <button id="fullscreen-toggle" class="fullscreen-btn" title="Toggle fullscreen">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path class="expand-icon" d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+    <button
+      id="fullscreen-toggle"
+      class="fullscreen-btn"
+      title="Toggle fullscreen"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          class="expand-icon"
+          d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+        ></path>
         <g class="shrink-icon" style="display: none;">
-          <path d="M4 14h6m0 0v6m0-6l-6 6"/>
-          <path d="M20 10h-6m0 0V4m0 6l6-6"/>
+          <path d="M4 14h6m0 0v6m0-6l-6 6"></path>
+          <path d="M20 10h-6m0 0V4m0 6l6-6"></path>
         </g>
       </svg>
     </button>
@@ -30,147 +49,149 @@ const {
     <svg id="timeline-svg" width="100%" height="100%"></svg>
   </div>
   <div class="timeline-info">
-    <p>Mouse over the timeline to see times. Click and drag to pan. Scroll to zoom in.</p>
+    <p>
+      Mouse over the timeline to see times. Click and drag to pan. Scroll to
+      zoom in.
+    </p>
     <p id="hover-info" class="hover-info">&nbsp;</p>
   </div>
 </div>
 
 <style>
- .timeline-container {
-   width: 100%;
-   height: 100%;
-   position: relative;
-   display: flex;
-   flex-direction: column;
- }
+  .timeline-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
 
- .timeline-container.fullscreen {
-   position: fixed;
-   top: 0;
-   left: 0;
-   width: 100vw;
-   height: 100vh;
-   z-index: 9999;
-   background-color: #0a0a0a;
-   padding: 20px;
-   box-sizing: border-box;
- }
+  .timeline-container.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background-color: #0a0a0a;
+    padding: 20px;
+    box-sizing: border-box;
+  }
 
- .timeline-container.fullscreen .timeline-info {
-   margin-top: 10px;
-   font-size: 12px;
- }
+  .timeline-container.fullscreen .timeline-info {
+    margin-top: 10px;
+    font-size: 12px;
+  }
 
- .timeline-container.fullscreen .timeline-info p:first-child {
-   display: none; /* Hide instructions in fullscreen */
- }
+  .timeline-container.fullscreen .timeline-info p:first-child {
+    display: none; /* Hide instructions in fullscreen */
+  }
 
- .timeline-controls {
-   position: relative;
-   height: 40px;
-   margin-bottom: 10px;
-   flex-shrink: 0;
- }
- 
- .svg-container {
-   flex: 1;
-   min-height: 0;
-   position: relative;
-   border: 1px solid #3a3a3a;
-   border-radius: 4px;
-   background-color: #1a1a1a;
- }
+  .timeline-controls {
+    position: relative;
+    height: 40px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
 
- .time-display {
-   position: absolute;
-   top: 0;
-   font-size: 14px;
-   color: #e0e0e0;
-   background-color: #2a2a2a;
-   padding: 8px 12px;
-   border-radius: 4px;
-   /*     border: 1px solid #3a3a3a; */
- }
+  .svg-container {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+  }
 
- .left-time {
-   left: 0;
- }
+  .time-display {
+    position: absolute;
+    top: 0;
+    font-size: 14px;
+    color: #e0e0e0;
+    background-color: #2a2a2a;
+    padding: 8px 12px;
+    border-radius: 4px;
+    /*     border: 1px solid #3a3a3a; */
+  }
 
- .left-time::after {
-   content: '';
-   position: absolute;
-   bottom: -14px;
-   left: 0px;
-   width: 0;
-   height: 0;
-   border-top: 8px solid #2a2a2a;
-   border-left: 8px solid #2a2a2a;
-   border-right: 8px solid transparent;
-   border-bottom: 8px solid transparent;
- }
+  .left-time {
+    left: 0;
+  }
 
- .right-time {
-   right: 0;
- }
+  .left-time::after {
+    content: '';
+    position: absolute;
+    bottom: -14px;
+    left: 0px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid #2a2a2a;
+    border-left: 8px solid #2a2a2a;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+  }
 
- .right-time::after {
-   content: '';
-   position: absolute;
-   bottom: -14px;
-   right: 0px;
-   width: 0;
-   height: 0;
-   border-top: 8px solid #2a2a2a;
-   border-right: 8px solid #2a2a2a;
-   border-left: 8px solid transparent;
-   border-bottom: 8px solid transparent;
- }
+  .right-time {
+    right: 0;
+  }
 
- .fullscreen-btn {
-   position: absolute;
-   top: 0;
-   left: 50%;
-   transform: translateX(-50%);
-   background-color: #2a2a2a;
-   border: 1px solid #3a3a3a;
-   border-radius: 4px;
-   color: #e0e0e0;
-   padding: 8px;
-   cursor: pointer;
-   transition: all 0.2s ease;
-   height: 40px;
-   width: 40px;
-   display: flex;
-   align-items: center;
-   justify-content: center;
- }
+  .right-time::after {
+    content: '';
+    position: absolute;
+    bottom: -14px;
+    right: 0px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid #2a2a2a;
+    border-right: 8px solid #2a2a2a;
+    border-left: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+  }
 
- .fullscreen-btn:hover {
-   background-color: #3a3a3a;
-   color: #4a9eff;
-   transform: translateX(-50%) scale(1.05);
- }
+  .fullscreen-btn {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    color: #e0e0e0;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
- .fullscreen-btn:active {
-   transform: translateX(-50%) scale(0.95);
- }
+  .fullscreen-btn:hover {
+    background-color: #3a3a3a;
+    color: #4a9eff;
+    transform: translateX(-50%) scale(1.05);
+  }
 
- .timeline-container.fullscreen .fullscreen-btn .expand-icon {
-   display: none;
- }
+  .fullscreen-btn:active {
+    transform: translateX(-50%) scale(0.95);
+  }
 
- .timeline-container.fullscreen .fullscreen-btn .shrink-icon {
-   display: block !important;
- }
+  .timeline-container.fullscreen .fullscreen-btn .expand-icon {
+    display: none;
+  }
+
+  .timeline-container.fullscreen .fullscreen-btn .shrink-icon {
+    display: block !important;
+  }
 
   #timeline-svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  <!-- make text non-selectable -->
-  user-select: none;
-    -webkit-user-select: none;  /* for Safari */
-    -ms-user-select: none;      /* for IE/Edge */
+    display: block;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    -webkit-user-select: none; /* for Safari */
+    -ms-user-select: none; /* for IE/Edge */
   }
 
   .timeline-info {
@@ -188,77 +209,85 @@ const {
     min-height: 20px;
   }
 
-
- /* rotated mobile: squeeze things in */
- @media (max-height: 400px) {
-   .timeline-controls {
-     margin-top: 0px;
-     margin-bottom: 8px;
-   }
-   .timeline-info {
-     margin-top: 0px;
-   }
- }
-
+  /* rotated mobile: squeeze things in */
+  @media (max-height: 400px) {
+    .timeline-controls {
+      margin-top: 0px;
+      margin-bottom: 8px;
+    }
+    .timeline-info {
+      margin-top: 0px;
+    }
+  }
 </style>
 
 <script>
-  import { initializeTimeline } from '../scripts/timeline-client';
+  import { initializeTimeline } from '../scripts/timeline-client'
 
   function setupFullscreenToggle() {
-    const container = document.querySelector('.timeline-container') as HTMLElement;
-    const fullscreenBtn = document.getElementById('fullscreen-toggle');
-    
-    if (!fullscreenBtn || !container) return;
-    
-    let isFullscreen = false;
-    
+    const container = document.querySelector(
+      '.timeline-container'
+    ) as HTMLElement
+    const fullscreenBtn = document.getElementById('fullscreen-toggle')
+
+    if (!fullscreenBtn || !container) return
+
+    let isFullscreen = false
+
     fullscreenBtn.addEventListener('click', () => {
-      isFullscreen = !isFullscreen;
-      
+      isFullscreen = !isFullscreen
+
       if (isFullscreen) {
         // Enter fullscreen
-        container.classList.add('fullscreen');
+        container.classList.add('fullscreen')
         // Trigger resize event so timeline adjusts
         setTimeout(() => {
-          window.dispatchEvent(new Event('resize'));
-        }, 300); // Wait for CSS transition
+          window.dispatchEvent(new Event('resize'))
+        }, 300) // Wait for CSS transition
       } else {
         // Exit fullscreen
-        container.classList.remove('fullscreen');
+        container.classList.remove('fullscreen')
         // Trigger resize event so timeline adjusts
         setTimeout(() => {
-          window.dispatchEvent(new Event('resize'));
-        }, 300); // Wait for CSS transition
+          window.dispatchEvent(new Event('resize'))
+        }, 300) // Wait for CSS transition
       }
-    });
-    
+    })
+
     // Handle ESC key to exit fullscreen
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && isFullscreen) {
-        fullscreenBtn.click();
+        fullscreenBtn.click()
       }
-    });
+    })
   }
 
   function initializeApp() {
-    const container = document.querySelector('.timeline-container') as HTMLElement;
-    const initialYearsAgo = parseInt(container.dataset.initialYearsAgo || '10000');
-    const apiUrl = container.dataset.apiUrl || 'https://timeline-events-api.garyo.workers.dev';
-    const autoUpdateInterval = parseInt(container.dataset.autoUpdateInterval || '5000');
-    
+    const container = document.querySelector(
+      '.timeline-container'
+    ) as HTMLElement
+    const initialYearsAgo = parseInt(
+      container.dataset.initialYearsAgo || '10000'
+    )
+    const apiUrl =
+      container.dataset.apiUrl ||
+      'https://timeline-events-api.garyo.workers.dev'
+    const autoUpdateInterval = parseInt(
+      container.dataset.autoUpdateInterval || '5000'
+    )
+
     // Initialize timeline
-    initializeTimeline(container, initialYearsAgo, apiUrl, autoUpdateInterval);
-    
+    initializeTimeline(container, initialYearsAgo, apiUrl, autoUpdateInterval)
+
     // Setup fullscreen toggle
-    setupFullscreenToggle();
+    setupFullscreenToggle()
   }
 
   // Wait for DOM to load before initializing
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeApp);
+    document.addEventListener('DOMContentLoaded', initializeApp)
   } else {
     // DOM already loaded
-    initializeApp();
+    initializeApp()
   }
 </script>
