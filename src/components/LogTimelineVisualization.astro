@@ -20,7 +20,13 @@ const {
 >
   <div class="timeline-controls">
     <div class="time-display left-time" id="left-time">Loading...</div>
-    <div class="time-display right-time" id="right-time" title="Click to reset to current time">Loading...</div>
+    <div
+      class="time-display right-time"
+      id="right-time"
+      title="Click to reset to current time"
+    >
+      Loading...
+    </div>
     <button
       id="fullscreen-toggle"
       class="fullscreen-btn"
@@ -134,6 +140,20 @@ const {
   .right-time {
     right: 0;
     cursor: pointer;
+  }
+
+  .right-time:hover::after {
+    content: 'Reset to now';
+    position: absolute;
+    top: -30px;
+    right: 70px;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
   }
 
   .right-time::after {
