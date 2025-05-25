@@ -1,0 +1,13 @@
+name = "timeline-events-api"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+name = "timeline-events-api"
+
+[env.development]  
+name = "timeline-events-api-dev"
+
+# Local development uses .dev.vars file
+# Production uses: wrangler secret put NEWS_API_KEY --env production
