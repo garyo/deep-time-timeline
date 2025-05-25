@@ -383,19 +383,21 @@ class LogTimeline {
 
     function prevNiceYear(val: number): number {
       // every 10 years for recent years
-      if (val >= 1900) return roundDownToMultiple(val, 10)
-      if (val >= -10000) return roundDownToMultiple(val, 1000)
-      if (val >= -40000) return roundDownToMultiple(val, 10000)
+      if (val > 1900) return roundDownToMultiple(val, 10)
+      if (val > 1000) return roundDownToMultiple(val, 100)
+      if (val > -1000) return roundDownToMultiple(val, 500)
+      if (val > -10000) return roundDownToMultiple(val, 1000)
+      if (val > -40000) return roundDownToMultiple(val, 10000)
       const useNiceValues = true
       if (useNiceValues) {
         return -nextNiceValue(-val)
       } else {
-        if (val >= -1e6) return roundDownToMultiple(val, 10000)
-        if (val >= -1e8) return roundDownToMultiple(val, 100_000)
-        if (val >= -1e9) return roundDownToMultiple(val, 1_000_000)
-        if (val >= -1e10) return roundDownToMultiple(val, 1e7)
-        if (val >= -1e11) return roundDownToMultiple(val, 1e8)
-        if (val >= -1e12) return roundDownToMultiple(val, 1e9)
+        if (val > -1e6) return roundDownToMultiple(val, 10000)
+        if (val > -1e8) return roundDownToMultiple(val, 100_000)
+        if (val > -1e9) return roundDownToMultiple(val, 1_000_000)
+        if (val > -1e10) return roundDownToMultiple(val, 1e7)
+        if (val > -1e11) return roundDownToMultiple(val, 1e8)
+        if (val > -1e12) return roundDownToMultiple(val, 1e9)
         return roundDownToMultiple(val, 1e12)
       }
     }
