@@ -47,7 +47,7 @@ export function initializeTimeline(
   container: HTMLElement,
   initialYearsAgo: number,
   apiUrl: string = 'https://timeline-events-api.garyo.workers.dev',
-  autoUpdateInterval: number = 10000 // Auto-update every 5 seconds by default
+  autoUpdateInterval: number = 10 * 1000 // Auto-update every 5 seconds by default
 ) {
   const appStartTime = new DeepTime()
 
@@ -446,11 +446,12 @@ export function initializeTimeline(
           )
           handleAdditionalEvents(loadedAdditionalEvents)
 
-          // Set up periodic API updates (every 5 minutes)
+          // Set up periodic API updates (every 15 minutes)
+          // This will go past my free account limit quickly if this gets popular
           const eventUpdater = new EventUpdater(
             apiUrl,
             handleAdditionalEvents,
-            300000 // 5 minutes
+            15 * 60 * 1000      // in msec
           )
           eventUpdater.start()
 

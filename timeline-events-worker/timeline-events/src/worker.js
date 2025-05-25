@@ -5,7 +5,7 @@
 
 // Configuration
 const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines';
-const CACHE_TTL = 300; // Cache for 5 minutes
+const CACHE_TTL = 15 * 60; // Cache for 15 minutes
 
 // Keywords that indicate potentially significant events
 const SIGNIFICANCE_KEYWORDS = {
@@ -139,13 +139,16 @@ function convertToTimelineEvents(articles) {
 async function fetchNews(apiKey) {
   // Needs sources, q, language, country, or category.
   // source.id = the-washington-post, the-wall-street-journal, bbc-news, google-news
-  const url = `${NEWS_API_URL}?apiKey=${apiKey}&pageSize=100&sortBy=popularity&sources=the-washington-post,the-wall-street-journal,bbc-news,google-news&language=en`;
+  const url = new URL(`${NEWS_API_URL}?apiKey=${apiKey}&pageSize=100&sortBy=popularity&sources=the-washington-post,the-wall-street-journal,bbc-news,google-news&language=en`);
   
   console.log(`Making request to: ${NEWS_API_URL}?apiKey=***&pageSize=100&sortBy=popularity&country=us`);
   
+  const cacheKey = `https://${url.hostname}${url.pathname}`;
   const response = await fetch(url, {
+    // tell cloudflare to cache this request to avoid too many requests to origin
+    cf: { cacheTtl: CACHE_TTL, cacheEverything: true, cacheKey: cacheKey},
     headers: {
-      'User-Agent': 'Timeline-Events-Worker/1.0 (https://your-domain.com)'
+      'User-Agent': 'Timeline-Events-Worker/1.0 (https://timeline-events-api.garyo.workers.dev)'
     }
   });
   console.log(`NewsAPI response status: ${response.status}`);
@@ -155,7 +158,7 @@ async function fetchNews(apiKey) {
     console.error(`NewsAPI error response:`, errorText);
     throw new Error(`News API error: ${response.status}`);
   }
-  
+
   const data = await response.json();
   console.log(`NewsAPI returned ${data.articles?.length || 0} articles`);
   // for (const a of data.articles) {
@@ -178,18 +181,18 @@ async function fetchNewsFromRSS() {
   // This is a simplified approach - in reality you'd want to parse RSS XML
   // For now, return some sample events to demonstrate the structure
   return [
-    {
-      title: 'Global Climate Summit Reaches Historic Agreement',
-      publishedAt: new Date().toISOString(),
-      description: 'World leaders agree on unprecedented climate action',
-      source: { name: 'Reuters' }
-    },
-    {
-      title: 'Major Technological Breakthrough Announced',
-      publishedAt: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-      description: 'Scientists achieve quantum computing milestone',
-      source: { name: 'BBC' }
-    }
+    // {
+    //   title: 'Global Climate Summit Reaches Historic Agreement',
+    //   publishedAt: new Date().toISOString(),
+    //   description: 'World leaders agree on unprecedented climate action',
+    //   source: { name: 'Reuters' }
+    // },
+    // {
+    //   title: 'Major Technological Breakthrough Announced',
+    //   publishedAt: new Date(Date.now() - 86400000).toISOString(), // Yesterday
+    //   description: 'Scientists achieve quantum computing milestone',
+    //   source: { name: 'BBC' }
+    // }
   ];
 }
 
@@ -199,10 +202,6 @@ async function fetchNewsFromRSS() {
 export default {
   async fetch(request, env, ctx) {
     console.log(`Worker started - request method: ${request.method}`);
-    console.log(`Environment keys available:`, Object.keys(env));
-    console.log(`NEWS_API_KEY type:`, typeof env.NEWS_API_KEY);
-    console.log(`NEWS_API_KEY length:`, env.NEWS_API_KEY?.length);
-    console.log(`NEWS_API_KEY value:`, env.NEWS_API_KEY ? `${env.NEWS_API_KEY.substring(0, 8)}...` : 'undefined');
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
@@ -224,70 +223,42 @@ export default {
       const NEWS_API_KEY = env.NEWS_API_KEY;
       console.log(`API key status: ${NEWS_API_KEY ? 'Found' : 'Missing'}`);
       
-      // Check cache first (unless nocache is requested)
-      const url = new URL(request.url);
-      const skipCache = url.searchParams.has('nocache');
-      
-      const cache = caches.default;
-      const cacheKey = new Request('https://timeline-events-cache.oberbrunner.com/events-v2'); // Changed cache key
-      let response = skipCache ? null : await cache.match(cacheKey);
-      
-      if (!response) {
-        console.log('Cache miss - fetching fresh news data');
-        
-        let articles;
-        try {
-          // Try NewsAPI first (requires API key)
-          if (NEWS_API_KEY) {
-            console.log('Attempting to fetch from NewsAPI...');
-            articles = await fetchNews(NEWS_API_KEY);
-            console.log(`Successfully fetched ${articles.length} articles from NewsAPI`);
-          } else {
-            console.log('No NEWS_API_KEY found, using fallback RSS data');
-            // Fallback to RSS or sample data
-            articles = await fetchNewsFromRSS();
-          }
-        } catch (error) {
-          console.error('Error fetching news:', error);
-          console.log('Falling back to RSS data due to error');
-          // Return fallback events
+      let articles;
+      try {
+        // Try NewsAPI first (requires API key)
+        if (NEWS_API_KEY) {
+          console.log('Attempting to fetch from NewsAPI...');
+          articles = await fetchNews(NEWS_API_KEY);
+          console.log(`Successfully fetched ${articles.length} articles from NewsAPI`);
+        } else {
+          console.log('No NEWS_API_KEY found, using fallback RSS data');
+          // Fallback to RSS or sample data
           articles = await fetchNewsFromRSS();
         }
-        
-        // Process articles
-        const significantArticles = filterSignificantEvents(articles);
-        const timelineEvents = convertToTimelineEvents(significantArticles);
-        
-        console.log(`Processed ${articles.length} total articles, ${significantArticles.length} significant, returning ${timelineEvents.length} events`);
-        
-        // Debug info (temporary - remove in production)
-        const debugInfo = {
-          totalArticles: articles.length,
-          significantCount: significantArticles.length,
-          hasApiKey: !!NEWS_API_KEY,
-          cacheStatus: 'miss',
-          timestamp: new Date().toISOString(),
-          sampleTitles: articles.slice(0, 3).map(a => a.title)
-        };
-        
-        // Create response with optional debug info
-        const responseData = request.url.includes('debug=1') 
-          ? { events: timelineEvents, debug: debugInfo }
-          : timelineEvents;
-        response = new Response(JSON.stringify(responseData, null, 2), {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Cache-Control': `public, max-age=${CACHE_TTL}`,
-          },
-        });
-        
-        // Cache the response
-        ctx.waitUntil(cache.put(cacheKey, response.clone()));
-      } else {
-        console.log('Cache hit - returning cached data');
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        console.log('Falling back to RSS data due to error');
+        // Return fallback events
+        articles = await fetchNewsFromRSS();
       }
-      
+        
+      // Process articles
+      const significantArticles = filterSignificantEvents(articles);
+      const timelineEvents = convertToTimelineEvents(significantArticles);
+        
+      console.log(`Processed ${articles.length} total articles, ${significantArticles.length} significant, returning ${timelineEvents.length} events`);
+        
+      // Create response with optional debug info
+      const responseData = request.url.includes('debug=1') 
+        ? { events: timelineEvents }
+        : timelineEvents;
+      response = new Response(JSON.stringify(responseData, null, 2), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': `public, max-age=${CACHE_TTL}`,
+        },
+      });
       return response;
       
     } catch (error) {
@@ -298,7 +269,7 @@ export default {
         {
           name: 'API Service Temporarily Unavailable',
           date: new Date().toISOString().split('T')[0],
-          significance: 3
+          significance: 1
         }
       ];
       
@@ -307,6 +278,7 @@ export default {
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
+          'Cache-Control': `public, max-age=30`,
         },
       });
     }
