@@ -99,6 +99,7 @@ function calculateSignificance(article) {
   if (content.includes('urgent')) maxScore += 2;
   if (content.includes('viral')) maxScore -= 2;
   if (content.match(/(lad|sport).?bible/i)) maxScore -= 5;
+  if (content.match(/\/r.*thread/i)) maxScore -= 2; // reddit meta
   
   console.log(`Score ${maxScore} for "${title.slice(0, 60)}": from sig -> ${sigScore}(${kwdsMatched}) -> source -> ${sourceScore}(${sourceBoost})`)
   return Math.min(MAX_SIGNIFICANCE, Math.max(1, maxScore));
@@ -173,7 +174,16 @@ async function fetchNews(env) {
     getTopPosts(token, MAX_ARTICLES, REDDIT_NEWS_PERIOD),
     getTopPosts(token, MAX_ARTICLES, 'day')
   ]);
-  const posts = [...posts1, ...posts2];
+  let posts = [...posts1, ...posts2];
+
+  // dedupe
+  const seen = new Set();
+  posts = posts.filter(post => {
+    if (seen.has(post.title)) return false;
+    seen.add(post.title);
+    return true;
+  });
+
   posts.forEach(post => {
     console.log(`Post object has keys ${Object.keys(posts[0])}`); // title, date, content, url
     console.log(`"${post.title}"\n  Date: ${post.date}\n  Content: ${post.content}\n  URL: ${post.url}`);
