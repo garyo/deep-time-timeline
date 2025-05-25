@@ -144,8 +144,8 @@ async function getToken(env) {
   }
 }
 
-async function getTopPosts(token, n = 10) {
-  const res = await fetch(`https://oauth.reddit.com/r/worldnews/top?limit=${n}&t=${REDDIT_NEWS_PERIOD}`, {
+async function getTopPosts(token, n = 10, period) {
+  const res = await fetch(`https://oauth.reddit.com/r/worldnews/top?limit=${n}&t=${period}`, {
     headers: {
       'Authorization': `Bearer ${token}`,
       'User-Agent': 'my-news-proxy/0.1 by simplex5d'
@@ -169,7 +169,11 @@ async function getTopPosts(token, n = 10) {
  */
 async function fetchNews(env) {
   const token = await getToken(env);
-  const posts = await getTopPosts(token, MAX_ARTICLES); // Get N articles
+  const [posts1, posts2] = await Promise.all([
+    getTopPosts(token, MAX_ARTICLES, REDDIT_NEWS_PERIOD),
+    getTopPosts(token, MAX_ARTICLES, 'day')
+  ]);
+  const posts = [...posts1, ...posts2];
   posts.forEach(post => {
     console.log(`Post object has keys ${Object.keys(posts[0])}`); // title, date, content, url
     console.log(`"${post.title}"\n  Date: ${post.date}\n  Content: ${post.content}\n  URL: ${post.url}`);
