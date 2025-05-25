@@ -451,7 +451,7 @@
   },
   {
     "name": "Charlemagne crowned",
-    "date": "800",
+    "date": "800-12-25",
     "significance": 6
   },
   {
@@ -481,12 +481,12 @@
   },
   {
     "name": "Columbus lands in America",
-    "date": "1492",
+    "date": "1492-10-12",
     "significance": 6
   },
   {
     "name": "Protestant Reformation",
-    "date": "1517",
+    "date": "1517-10-31",
     "significance": 7
   },
   {
@@ -515,8 +515,8 @@
     "significance": 5
   },
   {
-    "name": "Newton’s Principia",
-    "date": "1687",
+    "name": "Newton writes Principia Mathematica",
+    "date": "1687-07-05",
     "significance": 7
   },
   {
@@ -536,12 +536,12 @@
   },
   {
     "name": "American Revolution",
-    "date": "1776",
+    "date": "1776-07-04",
     "significance": 7
   },
   {
     "name": "French Revolution",
-    "date": "1789",
+    "date": "1789-07-14",
     "significance": 7
   },
   {
@@ -555,33 +555,28 @@
     "significance": 5
   },
   {
-    "name": "Latin America independence",
-    "date": "1820",
-    "significance": 6
-  },
-  {
-    "name": "Darwin’s Origin of Species published",
-    "date": "1859",
+    "name": "Darwin publishes Origin of Species",
+    "date": "1859-11-24",
     "significance": 7.5
   },
   {
     "name": "US Civil War",
-    "date": "1861",
+    "date": "1861-04-12",
     "significance": 7
   },
   {
     "name": "Emancipation Proclamation",
-    "date": "1863",
+    "date": "1863-01-01",
     "significance": 6
   },
   {
     "name": "Telephone invented",
-    "date": "1876",
+    "date": "1876-03-07",
     "significance": 6
   },
   {
     "name": "Edison’s light bulb",
-    "date": "1879",
+    "date": "1879-10-01",
     "significance": 6
   },
   {
@@ -596,7 +591,7 @@
   },
   {
     "name": "Great Depression",
-    "date": "1929-10-01",
+    "date": "1929-10-24",
     "significance": 6
   },
   {
@@ -606,7 +601,7 @@
   },
   {
     "name": "United Nations",
-    "date": "1945",
+    "date": "1945-10-24",
     "significance": 6
   },
   {
@@ -636,17 +631,17 @@
   },
   {
     "name": "DNA structure discovered",
-    "date": "1953",
+    "date": "1953-02-28",
     "significance": 5
   },
   {
     "name": "Sputnik launch",
-    "date": "1957",
+    "date": "1957-10-04",
     "significance": 5
   },
   {
     "name": "Civil Rights Act",
-    "date": "1964",
+    "date": "1964-07-02",
     "significance": 5
   },
   {
@@ -661,7 +656,7 @@
   },
   {
     "name": "Internet developed",
-    "date": "1984",
+    "date": "1983-01-01",
     "significance": 4
   },
   {
@@ -671,12 +666,12 @@
   },
   {
     "name": "Internet public launch",
-    "date": "1991",
+    "date": "1991-08-06",
     "significance": 5
   },
   {
     "name": "End of apartheid in SA",
-    "date": "1994",
+    "date": "1994-04-27",
     "significance": 4
   },
   {
@@ -686,7 +681,7 @@
   },
   {
     "name": "Human genome mapped",
-    "date": "2003",
+    "date": "2003-04-14",
     "significance": 5
   },
   {
@@ -706,7 +701,7 @@
   },
   {
     "name": "COVID-19 pandemic",
-    "date": "2019-03-01",
+    "date": "2020-03-21",
     "significance": 7
   },
   {
@@ -725,7 +720,7 @@
     "significance": 5
   },
   {
-    "name": "Renewables surpass coal",
+    "name": "Renewables surpass coal in US",
     "date": "2022-06-01",
     "significance": 4
   },
