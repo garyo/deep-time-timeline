@@ -20,7 +20,7 @@ const {
 >
   <div class="timeline-controls">
     <div class="time-display left-time" id="left-time">Loading...</div>
-    <div class="time-display right-time" id="right-time">Loading...</div>
+    <div class="time-display right-time" id="right-time" title="Click to reset to current time">Loading...</div>
     <button
       id="fullscreen-toggle"
       class="fullscreen-btn"
@@ -133,6 +133,7 @@ const {
 
   .right-time {
     right: 0;
+    cursor: pointer;
   }
 
   .right-time::after {

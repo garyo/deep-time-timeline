@@ -780,4 +780,14 @@ export function initializeTimeline(
       redrawTimeline()
     })
   })
+  
+  // Add click handler for right time indicator to reset to now
+  const rightTimeIndicator = document.getElementById('right-time')
+  if (rightTimeIndicator) {
+    rightTimeIndicator.addEventListener('click', () => {
+      if (timeline.resetRightmostToNow()) {
+        redrawTimeline()
+      }
+    })
+  }
 }
