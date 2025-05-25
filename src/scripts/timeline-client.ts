@@ -369,7 +369,7 @@ export function initializeTimeline(
   function handleEventUpdate() {
     allEvents = [...baseEvents, ...additionalEvents]
     allEvents.push({
-      name: 'Started this app',
+      name: 'You started this app',
       date: appStartTime,
       significance: 10
     })
