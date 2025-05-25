@@ -31,7 +31,7 @@ const { title } = Astro.props;
           <button id="zoom-in" class="nav-button">Zoom In</button>
           <button id="zoom-out" class="nav-button">Zoom Out</button>
           <button id="reset-view" class="nav-button">Reset View</button>
-          <button id="help-button" class="nav-button help-button" aria-label="Help">?</button>
+          <button id="about-button" class="nav-button about-button" aria-label="About">?</button>
         </nav>
       </header>
 
@@ -59,14 +59,51 @@ const { title } = Astro.props;
         <!-- Mobile overlay for sidebar -->
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
         
-        <!-- Help popup -->
-        <div id="help-popup" class="help-popup">
-          <div class="help-popup-content">
-            <button id="close-help" class="close-help" aria-label="Close help">&times;</button>
-            <div class="help-content">
-              <h2>Help</h2>
-              <!-- Help content will go here -->
-              <p>This is placeholder text for the help popup. You'll replace this with your own content.</p>
+        <!-- Help/About popup -->
+        <div id="about-popup" class="about-popup">
+          <div class="about-popup-content">
+            <button id="close-about" class="close-about" aria-label="Close about">&times;</button>
+            <div class="about-content">
+              <h2>About This App</h2>
+              <!-- About content will go here -->
+              <p>This app is based on a paper log-scale geologic timeline I created with a friend
+                in junior high school in the 1970s,
+                on an adding-machine tape.
+                We took the logarithms of the dates of all kinds of paleological events,
+                plotted them on the 40' long tape, and hung it up in the classroom.
+                We realized we could fit the Big Bang, dinosaurs, and what we ate for breakfast that day on the same scale!
+                I still have that tape somewhere, and
+                I've been wanting to create an interactive version for many many years.
+              </p>
+              <p>
+                The idea of a <a href="https://en.wikipedia.org/wiki/Logarithm" target="_blank">log-scaled</a>
+                timeline is that ancient events are compressed, and recent events take up more space.
+                We humans are naturally oriented toward
+                short-term thinking: tomorrow, next week, a human lifetime.
+                This app puts that in context, so you can
+                see how the present smoothly fades into the very deepest past.
+              </p>
+              <p>
+                With this app you can zoom in on any time period in the history of the universe.
+                Significant events from politics, art, science, and nature fade in as you zoom into them.
+                It also has a "news feed" so new events will populate in on the right edge every now and then.
+              </p>
+              <p>
+                For more on Deep Time thinking, check out
+                <a href="https://longnowboston.org" target="_blank">Long Now Boston</a>, a group I work with
+                to promote long-term thinking about some of the biggest problems and ideas.
+              </p>
+              <p>
+                Of course any collection of historical events will be opinionated;
+                I chose this set, and their significances, based on my own preferences.
+                Since this is a completely open-source app under an MIT license, you
+                are welcome to
+                <a href="https://github.com/garyo/deep-time-timeline" target="_blank">inspect the data and code</a>
+                and even make your own version.
+              </p>
+              <p style="font-size: 0.8rem; margin-top: 20px">
+                Created by Gary Oberbrunner, (c) 2025
+              </p>
             </div>
           </div>
         </div>
@@ -81,293 +118,302 @@ const { title } = Astro.props;
 </html>
 
 <script>
-  // Hamburger menu functionality
-  function initHamburgerMenu() {
-    const hamburgerMenu = document.getElementById('hamburger-menu');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebar-overlay');
+// Hamburger menu functionality
+function initHamburgerMenu() {
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
 
-    if (!hamburgerMenu || !sidebar || !sidebarOverlay) {
-      return;
-    }
-
-    function toggleSidebar() {
-      const isOpen = sidebar.classList.contains('open');
-      
-      if (isOpen) {
-        closeSidebar();
-      } else {
-        openSidebar();
-      }
-    }
-
-    function openSidebar() {
-      sidebar.classList.add('open');
-      sidebarOverlay.classList.add('show');
-      hamburgerMenu.classList.add('active');
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    }
-
-    function closeSidebar() {
-      sidebar.classList.remove('open');
-      sidebarOverlay.classList.remove('show');
-      hamburgerMenu.classList.remove('active');
-      document.body.style.overflow = ''; // Restore scrolling
-    }
-
-    // Event listeners
-    hamburgerMenu.addEventListener('click', toggleSidebar);
-    sidebarOverlay.addEventListener('click', closeSidebar);
-
-    // Close sidebar when clicking a preset button on mobile
-    const presetButtons = sidebar.querySelectorAll('.preset-button');
-    presetButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-          closeSidebar();
-        }
-      });
-    });
-
-    // Handle window resize
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) {
-        closeSidebar();
-      }
-    });
-
-    // Handle escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-        closeSidebar();
-      }
-    });
+  if (!hamburgerMenu || !sidebar || !sidebarOverlay) {
+    return;
   }
 
-  // Help popup functionality
-  function initHelpPopup() {
-    const helpButton = document.getElementById('help-button');
-    const helpPopup = document.getElementById('help-popup');
-    const closeHelp = document.getElementById('close-help');
+  function toggleSidebar() {
+    const isOpen = sidebar.classList.contains('open');
     
-    if (!helpButton || !helpPopup || !closeHelp) {
-      return;
+    if (isOpen) {
+      closeSidebar();
+    } else {
+      openSidebar();
     }
-    
-    function openHelpPopup() {
-      helpPopup.classList.add('show');
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    }
-    
-    function closeHelpPopup() {
-      helpPopup.classList.remove('show');
-      document.body.style.overflow = ''; // Restore scrolling
-    }
-    
-    // Event listeners
-    helpButton.addEventListener('click', openHelpPopup);
-    closeHelp.addEventListener('click', closeHelpPopup);
-    
-    // Close on click outside content
-    helpPopup.addEventListener('click', (e) => {
-      if (e.target === helpPopup) {
-        closeHelpPopup();
-      }
-    });
-    
-    // Close on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && helpPopup.classList.contains('show')) {
-        closeHelpPopup();
-      }
-    });
   }
 
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initHamburgerMenu();
-      initHelpPopup();
+  function openSidebar() {
+    sidebar.classList.add('open');
+    sidebarOverlay.classList.add('show');
+    hamburgerMenu.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('show');
+    hamburgerMenu.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+
+  // Event listeners
+  hamburgerMenu.addEventListener('click', toggleSidebar);
+  sidebarOverlay.addEventListener('click', closeSidebar);
+
+  // Close sidebar when clicking a preset button on mobile
+  const presetButtons = sidebar.querySelectorAll('.preset-button');
+  presetButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        closeSidebar();
+      }
     });
-  } else {
+  });
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      closeSidebar();
+    }
+  });
+
+  // Handle escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+      closeSidebar();
+    }
+  });
+}
+
+// About popup functionality
+function initAboutPopup() {
+  const aboutButton = document.getElementById('about-button');
+  const aboutPopup = document.getElementById('about-popup');
+  const closeAbout = document.getElementById('close-about');
+  
+  if (!aboutButton || !aboutPopup || !closeAbout) {
+    return;
+  }
+  
+  function openAboutPopup() {
+    aboutPopup.classList.add('show');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  }
+  
+  function closeAboutPopup() {
+    aboutPopup.classList.remove('show');
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+  
+  // Event listeners
+  aboutButton.addEventListener('click', openAboutPopup);
+  closeAbout.addEventListener('click', closeAboutPopup);
+  
+  // Close on click outside content
+  aboutPopup.addEventListener('click', (e) => {
+    if (e.target === aboutPopup) {
+      closeAboutPopup();
+    }
+  });
+  
+  // Close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && aboutPopup.classList.contains('show')) {
+      closeAboutPopup();
+    }
+  });
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
     initHamburgerMenu();
-    initHelpPopup();
-  }
+    initAboutPopup();
+  });
+} else {
+  initHamburgerMenu();
+  initAboutPopup();
+}
 </script>
 
 <style>
   :root {
-    --header-height: 60px;
-    --sidebar-width: 250px;
-    --background: #1a1a1a;
-    --surface: #2a2a2a;
-    --text: #e0e0e0;
-    --text-secondary: #b0b0b0;
-    --accent: #4a9eff;
-    --accent-hover: #3a8eef;
-    --border: #3a3a3a;
+  --header-height: 60px;
+  --sidebar-width: 250px;
+  --background: #1a1a1a;
+  --surface: #2a2a2a;
+  --text: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --accent: #4a9eff;
+  --accent-hover: #3a8eef;
+  --border: #3a3a3a;
   }
 
   * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   }
 
   body {
-    font-family: system-ui, -apple-system, sans-serif;
-    background-color: var(--background);
-    color: var(--text);
-    overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  overflow: hidden;
   }
 
   .app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   }
 
   .menu-bar {
-    height: var(--header-height);
-    background-color: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    position: relative;
-    z-index: 1001;
+  height: var(--header-height);
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1001;
   }
 
   .menu-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
   }
 
   .hamburger-menu {
-    display: none;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 24px;
-    height: 24px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    z-index: 1002;
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1002;
   }
 
   .hamburger-menu span {
-    width: 24px;
-    height: 3px;
-    background: var(--text);
-    border-radius: 2px;
-    transition: all 0.3s linear;
-    position: relative;
-    transform-origin: 1px;
+  width: 24px;
+  height: 3px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.3s linear;
+  position: relative;
+  transform-origin: 1px;
   }
 
   .hamburger-menu.active span:first-child {
-    transform: rotate(45deg);
+  transform: rotate(45deg);
   }
 
   .hamburger-menu.active span:nth-child(2) {
-    opacity: 0;
-    transform: translateX(20px);
+  opacity: 0;
+  transform: translateX(20px);
   }
 
   .hamburger-menu.active span:third-child {
-    transform: rotate(-45deg);
+  transform: rotate(-45deg);
   }
 
   .menu-bar h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 600;
   }
 
   .menu-bar nav {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
   }
 
   .nav-button {
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
   }
 
   .nav-button:hover {
-    background-color: var(--accent-hover);
+  background-color: var(--accent-hover);
   }
   
-  .help-button {
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .about-button {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   }
   
-  .help-popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
+  .about-popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
   }
   
-  .help-popup.show {
-    display: flex;
+  .about-popup.show {
+  display: flex;
   }
   
-  .help-popup-content {
-    background-color: var(--surface);
-    border-radius: 8px;
-    width: 80%;
-    max-width: 700px;
-    max-height: 80vh;
-    position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  .about-popup-content {
+  background-color: var(--surface);
+  border-radius: 8px;
+  width: 80%;
+  max-width: 700px;
+  max-height: 80vh;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   }
   
-  .close-help {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-size: 24px;
-    cursor: pointer;
-    z-index: 1;
+  .close-about {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1;
   }
   
-  .help-content {
-    padding: 25px;
-    overflow-y: auto;
-    max-height: 80vh;
+  .about-content {
+  padding: 25px;
+  overflow-y: auto;
+  max-height: 80vh;
+  font-size: 0.9rem;
+  line-height: 1.5;
   }
   
-  .help-content h2 {
-    margin-bottom: 15px;
-    color: var(--accent);
+  .about-content h2 {
+  margin-bottom: 15px;
+  color: var(--accent);
+  }
+
+  .about-content a {
+  color: var(--link);
+  }
+  .about-content p {
+  margin-bottom: 8px;
   }
 
   .content-wrapper {

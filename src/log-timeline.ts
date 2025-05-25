@@ -279,7 +279,7 @@ class LogTimeline {
   public get pixelWidth(): number {
     return this.width
   }
-  
+
   /**
    * Update the timeline width without changing the time range
    * @param newWidth - new width in pixels
