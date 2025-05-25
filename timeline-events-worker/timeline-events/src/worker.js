@@ -4,7 +4,7 @@
  */
 
 // Configuration
-const CACHE_TTL = 15 * 60; // Cache for 15 minutes
+const CACHE_TTL = 5 * 60; // Cache for 5 minutes. Reddit limit is 60 req/min, 10M req/day
 const MAX_ARTICLES = 200;
 const BASE_SIGNIFICANCE = 1;
 const SIGNIFICANCE_THRESHOLD = 5;
@@ -126,9 +126,7 @@ function filterSignificantEvents(articles) {
 // Get Reddit oauth token
 async function getToken(env) {
   // const creds = Buffer.from(`${client_id}:${client_secret}`).toString('base64'); // Node.js
-  console.log(env.REDDIT_CLIENT_ID)
   const creds = btoa(`${env.REDDIT_CLIENT_ID}:${env.REDDIT_CLIENT_SECRET}`);
-  console.log(`creds: ${creds}`)
   const res = await fetch('https://www.reddit.com/api/v1/access_token', {
     method: 'POST',
     headers: {
@@ -138,7 +136,6 @@ async function getToken(env) {
     },
     body: `grant_type=password&username=${encodeURIComponent(env.REDDIT_USERNAME)}&password=${encodeURIComponent(env.REDDIT_PASSWORD)}`
   });
-  console.log(res)
   if (res.ok) {
     const data = await res.json();
     return data.access_token;
@@ -204,7 +201,6 @@ async function fetchNews(env) {
 export default {
   async fetch(request, env, ctx) {
     console.log(`Worker started - request method: ${request.method}`);
-    console.log(env)
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
@@ -221,6 +217,16 @@ export default {
       return new Response('Method not allowed', { status: 405 });
     }
     
+    // Check cache
+    let cache = caches.default;
+    const cacheUrl = new URL(request.url);
+    const cacheKey = new Request(`https://${cacheUrl.hostname}${cacheUrl.pathname}`, request)
+    let cresponse = await cache.match(cacheKey);
+    if (cresponse) {
+      return cresponse;
+    }
+      
+
     let articles;
     let timelineEvents = [];
     try {
@@ -248,9 +254,13 @@ export default {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Cache-Control': `public, max-age=${CACHE_TTL}`,
+        'Cache-Control': `public, max-age=${CACHE_TTL}, s-maxage=${CACHE_TTL}`,
       },
     });
+
+    // cache it
+    ctx.waitUntil(cache.put(cacheKey, response.clone()))
+
     return response;
   }
 }
