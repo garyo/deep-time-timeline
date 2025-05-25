@@ -8,20 +8,67 @@ import {
 } from './events'
 import type { ProcessedEvent } from './events'
 
+
+// Helper function to get container dimensions accounting for padding
+function getContainerDimensions(container: HTMLElement): {
+  width: number;
+  height: number;
+  axis_position: number;
+  paddingLeft: number;
+  paddingRight: number;
+  paddingTop: number;
+  paddingBottom: number;
+} {
+  // Get the SVG container dimensions
+  const svgContainer = container.querySelector('.svg-container') as HTMLElement
+  const containerRect = svgContainer.getBoundingClientRect()
+  const computedStyle = window.getComputedStyle(svgContainer)
+  const paddingLeft = parseInt(computedStyle.paddingLeft || '0', 10)
+  const paddingRight = parseInt(computedStyle.paddingRight || '0', 10)
+  const paddingTop = parseInt(computedStyle.paddingTop || '0', 10)
+  const paddingBottom = parseInt(computedStyle.paddingBottom || '0', 10)
+  
+  // Calculate available width and height
+  const width = containerRect.width - paddingLeft - paddingRight
+  const height = containerRect.height - paddingTop - paddingBottom
+  const axis_position = height * 0.6 // vertical position of the axis, down from top
+  
+  return {
+    width,
+    height,
+    axis_position,
+    paddingLeft,
+    paddingRight,
+    paddingTop,
+    paddingBottom
+  }
+}
+
 export function initializeTimeline(
   container: HTMLElement,
   initialYearsAgo: number,
   apiUrl: string = 'https://timeline-events-api.garyo.workers.dev',
   autoUpdateInterval: number = 10000 // Auto-update every 5 seconds by default
 ) {
+  const appStartTime = new DeepTime()
+  
   // Get container dimensions
   const svg = d3.select('#timeline-svg')
-  const width = container.clientWidth
-  const height = 200
-  const axis_position = (height * 2) / 3 // vertical position of the axis, down from top
+  
+  // Get the actual available space accounting for padding
+  const { width: initWidth, height: initHeight, axis_position: initAxisPosition, paddingLeft, paddingRight, paddingTop, paddingBottom } = getContainerDimensions(container)
+  
+  let width = initWidth
+  let height = initHeight
+  let axis_position = initAxisPosition
+
+  //  console.log(`Setting up timeline: container rect ${containerRect.width} x ${containerRect.height}, padding L:${paddingLeft} R:${paddingRight} T:${paddingTop} B:${paddingBottom}, setting SVG dims ${currentWidth} x ${currentHeight}, axis at ${current_axis_position} (from top)`)
 
   // Set SVG dimensions
   svg.attr('width', width).attr('height', height)
+  
+  // Clear any existing content
+  svg.selectAll('*').remove()
 
   // Create timeline
   let timeline = new LogTimeline(
@@ -29,7 +76,6 @@ export function initializeTimeline(
     { yearsAgo: initialYearsAgo },
     { yearsAgo: 0 } // 0 years ago = now
   )
-  const appStartTime = new DeepTime()
 
   // Create main group
   const g = svg.append('g')
@@ -45,6 +91,7 @@ export function initializeTimeline(
   // Draw timeline axis
   const axisGroup = g
     .append('g')
+    .attr('class', 'axis-group')
     .attr('transform', `translate(0, ${axis_position})`)
 
   // Main timeline line
@@ -61,6 +108,7 @@ export function initializeTimeline(
   // Add hover line (initially hidden)
   const hoverLine = g
     .append('line')
+    .attr('class', 'hover-line')
     .attr('y1', 0)
     .attr('y2', height)
     .attr('stroke', '#ff4a4a')
@@ -86,13 +134,16 @@ export function initializeTimeline(
 
   // Function to draw time ticks
   function drawTicks() {
+    // Get the current axis group from the SVG
+    const currentAxisGroup = g.select('.axis-group')
+    
     // Remove existing ticks
-    axisGroup.selectAll('.tick-group').remove()
+    currentAxisGroup.selectAll('.tick-group').remove()
 
     const ticks = timeline.generateLogTicks(50)
 
     // Draw ticks
-    const tickGroups = axisGroup
+    const tickGroups = currentAxisGroup
       .selectAll('.tick-group')
       .data(ticks)
       .enter()
@@ -160,7 +211,7 @@ export function initializeTimeline(
   }
 
   // Draw events if they're in range
-  function drawEvents() {
+  function drawEvents(currentAxisPosition = axis_position) {
     // Remove existing events
     g.selectAll('.event-marker').remove()
 
@@ -192,7 +243,7 @@ export function initializeTimeline(
       const eventGroup = g
         .append('g')
         .attr('class', 'event-marker')
-        .attr('transform', `translate(${x}, ${axis_position})`)
+        .attr('transform', `translate(${x}, ${currentAxisPosition})`)
         .style('pointer-events', 'none') // Don't block mouse events
 
       // Calculate local opacity based on local significance threshold
@@ -252,7 +303,7 @@ export function initializeTimeline(
   function redrawTimeline() {
     updateTimeLabels()
     drawTicks()
-    drawEvents()
+    drawEvents(axis_position)
   }
 
   // Animation function for smooth panning
@@ -436,107 +487,206 @@ export function initializeTimeline(
   let touchStartTime: DeepTime | null = null
   let animationId: number | null = null
 
-  // Attach mouse events to the background rect
-  backgroundRect
-    .on('mouseenter', function () {
-      hoverLine.attr('opacity', 0.5)
-    })
-    .on('mousemove', function (event) {
+  // Function to attach all event handlers
+  function attachEventHandlers() {
+    // Attach mouse events to the background rect
+    backgroundRect
+      .on('mouseenter', function () {
+        hoverLine.attr('opacity', 0.5)
+      })
+      .on('mousemove', function (event) {
+        const [x, y] = d3.pointer(event)
+  
+        // Update hover line position
+        hoverLine.attr('x1', x).attr('x2', x)
+  
+        // Update hover info
+        const time = timeline.getTimeAtPixel(x)
+        const hoverInfo = document.getElementById('hover-info')
+        if (hoverInfo) {
+          if (time.year > -1e5)
+            hoverInfo.textContent = `Position: ${time.toRelativeString()} (${time.toLocaleString(
+              undefined,
+              { era: 'short' }
+            )})`
+          else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
+        }
+  
+        // Handle panning
+        if (isPanning && startTime) {
+          // We want the time that was originally at startX to follow the mouse to x
+          timeline.panToPosition(startTime, x)
+          redrawTimeline()
+        }
+      })
+      .on('mouseleave', function () {
+        hoverLine.attr('opacity', 0)
+        const hoverInfo = document.getElementById('hover-info')
+        if (hoverInfo) {
+          hoverInfo.textContent = ''
+        }
+        isPanning = false
+        startTime = null
+        backgroundRect.style('cursor', 'grab')
+      })
+      .on('mousedown', function (event) {
+        isPanning = true
+        const [x] = d3.pointer(event)
+        startX = x
+        startTime = timeline.getTimeAtPixel(x)
+        backgroundRect.style('cursor', 'grabbing')
+      })
+      .on('mouseup', function () {
+        isPanning = false
+        startTime = null
+        backgroundRect.style('cursor', 'grab')
+      })
+  
+    // Add mouse wheel zoom functionality
+    backgroundRect.on('wheel', function (event) {
+      event.preventDefault()
+  
       const [x, y] = d3.pointer(event)
-
-      // Update hover line position
-      hoverLine.attr('x1', x).attr('x2', x)
-
-      // Update hover info
-      const time = timeline.getTimeAtPixel(x)
-      const hoverInfo = document.getElementById('hover-info')
-      if (hoverInfo) {
-        if (time.year > -1e5)
-          hoverInfo.textContent = `Position: ${time.toRelativeString()} (${time.toLocaleString(
-            undefined,
-            { era: 'short' }
-          )})`
-        else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
-      }
-
-      // Handle panning
-      if (isPanning && startTime) {
-        // We want the time that was originally at startX to follow the mouse to x
-        timeline.panToPosition(startTime, x)
-        redrawTimeline()
-      }
-    })
-    .on('mouseleave', function () {
-      hoverLine.attr('opacity', 0)
-      const hoverInfo = document.getElementById('hover-info')
-      if (hoverInfo) {
-        hoverInfo.textContent = ''
-      }
-      isPanning = false
-      startTime = null
-      backgroundRect.style('cursor', 'grab')
-    })
-    .on('mousedown', function (event) {
-      isPanning = true
-      const [x] = d3.pointer(event)
-      startX = x
-      startTime = timeline.getTimeAtPixel(x)
-      backgroundRect.style('cursor', 'grabbing')
-    })
-    .on('mouseup', function () {
-      isPanning = false
-      startTime = null
-      backgroundRect.style('cursor', 'grab')
-    })
-
-  // Add mouse wheel zoom functionality
-  backgroundRect.on('wheel', function (event) {
-    event.preventDefault()
-
-    const [x, y] = d3.pointer(event)
-    const deltaX = event.deltaX
-    const deltaY = event.deltaY
-    const isZoom = Math.abs(deltaY) > Math.abs(deltaX)
-
-    if (isZoom) {
-      // Cancel any existing pan animation for zoom
-      if (animationId) {
-        cancelAnimationFrame(animationId)
-        animationId = null
-      }
-
-      // Calculate zoom factor
-      // Negative deltaY = scroll up = zoom in
-      // Positive deltaY = scroll down = zoom out
-      const zoomSpeed = 0.002
-      const factor = Math.exp(-deltaY * zoomSpeed)
-
-      // Zoom around the mouse position
-      timeline.zoomAroundPixel(factor, x)
-      redrawTimeline()
-    } else {
-      // Pan - check if we should animate
-      const targetTime = timeline.getTimeAtPixel(x - deltaX)
-      const currentTime = timeline.getTimeAtPixel(x)
-
-      // Calculate pan distance in pixels
-      const panDistance = Math.abs(deltaX)
-      const animationThreshold = 50 // pixels - animate pans larger than this
-
-      if (panDistance > animationThreshold) {
-        // Large pan - animate it
-        animatePanTo(targetTime, x, 100) // 150ms duration for responsiveness
-      } else {
-        // Small pan - immediate
+      const deltaX = event.deltaX
+      const deltaY = event.deltaY
+      const isZoom = Math.abs(deltaY) > Math.abs(deltaX)
+  
+      if (isZoom) {
+        // Cancel any existing pan animation for zoom
         if (animationId) {
           cancelAnimationFrame(animationId)
           animationId = null
         }
-        timeline.panToPosition(targetTime, x)
+  
+        // Calculate zoom factor
+        // Negative deltaY = scroll up = zoom in
+        // Positive deltaY = scroll down = zoom out
+        const zoomSpeed = 0.002
+        const factor = Math.exp(-deltaY * zoomSpeed)
+  
+        // Zoom around the mouse position
+        timeline.zoomAroundPixel(factor, x)
         redrawTimeline()
+      } else {
+        // Pan - check if we should animate
+        const targetTime = timeline.getTimeAtPixel(x - deltaX)
+        const currentTime = timeline.getTimeAtPixel(x)
+  
+        // Calculate pan distance in pixels
+        const panDistance = Math.abs(deltaX)
+        const animationThreshold = 50 // pixels - animate pans larger than this
+  
+        if (panDistance > animationThreshold) {
+          // Large pan - animate it
+          animatePanTo(targetTime, x, 100) // 150ms duration for responsiveness
+        } else {
+          // Small pan - immediate
+          if (animationId) {
+            cancelAnimationFrame(animationId)
+            animationId = null
+          }
+          timeline.panToPosition(targetTime, x)
+          redrawTimeline()
+        }
       }
-    }
-  })
+    })
+  
+    // Add touch events to the background rect
+    backgroundRect
+      .on('touchstart', function (event) {
+        event.preventDefault()
+        const touches = event.touches
+  
+        if (touches.length === 1) {
+          // Single touch - start panning
+          isPanning = true
+          const [x] = getTouchCenter(touches)
+          startX = x
+          startTime = timeline.getTimeAtPixel(x)
+          touchStartTime = timeline.getTimeAtPixel(x)
+          backgroundRect.style('cursor', 'grabbing')
+  
+          // Show hover line
+          hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
+        } else if (touches.length === 2) {
+          // Two touches - prepare for zoom
+          isPanning = false
+          lastTouchDistance = getTouchDistance(touches)
+          const [x] = getTouchCenter(touches)
+          touchStartTime = timeline.getTimeAtPixel(x)
+        }
+      })
+      .on('touchmove', function (event) {
+        event.preventDefault()
+        const touches = event.touches
+  
+        if (touches.length === 1 && isPanning && startTime) {
+          // Single touch - pan
+          const [x] = getTouchCenter(touches)
+  
+          // Update hover line
+          hoverLine.attr('x1', x).attr('x2', x)
+  
+          // Update hover info
+          const time = timeline.getTimeAtPixel(x)
+          const hoverInfo = document.getElementById('hover-info')
+          if (hoverInfo) {
+            if (time.year > -1e5)
+              hoverInfo.textContent = `Position: ${time.toRelativeString()} (${time.toLocaleString(
+                undefined,
+                { era: 'short' }
+              )})`
+            else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
+          }
+  
+          // Pan to follow touch
+          timeline.panToPosition(startTime, x)
+          redrawTimeline()
+        } else if (touches.length === 2) {
+          // Two touches - zoom
+          const currentDistance = getTouchDistance(touches)
+          const [x] = getTouchCenter(touches)
+  
+          if (lastTouchDistance > 0) {
+            const factor = currentDistance / lastTouchDistance
+            timeline.zoomAroundPixel(factor, x)
+            redrawTimeline()
+          }
+  
+          lastTouchDistance = currentDistance
+        }
+      })
+      .on('touchend touchcancel', function (event) {
+        event.preventDefault()
+        const touches = event.touches
+  
+        if (touches.length === 0) {
+          // All touches ended
+          isPanning = false
+          startTime = null
+          touchStartTime = null
+          lastTouchDistance = 0
+          backgroundRect.style('cursor', 'grab')
+  
+          // Hide hover line and info
+          hoverLine.attr('opacity', 0)
+          const hoverInfo = document.getElementById('hover-info')
+          if (hoverInfo) {
+            hoverInfo.textContent = ''
+          }
+        } else if (touches.length === 1 && lastTouchDistance > 0) {
+          // Went from two touches to one - restart single touch mode
+          isPanning = true
+          const [x] = getTouchCenter(touches)
+          startX = x
+          startTime = timeline.getTimeAtPixel(x)
+          lastTouchDistance = 0
+  
+          // Show hover line
+          hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
+        }
+      })
+  }
 
   // Touch event handling
   function getTouchDistance(touches: TouchList): number {
@@ -561,119 +711,43 @@ export function initializeTimeline(
       (touch1.clientY + touch2.clientY) / 2 - rect.top
     ]
   }
+  
+  // Attach all event handlers initially
+  attachEventHandlers();
 
-  // Add touch events to the background rect
-  backgroundRect
-    .on('touchstart', function (event) {
-      event.preventDefault()
-      const touches = event.touches
-
-      if (touches.length === 1) {
-        // Single touch - start panning
-        isPanning = true
-        const [x] = getTouchCenter(touches)
-        startX = x
-        startTime = timeline.getTimeAtPixel(x)
-        touchStartTime = timeline.getTimeAtPixel(x)
-        backgroundRect.style('cursor', 'grabbing')
-
-        // Show hover line
-        hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
-      } else if (touches.length === 2) {
-        // Two touches - prepare for zoom
-        isPanning = false
-        lastTouchDistance = getTouchDistance(touches)
-        const [x] = getTouchCenter(touches)
-        touchStartTime = timeline.getTimeAtPixel(x)
-      }
-    })
-    .on('touchmove', function (event) {
-      event.preventDefault()
-      const touches = event.touches
-
-      if (touches.length === 1 && isPanning && startTime) {
-        // Single touch - pan
-        const [x] = getTouchCenter(touches)
-
-        // Update hover line
-        hoverLine.attr('x1', x).attr('x2', x)
-
-        // Update hover info
-        const time = timeline.getTimeAtPixel(x)
-        const hoverInfo = document.getElementById('hover-info')
-        if (hoverInfo) {
-          if (time.year > -1e5)
-            hoverInfo.textContent = `Position: ${time.toRelativeString()} (${time.toLocaleString(
-              undefined,
-              { era: 'short' }
-            )})`
-          else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
-        }
-
-        // Pan to follow touch
-        timeline.panToPosition(startTime, x)
-        redrawTimeline()
-      } else if (touches.length === 2) {
-        // Two touches - zoom
-        const currentDistance = getTouchDistance(touches)
-        const [x] = getTouchCenter(touches)
-
-        if (lastTouchDistance > 0) {
-          const factor = currentDistance / lastTouchDistance
-          timeline.zoomAroundPixel(factor, x)
-          redrawTimeline()
-        }
-
-        lastTouchDistance = currentDistance
-      }
-    })
-    .on('touchend touchcancel', function (event) {
-      event.preventDefault()
-      const touches = event.touches
-
-      if (touches.length === 0) {
-        // All touches ended
-        isPanning = false
-        startTime = null
-        touchStartTime = null
-        lastTouchDistance = 0
-        backgroundRect.style('cursor', 'grab')
-
-        // Hide hover line and info
-        hoverLine.attr('opacity', 0)
-        const hoverInfo = document.getElementById('hover-info')
-        if (hoverInfo) {
-          hoverInfo.textContent = ''
-        }
-      } else if (touches.length === 1 && lastTouchDistance > 0) {
-        // Went from two touches to one - restart single touch mode
-        isPanning = true
-        const [x] = getTouchCenter(touches)
-        startX = x
-        startTime = timeline.getTimeAtPixel(x)
-        lastTouchDistance = 0
-
-        // Show hover line
-        hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
-      }
-    })
-
-  // Handle window resize
+  // Handle window resize with debounce
+  let resizeTimeout: number | null = null;
   window.addEventListener('resize', () => {
-    const newWidth = container.clientWidth
-    svg.attr('width', newWidth)
+    // Clear any existing timeout
+    if (resizeTimeout) {
+      window.clearTimeout(resizeTimeout);
+    }
+    
+    // Resize after letting things settle
+    resizeTimeout = window.setTimeout(() => {
+      // Get the actual available space accounting for padding
+      const { width: newWidth, height: newHeight, axis_position: newAxisPosition, 
+              paddingLeft, paddingRight, paddingTop, paddingBottom } = getContainerDimensions(container);
+      
+      const containerRect = container.getBoundingClientRect();
 
-    // Create new timeline with same time span
-    const leftTime = timeline.leftmost
-    const rightTime = timeline.rightmost
-    timeline = new LogTimeline(newWidth, leftTime, rightTime)
-
-    // Update dimensions
-    backgroundRect.attr('width', newWidth)
-    axisGroup.select('line').attr('x2', newWidth)
-
-    // Redraw
-    redrawTimeline()
+      // Update SVG dimensions, timeline width, other elements
+      svg.attr('width', newWidth).attr('height', newHeight)
+      timeline.pixelWidth = newWidth
+      backgroundRect.attr('width', newWidth).attr('height', newHeight)
+      axisGroup.attr('transform', `translate(0, ${newAxisPosition})`)
+      axisGroup.select('line').attr('x2', newWidth)
+      hoverLine.attr('y2', newHeight)
+      
+      width = newWidth
+      height = newHeight
+      axis_position = newAxisPosition
+      
+      // Redraw with the new dimensions
+      redrawTimeline()
+      
+      resizeTimeout = null;
+    }, 50); // delay to ensure DOM has updated
   })
 
   // Connect navigation buttons

@@ -279,6 +279,15 @@ class LogTimeline {
   public get pixelWidth(): number {
     return this.width
   }
+  
+  /**
+   * Update the timeline width without changing the time range
+   * @param newWidth - new width in pixels
+   */
+  public set pixelWidth(newWidth: number) {
+    if (newWidth <= 0) throw new Error('Width must be positive')
+    this.width = newWidth
+  }
 
   public get leftmost(): DeepTime {
     return this.leftmostTime

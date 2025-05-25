@@ -347,8 +347,10 @@ const { title } = Astro.props;
   .main-content {
     flex: 1;
     padding: 20px;
-    overflow: auto;
+    overflow: hidden;
     background-color: var(--background);
+    display: flex;
+    flex-direction: column;
   }
 
   /* Mobile Styles */
