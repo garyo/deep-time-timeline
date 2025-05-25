@@ -4,8 +4,12 @@
  */
 
 // Configuration
-const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines';
 const CACHE_TTL = 15 * 60; // Cache for 15 minutes
+const MAX_ARTICLES = 200;
+const BASE_SIGNIFICANCE = 1;
+const SIGNIFICANCE_THRESHOLD = 5;
+const MAX_SIGNIFICANCE = 9
+const REDDIT_NEWS_PERIOD = 'month';    // hour, day, week, month, year, all -- no other values 
 
 // Keywords that indicate potentially significant events
 const SIGNIFICANCE_KEYWORDS = {
@@ -58,7 +62,7 @@ function calculateSignificance(article) {
   const description = (article.description || '').toLowerCase();
   const content = `${title} ${description}`;
   
-  let maxScore = 2; // Default minimum significance
+  let maxScore = BASE_SIGNIFICANCE; // Default minimum significance
   
   // Check for significance keywords
   let kwdsMatched = []
@@ -96,8 +100,8 @@ function calculateSignificance(article) {
   if (content.includes('viral')) maxScore -= 2;
   if (content.match(/(lad|sport).?bible/i)) maxScore -= 5;
   
-  console.log(`Score ${maxScore} for "${title.slice(0, 30)}": from sig -> ${sigScore}(${kwdsMatched}) -> source -> ${sourceScore}(${sourceBoost})`)
-  return Math.min(10, Math.max(1, maxScore));
+  console.log(`Score ${maxScore} for "${title.slice(0, 60)}": from sig -> ${sigScore}(${kwdsMatched}) -> source -> ${sourceScore}(${sourceBoost})`)
+  return Math.min(MAX_SIGNIFICANCE, Math.max(1, maxScore));
 }
 
 /**
@@ -109,91 +113,75 @@ function filterSignificantEvents(articles) {
       ...article,
       significance: calculateSignificance(article)
     }))
-    .filter(article => article.significance >= 5) // Only include significance 5+
+    .filter(article => article.significance >= SIGNIFICANCE_THRESHOLD) // Only include significance above threshold
     .sort((a, b) => b.significance - a.significance) // Sort by significance
-    .slice(0, 100); // Limit to top 50 events
 }
 
 /**
- * Convert news articles to timeline event format
+ * Fetch news from API
  */
-function convertToTimelineEvents(articles) {
-  return articles.map(article => {
-    // Use published date, fallback to current date
-    let date = new Date().toISOString();
-    if (article.publishedAt) {
-      date = new Date(article.publishedAt).toISOString();
+
+
+// Get Reddit oauth token
+async function getToken(env) {
+  // const creds = Buffer.from(`${client_id}:${client_secret}`).toString('base64'); // Node.js
+  console.log(env.REDDIT_CLIENT_ID)
+  const creds = btoa(`${env.REDDIT_CLIENT_ID}:${env.REDDIT_CLIENT_SECRET}`);
+  console.log(`creds: ${creds}`)
+  const res = await fetch('https://www.reddit.com/api/v1/access_token', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic ' + creds,
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': 'script:deep-timeline:v1.0 (by /u/simplex5d)' // Required!
+    },
+    body: `grant_type=password&username=${encodeURIComponent(env.REDDIT_USERNAME)}&password=${encodeURIComponent(env.REDDIT_PASSWORD)}`
+  });
+  console.log(res)
+  if (res.ok) {
+    const data = await res.json();
+    return data.access_token;
+  }
+}
+
+async function getTopPosts(token, n = 10) {
+  const res = await fetch(`https://oauth.reddit.com/r/worldnews/top?limit=${n}&t=${REDDIT_NEWS_PERIOD}`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'User-Agent': 'my-news-proxy/0.1 by simplex5d'
     }
-    
+  });
+  const data = await res.json();
+  return data.data.children.map(x => {
+    const post = x.data;
     return {
-      name: article.title || 'Untitled Event',
-      date: date,
-      significance: article.significance || 5
+      title: post.title,
+      date: new Date(post.created_utc * 1000).toISOString(),
+      content: post.selftext || null,
+      url: post.url
     };
   });
 }
 
 /**
- * Fetch news from NewsAPI
+ * Fetch from Reddit
+ * returns {title, ISO date, description (maybe), content, significance=0}
  */
-async function fetchNews(apiKey) {
-  // Needs sources, q, language, country, or category.
-  // source.id = the-washington-post, the-wall-street-journal, bbc-news, google-news
-  const url = new URL(`${NEWS_API_URL}?apiKey=${apiKey}&pageSize=100&sortBy=popularity&sources=the-washington-post,the-wall-street-journal,bbc-news,google-news&language=en`);
-  
-  console.log(`Making request to: ${NEWS_API_URL}?apiKey=***&pageSize=100&sortBy=popularity&country=us`);
-  
-  const cacheKey = `https://${url.hostname}${url.pathname}`;
-  const response = await fetch(url, {
-    // tell cloudflare to cache this request to avoid too many requests to origin
-    cf: { cacheTtl: CACHE_TTL, cacheEverything: true, cacheKey: cacheKey},
-    headers: {
-      'User-Agent': 'Timeline-Events-Worker/1.0 (https://timeline-events-api.garyo.workers.dev)'
-    }
+async function fetchNews(env) {
+  const token = await getToken(env);
+  const posts = await getTopPosts(token, MAX_ARTICLES); // Get N articles
+  posts.forEach(post => {
+    console.log(`Post object has keys ${Object.keys(posts[0])}`); // title, date, content, url
+    console.log(`"${post.title}"\n  Date: ${post.date}\n  Content: ${post.content}\n  URL: ${post.url}`);
   });
-  console.log(`NewsAPI response status: ${response.status}`);
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(`NewsAPI error response:`, errorText);
-    throw new Error(`News API error: ${response.status}`);
-  }
-
-  const data = await response.json();
-  console.log(`NewsAPI returned ${data.articles?.length || 0} articles`);
-  // for (const a of data.articles) {
-  //   console.log(JSON.stringify(a, undefined, 2))
-  // }
-  return data.articles || [];
-}
-
-/**
- * Alternative: Fetch from RSS feeds (no API key required)
- */
-async function fetchNewsFromRSS() {
-  // Using RSS feeds as backup - you might want to use an RSS-to-JSON service
-  const rssFeeds = [
-    'https://rss.cnn.com/rss/edition.rss',
-    'https://feeds.bbci.co.uk/news/world/rss.xml',
-    'https://www.reuters.com/rssFeed/worldNews'
-  ];
-  
-  // This is a simplified approach - in reality you'd want to parse RSS XML
-  // For now, return some sample events to demonstrate the structure
-  return [
-    // {
-    //   title: 'Global Climate Summit Reaches Historic Agreement',
-    //   publishedAt: new Date().toISOString(),
-    //   description: 'World leaders agree on unprecedented climate action',
-    //   source: { name: 'Reuters' }
-    // },
-    // {
-    //   title: 'Major Technological Breakthrough Announced',
-    //   publishedAt: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-    //   description: 'Scientists achieve quantum computing milestone',
-    //   source: { name: 'BBC' }
-    // }
-  ];
+  const articles = posts.map(post => {
+    return {title: post.title,
+      date: post.date,
+      description: post.description || '',
+      content: post.content,
+      significance: BASE_SIGNIFICANCE};
+  })
+  return articles;
 }
 
 /**
@@ -202,6 +190,7 @@ async function fetchNewsFromRSS() {
 export default {
   async fetch(request, env, ctx) {
     console.log(`Worker started - request method: ${request.method}`);
+    console.log(env)
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
@@ -218,69 +207,36 @@ export default {
       return new Response('Method not allowed', { status: 405 });
     }
     
+    let articles;
+    let timelineEvents = [];
     try {
       // Get API key from environment variables
-      const NEWS_API_KEY = env.NEWS_API_KEY;
-      console.log(`API key status: ${NEWS_API_KEY ? 'Found' : 'Missing'}`);
-      
-      let articles;
-      try {
-        // Try NewsAPI first (requires API key)
-        if (NEWS_API_KEY) {
-          console.log('Attempting to fetch from NewsAPI...');
-          articles = await fetchNews(NEWS_API_KEY);
-          console.log(`Successfully fetched ${articles.length} articles from NewsAPI`);
-        } else {
-          console.log('No NEWS_API_KEY found, using fallback RSS data');
-          // Fallback to RSS or sample data
-          articles = await fetchNewsFromRSS();
-        }
-      } catch (error) {
-        console.error('Error fetching news:', error);
-        console.log('Falling back to RSS data due to error');
-        // Return fallback events
-        articles = await fetchNewsFromRSS();
-      }
-        
+      articles = await fetchNews(env);
+
       // Process articles
-      const significantArticles = filterSignificantEvents(articles);
-      const timelineEvents = convertToTimelineEvents(significantArticles);
-        
-      console.log(`Processed ${articles.length} total articles, ${significantArticles.length} significant, returning ${timelineEvents.length} events`);
-        
-      // Create response with optional debug info
-      const responseData = request.url.includes('debug=1') 
-        ? { events: timelineEvents }
-        : timelineEvents;
-      response = new Response(JSON.stringify(responseData, null, 2), {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Cache-Control': `public, max-age=${CACHE_TTL}`,
-        },
+      articles = filterSignificantEvents(articles);
+      // timeline events have name, date, significance
+      timelineEvents = articles.map(a => {
+        console.log(`Sig ${a.significance} for Article "${a.title}"`)
+        return {name: a.title, date: a.date, significance: a.significance};
       });
-      return response;
-      
+
+      console.log(`Processed ${articles.length} articles, returning ${timelineEvents.length} events`);
+
     } catch (error) {
-      console.error('Worker error:', error);
-      
-      // Return fallback events on error
-      const fallbackEvents = [
-        {
-          name: 'API Service Temporarily Unavailable',
-          date: new Date().toISOString().split('T')[0],
-          significance: 1
-        }
-      ];
-      
-      return new Response(JSON.stringify(fallbackEvents), {
-        status: 200, // Return 200 so timeline doesn't break
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Cache-Control': `public, max-age=30`,
-        },
-      });
+      console.error('Error fetching news:', error);
+      articles = [];
     }
-  },
-};
+        
+    // Create response with optional debug info
+    const responseData = timelineEvents;
+    const response = new Response(JSON.stringify(responseData, null, 2), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': `public, max-age=${CACHE_TTL}`,
+      },
+    });
+    return response;
+  }
+}
