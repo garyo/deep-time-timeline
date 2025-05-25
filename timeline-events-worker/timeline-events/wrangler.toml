@@ -9,5 +9,8 @@ name = "timeline-events-api"
 [env.development]  
 name = "timeline-events-api-dev"
 
+[observability.logs]
+enabled = true
+
 # Local development uses .dev.vars file
 # Production uses: wrangler secret put NEWS_API_KEY --env production
