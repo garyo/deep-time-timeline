@@ -96,7 +96,7 @@ function calculateSignificance(article) {
   if (content.includes('viral')) maxScore -= 2;
   if (content.match(/(lad|sport).?bible/i)) maxScore -= 5;
   
-  console.log(`Significance of ${title} = ${maxScore} from sig -> ${sigScore}(${kwdsMatched}) -> source -> ${sourceScore}(${sourceBoost})`)
+  console.log(`Score ${maxScore} for "${title.slice(0, 30)}": from sig -> ${sigScore}(${kwdsMatched}) -> source -> ${sourceScore}(${sourceBoost})`)
   return Math.min(10, Math.max(1, maxScore));
 }
 
@@ -158,9 +158,9 @@ async function fetchNews(apiKey) {
   
   const data = await response.json();
   console.log(`NewsAPI returned ${data.articles?.length || 0} articles`);
-  for (const a of data.articles) {
-    console.log(JSON.stringify(a, undefined, 2))
-  }
+  // for (const a of data.articles) {
+  //   console.log(JSON.stringify(a, undefined, 2))
+  // }
   return data.articles || [];
 }
 
