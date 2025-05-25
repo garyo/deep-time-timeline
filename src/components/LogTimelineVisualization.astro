@@ -163,26 +163,32 @@ const {
    display: block !important;
  }
 
- #timeline-svg {
-   display: block;
-   width: 100%;
-   height: 100%;
- }
+  #timeline-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  <!-- make text non-selectable -->
+  user-select: none;
+    -webkit-user-select: none;  /* for Safari */
+    -ms-user-select: none;      /* for IE/Edge */
+  }
 
- .timeline-info {
-   margin-top: 10px;
-   text-align: center;
-   color: #b0b0b0;
-   font-size: 14px;
-   flex-shrink: 0;
- }
+  .timeline-info {
+    margin-top: 10px;
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
 
- .hover-info {
-   margin-top: 10px;
-   color: #4a9eff;
-   font-weight: 500;
-   min-height: 20px;
- }
+  .hover-info {
+    margin-top: 10px;
+    color: #4a9eff;
+    font-weight: 500;
+    min-height: 20px;
+  }
+
+
  /* rotated mobile: squeeze things in */
  @media (max-height: 400px) {
    .timeline-controls {

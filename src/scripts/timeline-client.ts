@@ -8,16 +8,15 @@ import {
 } from './events'
 import type { ProcessedEvent } from './events'
 
-
 // Helper function to get container dimensions accounting for padding
 function getContainerDimensions(container: HTMLElement): {
-  width: number;
-  height: number;
-  axis_position: number;
-  paddingLeft: number;
-  paddingRight: number;
-  paddingTop: number;
-  paddingBottom: number;
+  width: number
+  height: number
+  axis_position: number
+  paddingLeft: number
+  paddingRight: number
+  paddingTop: number
+  paddingBottom: number
 } {
   // Get the SVG container dimensions
   const svgContainer = container.querySelector('.svg-container') as HTMLElement
@@ -27,12 +26,12 @@ function getContainerDimensions(container: HTMLElement): {
   const paddingRight = parseInt(computedStyle.paddingRight || '0', 10)
   const paddingTop = parseInt(computedStyle.paddingTop || '0', 10)
   const paddingBottom = parseInt(computedStyle.paddingBottom || '0', 10)
-  
+
   // Calculate available width and height
   const width = containerRect.width - paddingLeft - paddingRight
   const height = containerRect.height - paddingTop - paddingBottom
   const axis_position = height * 0.6 // vertical position of the axis, down from top
-  
+
   return {
     width,
     height,
@@ -51,13 +50,21 @@ export function initializeTimeline(
   autoUpdateInterval: number = 10000 // Auto-update every 5 seconds by default
 ) {
   const appStartTime = new DeepTime()
-  
+
   // Get container dimensions
   const svg = d3.select('#timeline-svg')
-  
+
   // Get the actual available space accounting for padding
-  const { width: initWidth, height: initHeight, axis_position: initAxisPosition, paddingLeft, paddingRight, paddingTop, paddingBottom } = getContainerDimensions(container)
-  
+  const {
+    width: initWidth,
+    height: initHeight,
+    axis_position: initAxisPosition,
+    paddingLeft,
+    paddingRight,
+    paddingTop,
+    paddingBottom
+  } = getContainerDimensions(container)
+
   let width = initWidth
   let height = initHeight
   let axis_position = initAxisPosition
@@ -66,7 +73,7 @@ export function initializeTimeline(
 
   // Set SVG dimensions
   svg.attr('width', width).attr('height', height)
-  
+
   // Clear any existing content
   svg.selectAll('*').remove()
 
@@ -79,14 +86,6 @@ export function initializeTimeline(
 
   // Create main group
   const g = svg.append('g')
-
-  // Add background rect - this will capture mouse events
-  const backgroundRect = g
-    .append('rect')
-    .attr('width', width)
-    .attr('height', height)
-    .attr('fill', '#1a1a1a')
-    .style('cursor', 'grab')
 
   // Draw timeline axis
   const axisGroup = g
@@ -136,7 +135,7 @@ export function initializeTimeline(
   function drawTicks() {
     // Get the current axis group from the SVG
     const currentAxisGroup = g.select('.axis-group')
-    
+
     // Remove existing ticks
     currentAxisGroup.selectAll('.tick-group').remove()
 
@@ -489,17 +488,18 @@ export function initializeTimeline(
 
   // Function to attach all event handlers
   function attachEventHandlers() {
-    // Attach mouse events to the background rect
-    backgroundRect
+    // Attach mouse events to the svg
+    const parent = svg
+    parent
       .on('mouseenter', function () {
         hoverLine.attr('opacity', 0.5)
       })
       .on('mousemove', function (event) {
         const [x, y] = d3.pointer(event)
-  
+
         // Update hover line position
         hoverLine.attr('x1', x).attr('x2', x)
-  
+
         // Update hover info
         const time = timeline.getTimeAtPixel(x)
         const hoverInfo = document.getElementById('hover-info')
@@ -511,7 +511,7 @@ export function initializeTimeline(
             )})`
           else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
         }
-  
+
         // Handle panning
         if (isPanning && startTime) {
           // We want the time that was originally at startX to follow the mouse to x
@@ -527,43 +527,43 @@ export function initializeTimeline(
         }
         isPanning = false
         startTime = null
-        backgroundRect.style('cursor', 'grab')
+        parent.style('cursor', 'grab')
       })
       .on('mousedown', function (event) {
         isPanning = true
         const [x] = d3.pointer(event)
         startX = x
         startTime = timeline.getTimeAtPixel(x)
-        backgroundRect.style('cursor', 'grabbing')
+        parent.style('cursor', 'grabbing')
       })
       .on('mouseup', function () {
         isPanning = false
         startTime = null
-        backgroundRect.style('cursor', 'grab')
+        parent.style('cursor', 'grab')
       })
-  
+
     // Add mouse wheel zoom functionality
-    backgroundRect.on('wheel', function (event) {
+    parent.on('wheel', function (event) {
       event.preventDefault()
-  
+
       const [x, y] = d3.pointer(event)
       const deltaX = event.deltaX
       const deltaY = event.deltaY
       const isZoom = Math.abs(deltaY) > Math.abs(deltaX)
-  
+
       if (isZoom) {
         // Cancel any existing pan animation for zoom
         if (animationId) {
           cancelAnimationFrame(animationId)
           animationId = null
         }
-  
+
         // Calculate zoom factor
         // Negative deltaY = scroll up = zoom in
         // Positive deltaY = scroll down = zoom out
         const zoomSpeed = 0.002
         const factor = Math.exp(-deltaY * zoomSpeed)
-  
+
         // Zoom around the mouse position
         timeline.zoomAroundPixel(factor, x)
         redrawTimeline()
@@ -571,11 +571,11 @@ export function initializeTimeline(
         // Pan - check if we should animate
         const targetTime = timeline.getTimeAtPixel(x - deltaX)
         const currentTime = timeline.getTimeAtPixel(x)
-  
+
         // Calculate pan distance in pixels
         const panDistance = Math.abs(deltaX)
         const animationThreshold = 50 // pixels - animate pans larger than this
-  
+
         if (panDistance > animationThreshold) {
           // Large pan - animate it
           animatePanTo(targetTime, x, 100) // 150ms duration for responsiveness
@@ -590,13 +590,13 @@ export function initializeTimeline(
         }
       }
     })
-  
-    // Add touch events to the background rect
-    backgroundRect
+
+    // Add touch events to the svg
+    parent
       .on('touchstart', function (event) {
         event.preventDefault()
         const touches = event.touches
-  
+
         if (touches.length === 1) {
           // Single touch - start panning
           isPanning = true
@@ -604,8 +604,8 @@ export function initializeTimeline(
           startX = x
           startTime = timeline.getTimeAtPixel(x)
           touchStartTime = timeline.getTimeAtPixel(x)
-          backgroundRect.style('cursor', 'grabbing')
-  
+          parent.style('cursor', 'grabbing')
+
           // Show hover line
           hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
         } else if (touches.length === 2) {
@@ -619,14 +619,14 @@ export function initializeTimeline(
       .on('touchmove', function (event) {
         event.preventDefault()
         const touches = event.touches
-  
+
         if (touches.length === 1 && isPanning && startTime) {
           // Single touch - pan
           const [x] = getTouchCenter(touches)
-  
+
           // Update hover line
           hoverLine.attr('x1', x).attr('x2', x)
-  
+
           // Update hover info
           const time = timeline.getTimeAtPixel(x)
           const hoverInfo = document.getElementById('hover-info')
@@ -638,7 +638,7 @@ export function initializeTimeline(
               )})`
             else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
           }
-  
+
           // Pan to follow touch
           timeline.panToPosition(startTime, x)
           redrawTimeline()
@@ -646,28 +646,28 @@ export function initializeTimeline(
           // Two touches - zoom
           const currentDistance = getTouchDistance(touches)
           const [x] = getTouchCenter(touches)
-  
+
           if (lastTouchDistance > 0) {
             const factor = currentDistance / lastTouchDistance
             timeline.zoomAroundPixel(factor, x)
             redrawTimeline()
           }
-  
+
           lastTouchDistance = currentDistance
         }
       })
       .on('touchend touchcancel', function (event) {
         event.preventDefault()
         const touches = event.touches
-  
+
         if (touches.length === 0) {
           // All touches ended
           isPanning = false
           startTime = null
           touchStartTime = null
           lastTouchDistance = 0
-          backgroundRect.style('cursor', 'grab')
-  
+          parent.style('cursor', 'grab')
+
           // Hide hover line and info
           hoverLine.attr('opacity', 0)
           const hoverInfo = document.getElementById('hover-info')
@@ -681,7 +681,7 @@ export function initializeTimeline(
           startX = x
           startTime = timeline.getTimeAtPixel(x)
           lastTouchDistance = 0
-  
+
           // Show hover line
           hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
         }
@@ -700,54 +700,60 @@ export function initializeTimeline(
 
   function getTouchCenter(touches: TouchList): [number, number] {
     if (touches.length === 1) {
-      const rect = (backgroundRect.node() as Element).getBoundingClientRect()
+      const rect = (svg.node() as Element).getBoundingClientRect()
       return [touches[0].clientX - rect.left, touches[0].clientY - rect.top]
     }
     const touch1 = touches[0]
     const touch2 = touches[1]
-    const rect = (backgroundRect.node() as Element).getBoundingClientRect()
+    const rect = (svg.node() as Element).getBoundingClientRect()
     return [
       (touch1.clientX + touch2.clientX) / 2 - rect.left,
       (touch1.clientY + touch2.clientY) / 2 - rect.top
     ]
   }
-  
+
   // Attach all event handlers initially
-  attachEventHandlers();
+  attachEventHandlers()
 
   // Handle window resize with debounce
-  let resizeTimeout: number | null = null;
+  let resizeTimeout: number | null = null
   window.addEventListener('resize', () => {
     // Clear any existing timeout
     if (resizeTimeout) {
-      window.clearTimeout(resizeTimeout);
+      window.clearTimeout(resizeTimeout)
     }
-    
+
     // Resize after letting things settle
     resizeTimeout = window.setTimeout(() => {
       // Get the actual available space accounting for padding
-      const { width: newWidth, height: newHeight, axis_position: newAxisPosition, 
-              paddingLeft, paddingRight, paddingTop, paddingBottom } = getContainerDimensions(container);
-      
-      const containerRect = container.getBoundingClientRect();
+      const {
+        width: newWidth,
+        height: newHeight,
+        axis_position: newAxisPosition,
+        paddingLeft,
+        paddingRight,
+        paddingTop,
+        paddingBottom
+      } = getContainerDimensions(container)
+
+      const containerRect = container.getBoundingClientRect()
 
       // Update SVG dimensions, timeline width, other elements
       svg.attr('width', newWidth).attr('height', newHeight)
       timeline.pixelWidth = newWidth
-      backgroundRect.attr('width', newWidth).attr('height', newHeight)
       axisGroup.attr('transform', `translate(0, ${newAxisPosition})`)
       axisGroup.select('line').attr('x2', newWidth)
       hoverLine.attr('y2', newHeight)
-      
+
       width = newWidth
       height = newHeight
       axis_position = newAxisPosition
-      
+
       // Redraw with the new dimensions
       redrawTimeline()
-      
-      resizeTimeout = null;
-    }, 50); // delay to ensure DOM has updated
+
+      resizeTimeout = null
+    }, 50) // delay to ensure DOM has updated
   })
 
   // Connect navigation buttons
