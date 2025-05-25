@@ -55,7 +55,7 @@
     "significance": 7
   },
   {
-    "name": "Earliest life",
+    "name": "Earliest life emerges",
     "date": "-3.8e9",
     "significance": 10
   },
@@ -65,7 +65,7 @@
     "significance": 7
   },
   {
-    "name": "Oxygenation of atmosphere",
+    "name": "Oxygenation of atmosphere begins",
     "date": "-2.4e9",
     "significance": 7
   },
@@ -75,12 +75,12 @@
     "significance": 5
   },
   {
-    "name": "Multicellular life",
+    "name": "Multicellular life begins",
     "date": "-1.0e9",
     "significance": 6
   },
   {
-    "name": "First animals",
+    "name": "First animals emerge",
     "date": "-600e6",
     "significance": 7
   },
@@ -100,7 +100,7 @@
     "significance": 7
   },
   {
-    "name": "First insects",
+    "name": "First insects appear",
     "date": "-400e6",
     "significance": 5
   },
@@ -110,7 +110,7 @@
     "significance": 5
   },
   {
-    "name": "First reptiles",
+    "name": "First reptiles appear",
     "date": "-310e6",
     "significance": 5
   },
@@ -125,7 +125,7 @@
     "significance": 7
   },
   {
-    "name": "First mammals",
+    "name": "First mammals appear",
     "date": "-200e6",
     "significance": 7
   },
@@ -150,7 +150,7 @@
     "significance": 9
   },
   {
-    "name": "First primates",
+    "name": "First primates appear",
     "date": "-55e6",
     "significance": 6
   },
@@ -230,12 +230,12 @@
     "significance": 9
   },
   {
-    "name": "Out of Africa migration",
+    "name": "Humans migrate out of Africa",
     "date": "60000BC",
     "significance": 9
   },
   {
-    "name": "Australia settled",
+    "name": "Australia is settled",
     "date": "50000BC",
     "significance": 6
   },
@@ -245,12 +245,12 @@
     "significance": 8
   },
   {
-    "name": "Neanderthals extinct",
+    "name": "Neanderthals become extinct",
     "date": "39000BC",
     "significance": 7
   },
   {
-    "name": "Bow and arrow used",
+    "name": "Bow and arrow first used",
     "date": "30000BC",
     "significance": 7
   },
@@ -265,7 +265,7 @@
     "significance": 6
   },
   {
-    "name": "Dog domesticated",
+    "name": "Dogs domesticated",
     "date": "14000BC",
     "significance": 6
   },
@@ -300,7 +300,7 @@
     "significance": 7
   },
   {
-    "name": "First dynasty China",
+    "name": "First dynasty in China",
     "date": "2070BC",
     "significance": 6
   },
@@ -375,7 +375,7 @@
     "significance": 4
   },
   {
-    "name": "Founding of Rome",
+    "name": "Rome founded",
     "date": "753BC",
     "significance": 7
   },
@@ -510,7 +510,7 @@
     "significance": 4
   },
   {
-    "name": "Founding of Jamestown",
+    "name": "Jamestown settlement founded",
     "date": "1607",
     "significance": 5
   },
