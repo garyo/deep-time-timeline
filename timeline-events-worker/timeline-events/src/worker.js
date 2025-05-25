@@ -111,7 +111,7 @@ function filterSignificantEvents(articles) {
     }))
     .filter(article => article.significance >= 5) // Only include significance 5+
     .sort((a, b) => b.significance - a.significance) // Sort by significance
-    .slice(0, 20); // Limit to top 20 events
+    .slice(0, 100); // Limit to top 50 events
 }
 
 /**
@@ -229,7 +229,7 @@ export default {
       const skipCache = url.searchParams.has('nocache');
       
       const cache = caches.default;
-      const cacheKey = new Request('https://timeline-events-cache.example.com/events-v2'); // Changed cache key
+      const cacheKey = new Request('https://timeline-events-cache.oberbrunner.com/events-v2'); // Changed cache key
       let response = skipCache ? null : await cache.match(cacheKey);
       
       if (!response) {

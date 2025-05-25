@@ -7,7 +7,7 @@ export interface Props {
 
 const { 
   initialYearsAgo = 10000, 
-  apiUrl = 'https://example.com/api/significant-events',
+  apiUrl = 'https://timeline-events-api.garyo.workers.dev',
   autoUpdateInterval = 5000 
 } = Astro.props;
 ---
@@ -123,7 +123,7 @@ const {
     document.addEventListener('DOMContentLoaded', () => {
       const container = document.querySelector('.timeline-container') as HTMLElement;
       const initialYearsAgo = parseInt(container.dataset.initialYearsAgo || '10000');
-      const apiUrl = container.dataset.apiUrl || 'https://example.com/api/significant-events';
+      const apiUrl = container.dataset.apiUrl || 'https://timeline-events-api.garyo.workers.dev';
       const autoUpdateInterval = parseInt(container.dataset.autoUpdateInterval || '5000');
       initializeTimeline(container, initialYearsAgo, apiUrl, autoUpdateInterval);
     });
@@ -131,7 +131,7 @@ const {
     // DOM already loaded
     const container = document.querySelector('.timeline-container') as HTMLElement;
     const initialYearsAgo = parseInt(container.dataset.initialYearsAgo || '10000');
-    const apiUrl = container.dataset.apiUrl || 'https://example.com/api/significant-events';
+    const apiUrl = container.dataset.apiUrl || 'https://timeline-events-api.garyo.workers.dev';
     const autoUpdateInterval = parseInt(container.dataset.autoUpdateInterval || '5000');
     initializeTimeline(container, initialYearsAgo, apiUrl, autoUpdateInterval);
   }

@@ -193,7 +193,7 @@ export class EventFileWatcher {
  * Load additional events from API
  */
 export async function loadEventsFromAPI(
-  apiUrl: string = 'https://example.com/api/significant-events'
+  apiUrl: string = 'https://timeline-events-api.garyo.workers.dev'
 ): Promise<ProcessedEvent[]> {
   try {
     console.log(`Loading additional events from ${apiUrl}...`)
@@ -216,7 +216,7 @@ export async function loadEventsFromAPI(
  * Load all events: base events from JSON file + additional events from API
  */
 export async function loadAllEvents(
-  apiUrl: string = 'https://example.com/api/significant-events'
+  apiUrl: string = 'https://timeline-events-api.garyo.workers.dev'
 ): Promise<{
   baseEvents: ProcessedEvent[]
   additionalEvents: ProcessedEvent[]

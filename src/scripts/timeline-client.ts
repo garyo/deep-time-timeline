@@ -11,8 +11,8 @@ import type { ProcessedEvent } from './events'
 export function initializeTimeline(
   container: HTMLElement,
   initialYearsAgo: number,
-  apiUrl: string = 'https://example.com/api/significant-events',
-  autoUpdateInterval: number = 5000 // Auto-update every 5 seconds by default
+  apiUrl: string = 'https://timeline-events-api.garyo.workers.dev',
+  autoUpdateInterval: number = 10000 // Auto-update every 5 seconds by default
 ) {
   // Get container dimensions
   const svg = d3.select('#timeline-svg')
