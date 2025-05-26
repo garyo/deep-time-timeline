@@ -676,13 +676,6 @@ export function initializeTimeline(
           touchStartTime = null
           lastTouchDistance = 0
           parent.style('cursor', 'grab')
-
-          // Hide hover line and info
-          hoverLine.attr('opacity', 0)
-          const hoverInfo = document.getElementById('hover-info')
-          if (hoverInfo) {
-            hoverInfo.textContent = ''
-          }
         } else if (touches.length === 1 && lastTouchDistance > 0) {
           // Went from two touches to one - restart single touch mode
           isPanning = true
