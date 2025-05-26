@@ -468,6 +468,17 @@ export function initializeTimeline(
             fileWatcher.stop()
             stopAutoUpdate()
           })
+
+          // Don't update while hidden
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === "hidden") {
+              eventUpdater.stop()
+              fileWatcher.stop()
+            } else {
+              eventUpdater.start()
+              fileWatcher.start()
+            }
+          })
         })
         .catch((error) => {
           console.warn('No additional events available from API:', error)
