@@ -7,6 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "check": "tsc --noEmit",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
@@ -34,6 +35,8 @@
     "singleQuote": true,
     "semi": false,
     "trailingComma": "none",
-    "plugins": ["prettier-plugin-astro"]
+    "plugins": [
+      "prettier-plugin-astro"
+    ]
   }
 }

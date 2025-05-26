@@ -8,7 +8,7 @@ class LogTimeline {
   private leftmostTime!: DeepTime
   private rightmostTime!: DeepTime
   private refTime: DeepTime = new DeepTime() // = now
-  private readonly width: number
+  private width: number
 
   /**
    * LogTimeline constructor
@@ -28,32 +28,6 @@ class LogTimeline {
     this.width = width
 
     this.setEndpoints(leftmostTime, rightmostTime)
-  }
-
-  private calculateScalingFactor(): number {
-    if (this.width <= 1) {
-      return Infinity // Handle edge case explicitly
-    }
-
-    // Get the time difference between endpoints in minutes
-    const totalMinutes = Math.abs(
-      this.rightmostTime.minutesSince1970 - this.leftmostTime.minutesSince1970
-    )
-    if (totalMinutes <= 0) {
-      throw new Error('Time span must be positive')
-    }
-
-    // For logarithmic scaling: each pixel represents n times the duration of the pixel to its right
-    // The rightmost pixel represents 1 minute (our epsilon)
-    // Each pixel to the left represents n times more
-    // So: 1 * n^(width-1) = totalMinutes
-    const result = Math.pow(totalMinutes, 1 / (this.width - 1))
-
-    if (!Number.isFinite(result)) {
-      throw new Error('Scaling factor calculation resulted in non-finite value')
-    }
-
-    return result
   }
 
   /**
