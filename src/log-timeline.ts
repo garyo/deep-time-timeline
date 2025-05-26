@@ -331,7 +331,8 @@ class LogTimeline {
       undefined,
       options || {
         dateStyle: 'medium',
-        timeStyle: 'short'
+        timeStyle: 'short',
+        calendar: 'gregory'
       }
     )
   }
@@ -458,7 +459,7 @@ class LogTimeline {
         tickPos > 0 &&
         tickPos < lastTickPos - minPixelSpacing
       ) {
-        let label = `${tickTime.year} AD`
+        let label = `${tickTime.year} CE`
         if (tickTime.year < 0) label = `${-tickTime.year} BCE`
         ticks.push({ t: tickTime, pos: tickPos, label })
         lastTickPos = tickPos

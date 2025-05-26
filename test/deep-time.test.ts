@@ -39,7 +39,7 @@ describe('DeepTime', () => {
     })
 
     it('should create from year number (ancient)', () => {
-      const ancient = new DeepTime({ year: -1e9 }) // 1 billion BC
+      const ancient = new DeepTime({ year: -1e9 }) // 1 billion BCE
       expect(ancient.year).toBe(-1e9)
     })
 
@@ -80,9 +80,23 @@ describe('DeepTime', () => {
       expect(longTime.year).toBe(2023)
     })
 
+    it('should create from year string with CE', () => {
+      const longTime = new DeepTime('2023CE')
+      expect(longTime.year).toBe(2023)
+    })
+
+    it('should create from year string with AD', () => {
+      const longTime = new DeepTime('2023AD')
+      expect(longTime.year).toBe(2023)
+    })
+
     it('should create from BC year string', () => {
       const longTime = new DeepTime('1000 BC')
       expect(longTime.year).toBe(-999) // 1000 BC is year -999 in ISO 8601
+    })
+    it('should create from BCE year string', () => {
+      const longTime = new DeepTime('1000 BCE')
+      expect(longTime.year).toBe(-999) // 1000 BCE is year -999 in ISO 8601
     })
     it('should create from exponential year string', () => {
       const longTime = new DeepTime('-1.23e6')
@@ -315,13 +329,13 @@ describe('DeepTime', () => {
     it('should format year precision dates with toString', () => {
       const ancient = new DeepTime({ year: -1000000000 })
       const str = ancient.toString()
-      expect(str).toContain('1000.0M years BC')
+      expect(str).toContain('1000.0M years BCE')
     })
 
     it('should format large year precision dates', () => {
       const veryAncient = new DeepTime({ year: -13800000000 }) // Big Bang
       const str = veryAncient.toString()
-      expect(str).toContain('13800.0M years BC')
+      expect(str).toContain('13800.0M years BCE')
     })
 
     it('should format smaller ancient dates', () => {
@@ -331,14 +345,14 @@ describe('DeepTime', () => {
       expect(str).toContain('-050000-01-01')
     })
 
-    it('should format recent BC dates', () => {
+    it('should format recent BCE dates', () => {
       const recent = new DeepTime({ year: -500 })
       const str = recent.toString()
       // This is within Temporal range, so it formats as ISO string
       expect(str).toContain('-000500-01-01')
     })
 
-    it('should format AD dates', () => {
+    it('should format AD/CE dates', () => {
       const ad = new DeepTime({ year: 1500 })
       const str = ad.toString()
       // This is within Temporal range, so it formats as ISO string

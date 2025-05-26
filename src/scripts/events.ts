@@ -2,7 +2,7 @@ import { DeepTime } from '../deep-time'
 
 export interface TimelineEvent {
   name: string
-  date: string // ISO date or "YYYYBC" or "YYYYAD" format - will be parsed by DeepTime
+  date: string // ISO date or "YYYYBCE" or "YYYYCE" or "YYYYAD" format - will be parsed by DeepTime
   significance: number // 1-10, where 10 is most significant
 }
 

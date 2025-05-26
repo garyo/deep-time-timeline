@@ -498,6 +498,17 @@ export function initializeTimeline(
   let touchStartTime: DeepTime | null = null
   let animationId: number | null = null
 
+  function setHoverInfoTime(hoverInfo: HTMLElement|null, time: DeepTime) {
+    if (hoverInfo) {
+      if (time.year > -1e5)
+        hoverInfo.textContent = `Position: ${time.toRelativeString()} (${time.toLocaleString(
+          undefined,
+          { era: 'short', calendar: 'gregory' }
+        ).replace(/AD/, 'CE').replace(/BC(?!E)/, 'BCE')})`
+      else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
+    }
+  }
+
   // Function to attach all event handlers
   function attachEventHandlers() {
     // Attach mouse events to the svg
@@ -515,14 +526,7 @@ export function initializeTimeline(
         // Update hover info
         const time = timeline.getTimeAtPixel(x)
         const hoverInfo = document.getElementById('hover-info')
-        if (hoverInfo) {
-          if (time.year > -1e5)
-            hoverInfo.textContent = `Position: ${time.toRelativeString()} (${time.toLocaleString(
-              undefined,
-              { era: 'short' }
-            )})`
-          else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
-        }
+        setHoverInfoTime(hoverInfo, time)
 
         // Handle panning
         if (isPanning && startTime) {
@@ -642,14 +646,7 @@ export function initializeTimeline(
           // Update hover info
           const time = timeline.getTimeAtPixel(x)
           const hoverInfo = document.getElementById('hover-info')
-          if (hoverInfo) {
-            if (time.year > -1e5)
-              hoverInfo.textContent = `Position: ${time.toRelativeString()} (${time.toLocaleString(
-                undefined,
-                { era: 'short' }
-              )})`
-            else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
-          }
+          setHoverInfoTime(hoverInfo, time)
 
           // Pan to follow touch
           timeline.panToPosition(startTime, x)

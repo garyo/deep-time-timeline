@@ -4,8 +4,8 @@ import { Temporal } from 'temporal-polyfill'
 
 // Sometimes we convert to/from Temporal, for display & arithmetic
 // Temporal's range: approximately ±271,821 years from Unix epoch (1970)
-const TEMPORAL_MIN_YEAR = -269851 // 271821 BC
-const TEMPORAL_MAX_YEAR = 277730 // 275760 AD
+const TEMPORAL_MIN_YEAR = -269851 // 271821 BCE
+const TEMPORAL_MAX_YEAR = 277730 // 275760 CE
 
 // Constants for time conversion
 export const MINUTES_PER_YEAR = 525948.768 // Average astronomical year
@@ -367,7 +367,7 @@ export class DeepTime {
       return this.temporal.toString()
     } else {
       let eraYear = this.year
-      let era = 'AD'
+      let era = 'CE'
       if (this.year <= 0) {
         eraYear = 1 - this.year
         era = 'BCE'
