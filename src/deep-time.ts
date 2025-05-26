@@ -428,7 +428,9 @@ export class DeepTime {
   ): string {
     if (this.isWithinTemporalRange && this.temporal) {
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-      return this.temporal.withTimeZone(userTimeZone).toLocaleString(locales, options)
+      return this.temporal
+        .withTimeZone(userTimeZone)
+        .toLocaleString(locales, options)
     } else {
       // For dates outside Temporal range, return a simple year representation
       return this.toString()

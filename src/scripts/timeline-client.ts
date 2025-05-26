@@ -451,7 +451,7 @@ export function initializeTimeline(
           const eventUpdater = new EventUpdater(
             apiUrl,
             handleAdditionalEvents,
-            15 * 60 * 1000      // in msec
+            15 * 60 * 1000 // in msec
           )
           eventUpdater.start()
 
@@ -716,6 +716,32 @@ export function initializeTimeline(
   // Attach all event handlers initially
   attachEventHandlers()
 
+  // Key navigation -- global
+  const KEY_PAN_DX = 10
+  const KEY_ZOOM_DZ = 1.05
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      const x = timeline.pixelWidth / 2
+      const t = timeline.getTimeAtPixel(x)
+      timeline.panToPosition(t, x + KEY_PAN_DX)
+      redrawTimeline()
+    }
+    if (e.key === 'ArrowRight') {
+      const x = timeline.pixelWidth / 2
+      const t = timeline.getTimeAtPixel(x)
+      timeline.panToPosition(t, x - KEY_PAN_DX)
+      redrawTimeline()
+    }
+    if (e.key === 'ArrowUp') {
+      timeline.zoomAroundPixel(KEY_ZOOM_DZ, width / 2)
+      redrawTimeline()
+    }
+    if (e.key === 'ArrowDown') {
+      timeline.zoomAroundPixel(1 / KEY_ZOOM_DZ, width / 2)
+      redrawTimeline()
+    }
+  })
+
   // Handle window resize with debounce
   let resizeTimeout: number | null = null
   window.addEventListener('resize', () => {
@@ -781,7 +807,7 @@ export function initializeTimeline(
       redrawTimeline()
     })
   })
-  
+
   // Add click handler for right time indicator to reset to now
   const rightTimeIndicator = document.getElementById('right-time')
   if (rightTimeIndicator) {

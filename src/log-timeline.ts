@@ -315,21 +315,21 @@ class LogTimeline {
    */
   public resetRightmostToNow(): boolean {
     const now = new DeepTime()
-    
+
     // If rightmost is already at now (within 1 minute), do nothing
     if (now.equals(this.rightmostTime)) {
       return false
     }
-    
+
     // Calculate the current time span in minutes
     const timeSpanMinutes = this.rightmostTime.since(this.leftmostTime)
-    
+
     // Set new rightmost to now
     this.rightmostTime = now
-    
+
     // Adjust leftmost to maintain the same time span
     this.leftmostTime = now.subtract({ minutes: timeSpanMinutes })
-    
+
     return true
   }
 
