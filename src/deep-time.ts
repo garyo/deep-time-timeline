@@ -396,8 +396,12 @@ export class DeepTime {
     // Use precise time for recent dates
     if (minutesDiff < 1) {
       return 'now'
+    } else if (minutesDiff < 1.5) {
+      return `${Math.round(minutesDiff)} minute ${rel}`
     } else if (minutesDiff < 60) {
       return `${Math.round(minutesDiff)} minutes ${rel}`
+    } else if (minutesDiff < 1.5 * 60) {
+      return `${Math.round(minutesDiff / 60)} hour ${rel}`
     } else if (minutesDiff < 24 * 60) {
       return `${Math.round(minutesDiff / 60)} hours ${rel}`
     } else if (minutesDiff < MINUTES_PER_YEAR) {
