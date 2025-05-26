@@ -1,0 +1,167 @@
+<!-- Help/About popup -->
+<div id="about-popup" class="about-popup">
+  <div class="about-popup-content">
+    <button id="close-about" class="close-about" aria-label="Close about"
+      >&times;</button
+    >
+    <div class="about-content">
+      <h2>About This App</h2>
+      <p>
+        This app is based on a paper log-scale geologic timeline I created with
+        a friend in junior high school in the 1970s, on an adding-machine tape.
+        We took the logarithms of the dates of all kinds of paleological events,
+        plotted them on the 40' long tape, and hung it up in the classroom. We
+        realized we could fit the Big Bang, dinosaurs, and what we ate for
+        breakfast that day on the same scale! I still have that tape somewhere,
+        and I've been wanting to create an interactive version for many many
+        years.
+      </p>
+      <p>
+        The idea of a <a
+          href="https://en.wikipedia.org/wiki/Logarithm"
+          target="_blank">log-scaled</a
+        >
+        timeline is that ancient events are compressed, and recent events take up
+        more space. We humans are naturally oriented toward short-term thinking:
+        tomorrow, next week, a human lifetime. This app puts that in context, so
+        you can see how the present smoothly fades into the very deepest past.
+      </p>
+      <p>
+        With this app you can zoom in on any time period in the history of the
+        universe. Significant events from politics, art, science, and nature
+        fade in as you zoom into them. It also has a "news feed" so new events
+        will populate in on the right edge every now and then.
+      </p>
+      <p>
+        For more on Deep Time thinking, check out
+        <a href="https://longnowboston.org" target="_blank">Long Now Boston</a>,
+        a group I work with to promote long-term thinking about some of the
+        biggest problems and ideas.
+      </p>
+      <p>
+        Of course any collection of historical events will be opinionated; I
+        chose this set, and their significances, based on my own preferences.
+        Since this is a completely open-source app under an MIT license, you are
+        welcome to
+        <a href="https://github.com/garyo/deep-time-timeline" target="_blank"
+          >inspect the data and code</a
+        >
+        and even make your own version.
+      </p>
+      <p style="font-size: 0.8rem; margin-top: 20px">
+        Created by Gary Oberbrunner, (c) 2025
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // About-popup functionality - handles the popup itself, not the button
+  function initAboutPopup() {
+    const aboutPopup = document.getElementById('about-popup')
+    const closeAbout = document.getElementById('close-about')
+
+    if (!aboutPopup || !closeAbout) {
+      return
+    }
+
+    function closeAboutPopup() {
+      if (aboutPopup) aboutPopup.classList.remove('show')
+      document.body.style.overflow = '' // Restore scrolling
+    }
+
+    // Event listeners for closing
+    closeAbout.addEventListener('click', closeAboutPopup)
+
+    // Close on click outside content
+    aboutPopup.addEventListener('click', (e) => {
+      if (e.target === aboutPopup) {
+        closeAboutPopup()
+      }
+    })
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && aboutPopup.classList.contains('show')) {
+        closeAboutPopup()
+      }
+    })
+
+    // Listen for custom event to open popup
+    document.addEventListener('open-about-popup', () => {
+      aboutPopup.classList.add('show')
+      document.body.style.overflow = 'hidden'
+    })
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAboutPopup)
+  } else {
+    initAboutPopup()
+  }
+</script>
+
+<style>
+  .about-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .about-popup.show {
+    display: flex;
+  }
+
+  .about-popup-content {
+    background-color: var(--surface);
+    border-radius: 8px;
+    width: 80%;
+    max-width: 700px;
+    max-height: 80vh;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .close-about {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  .about-content {
+    padding: 25px;
+    overflow-y: auto;
+    max-height: 80vh;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .about-content h2 {
+    margin-bottom: 15px;
+    color: var(--accent);
+  }
+
+  .about-content a {
+    color: var(--link);
+  }
+  .about-content p {
+    margin-bottom: 8px;
+  }
+</style>
