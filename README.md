@@ -44,7 +44,8 @@ and even make your own version.
 # Dev Notes
 
 It is built with Astro, using D3 for the timeline itself. Styling is
-via plain CSS, with widgets using solid-js.
+via plain CSS. It has solid-js enabled for reactivity, but it's not
+using that yet.
 
 The core of the code is the DeepTime class that represents any time as
 a 64-bit float, which has enough precision to represent individual
@@ -58,6 +59,7 @@ I also wrote a simple news-feed scraper that feeds news items into the
 timeline in real time. That's a Cloudflare Worker, in
 `timeline-events-worker`. It currently uses Reddit's `/r/worldnews`
 because it's free and simple to access.
+See that dir for how to deploy.
 
 
 ## Commands
