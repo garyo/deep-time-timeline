@@ -6,7 +6,7 @@
 // Configuration
 const CACHE_TTL = 5 * 60; // Cache for 5 minutes. Reddit limit is 60 req/min, 10M req/day
 const MAX_ARTICLES = 200;
-const BASE_SIGNIFICANCE = 1;
+const BASE_SIGNIFICANCE = 0;
 const SIGNIFICANCE_THRESHOLD = 5;
 const MAX_SIGNIFICANCE = 9
 const REDDIT_NEWS_PERIOD = 'month';    // hour, day, week, month, year, all -- no other values 
