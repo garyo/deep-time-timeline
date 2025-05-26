@@ -260,6 +260,7 @@ const {
 
       if (isFullscreen) {
         // Enter fullscreen
+        document.body.requestFullscreen()
         container.classList.add('fullscreen')
         // Trigger resize event so timeline adjusts
         setTimeout(() => {
@@ -268,10 +269,23 @@ const {
       } else {
         // Exit fullscreen
         container.classList.remove('fullscreen')
+        document.exitFullscreen()
         // Trigger resize event so timeline adjusts
         setTimeout(() => {
           window.dispatchEvent(new Event('resize'))
         }, 300) // Wait for CSS transition
+      }
+    })
+
+    // When fullscreen exits in any way,
+    // set isFullscreen false and set things back
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        // Just entered full-screen
+      } else {
+        // Just exited full-screen (e.g., via ESC)
+        container.classList.remove('fullscreen')
+        isFullscreen = false
       }
     })
 
