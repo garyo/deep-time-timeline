@@ -500,34 +500,39 @@ export function initializeTimeline(
 
   function setHoverInfoTime(hoverInfo: HTMLElement|null, time: DeepTime) {
     if (hoverInfo) {
+      const posText = width > 400 ? "Position: " : ""
       if (time.year > -1e5)
-        hoverInfo.textContent = `Position: ${time.toRelativeString()} (${time.toLocaleString(
+        hoverInfo.textContent = `${posText}${time.toRelativeString()} (${time.toLocaleString(
           undefined,
           { era: 'short', calendar: 'gregory' }
         ).replace(/AD/, 'CE').replace(/BC(?!E)/, 'BCE')})`
-      else hoverInfo.textContent = `Position: ${time.toRelativeString()}`
+      else hoverInfo.textContent = `${posText}${time.toRelativeString()}`
     }
   }
 
-  // Function to attach all event handlers
+  // Update hover info text and guide line
+  function updateHoverInfo(x: number) {
+    // Update hover line position
+    hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
+
+    // Update hover info
+    const time = timeline.getTimeAtPixel(x)
+    const hoverInfo = document.getElementById('hover-info')
+    setHoverInfoTime(hoverInfo, time)
+  }
+
+  // Attach all event handlers
   function attachEventHandlers() {
     // Attach mouse events to the svg
     const parent = svg
     parent
-      .on('mouseenter', function () {
-        hoverLine.attr('opacity', 0.5)
+      .on('mouseenter', function (event) {
+        const [x, y] = d3.pointer(event)
+        updateHoverInfo(x)
       })
       .on('mousemove', function (event) {
         const [x, y] = d3.pointer(event)
-
-        // Update hover line position
-        hoverLine.attr('x1', x).attr('x2', x)
-
-        // Update hover info
-        const time = timeline.getTimeAtPixel(x)
-        const hoverInfo = document.getElementById('hover-info')
-        setHoverInfoTime(hoverInfo, time)
-
+        updateHoverInfo(x)
         // Handle panning
         if (isPanning && startTime) {
           // We want the time that was originally at startX to follow the mouse to x
@@ -548,6 +553,7 @@ export function initializeTimeline(
       .on('mousedown', function (event) {
         isPanning = true
         const [x] = d3.pointer(event)
+        updateHoverInfo(x)
         startX = x
         startTime = timeline.getTimeAtPixel(x)
         parent.style('cursor', 'grabbing')
@@ -621,15 +627,14 @@ export function initializeTimeline(
           startTime = timeline.getTimeAtPixel(x)
           touchStartTime = timeline.getTimeAtPixel(x)
           parent.style('cursor', 'grabbing')
-
-          // Show hover line
-          hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
+          updateHoverInfo(x)
         } else if (touches.length === 2) {
           // Two touches - prepare for zoom
           isPanning = false
           lastTouchDistance = getTouchDistance(touches)
           const [x] = getTouchCenter(touches)
           touchStartTime = timeline.getTimeAtPixel(x)
+          hoverLine.attr('opacity', 0)
         }
       })
       .on('touchmove', function (event) {
@@ -639,14 +644,7 @@ export function initializeTimeline(
         if (touches.length === 1 && isPanning && startTime) {
           // Single touch - pan
           const [x] = getTouchCenter(touches)
-
-          // Update hover line
-          hoverLine.attr('x1', x).attr('x2', x)
-
-          // Update hover info
-          const time = timeline.getTimeAtPixel(x)
-          const hoverInfo = document.getElementById('hover-info')
-          setHoverInfoTime(hoverInfo, time)
+          updateHoverInfo(x)
 
           // Pan to follow touch
           timeline.panToPosition(startTime, x)
@@ -685,7 +683,7 @@ export function initializeTimeline(
           lastTouchDistance = 0
 
           // Show hover line
-          hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
+          updateHoverInfo(x)
         }
       })
   }

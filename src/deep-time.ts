@@ -432,9 +432,16 @@ export class DeepTime {
   ): string {
     if (this.isWithinTemporalRange && this.temporal) {
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-      return this.temporal
-        .withTimeZone(userTimeZone)
-        .toLocaleString(locales, options)
+      const showTime = this.year > 1900
+      if (showTime)
+        return this.temporal
+          .withTimeZone(userTimeZone)
+          .toLocaleString(locales, options)
+      else
+        return this.temporal
+          .withTimeZone(userTimeZone)
+          .toPlainDate()
+          .toLocaleString(locales, options)
     } else {
       // For dates outside Temporal range, return a simple year representation
       return this.toString()

@@ -260,7 +260,11 @@ const {
 
       if (isFullscreen) {
         // Enter fullscreen
-        document.body.requestFullscreen()
+        try {
+          document.body.requestFullscreen()
+        } catch (err) {
+          // not impl on iOS, ok -- keep going
+        }
         container.classList.add('fullscreen')
         // Trigger resize event so timeline adjusts
         setTimeout(() => {
