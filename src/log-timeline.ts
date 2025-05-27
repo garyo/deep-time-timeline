@@ -290,7 +290,7 @@ class LogTimeline {
   public resetRightmostToNow(): boolean {
     const now = new DeepTime()
 
-    // If rightmost is already at now (within 1 minute), do nothing
+    // If rightmost is already at now (within ε), do nothing
     if (now.equals(this.rightmostTime)) {
       return false
     }

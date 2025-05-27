@@ -511,14 +511,21 @@ export function initializeTimeline(
   }
 
   // Update hover info text and guide line
-  function updateHoverInfo(x: number) {
-    // Update hover line position
-    hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
+  function updateHoverInfo(x: number | null) {
+    if (x === null) {
+      hoverLine.attr('opacity', 0) // hide hover line
+      const hoverInfo = document.getElementById('hover-info')
+      if (hoverInfo)
+        hoverInfo.textContent = ''
+    } else {
+      // Update hover line position
+      hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
 
-    // Update hover info
-    const time = timeline.getTimeAtPixel(x)
-    const hoverInfo = document.getElementById('hover-info')
-    setHoverInfoTime(hoverInfo, time)
+      // Update hover info
+      const time = timeline.getTimeAtPixel(x)
+      const hoverInfo = document.getElementById('hover-info')
+      setHoverInfoTime(hoverInfo, time)
+    }
   }
 
   // Attach all event handlers
@@ -541,7 +548,7 @@ export function initializeTimeline(
         }
       })
       .on('mouseleave', function () {
-        hoverLine.attr('opacity', 0)
+        updateHoverInfo(null)
         const hoverInfo = document.getElementById('hover-info')
         if (hoverInfo) {
           hoverInfo.textContent = ''
@@ -588,6 +595,7 @@ export function initializeTimeline(
         // Zoom around the mouse position
         timeline.zoomAroundPixel(factor, x)
         redrawTimeline()
+        updateHoverInfo(null)
       } else {
         // Pan - check if we should animate
         const targetTime = timeline.getTimeAtPixel(x - deltaX)
@@ -630,7 +638,7 @@ export function initializeTimeline(
           isPanning = false
           lastTouchDistance = getTouchDistance(touches)
           const [x] = getTouchCenter(touches)
-          hoverLine.attr('opacity', 0)
+          updateHoverInfo(null)
         }
       })
       .on('touchmove', function (event) {
@@ -654,6 +662,7 @@ export function initializeTimeline(
             const factor = currentDistance / lastTouchDistance
             timeline.zoomAroundPixel(factor, x)
             redrawTimeline()
+            updateHoverInfo(null)
           }
 
           lastTouchDistance = currentDistance
@@ -798,6 +807,7 @@ export function initializeTimeline(
       const years = parseInt((button as HTMLElement).dataset.years!)
       timeline.setEndpoints({ yearsAgo: years }, { yearsAgo: 0 })
       redrawTimeline()
+      updateHoverInfo(null)
     })
   })
 
@@ -807,6 +817,7 @@ export function initializeTimeline(
     rightTimeIndicator.addEventListener('click', () => {
       if (timeline.resetRightmostToNow()) {
         redrawTimeline()
+        updateHoverInfo(null)
       }
     })
   }
