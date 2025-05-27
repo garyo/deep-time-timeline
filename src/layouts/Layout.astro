@@ -30,7 +30,8 @@ const { title } = Astro.props
             <span></span>
             <span></span>
           </button>
-          <h1>Deep-Time Timeline Visualization</h1>
+          <h1 class="heading-desktop">Deep-Time Timeline Visualization</h1>
+          <h1 class="heading-mobile">Deep-Time Timeline</h1>
         </div>
         <nav>
           <button id="zoom-in" class="nav-button">Zoom In</button>
@@ -322,6 +323,18 @@ const { title } = Astro.props
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .heading-mobile {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    .heading-desktop {
+      display: none;
+    }
+    .heading-mobile {
+      display: block;
+    }
   }
 
   .content-wrapper {

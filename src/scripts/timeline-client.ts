@@ -471,7 +471,7 @@ export function initializeTimeline(
 
           // Don't update while hidden
           document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === "hidden") {
+            if (document.visibilityState === 'hidden') {
               eventUpdater.stop()
               fileWatcher.stop()
             } else {
@@ -492,20 +492,20 @@ export function initializeTimeline(
 
   // Mouse and touch event handling
   let isPanning = false
-  let startX = 0
   let startTime: DeepTime | null = null
   let lastTouchDistance = 0
-  let touchStartTime: DeepTime | null = null
   let animationId: number | null = null
 
-  function setHoverInfoTime(hoverInfo: HTMLElement|null, time: DeepTime) {
+  function setHoverInfoTime(hoverInfo: HTMLElement | null, time: DeepTime) {
     if (hoverInfo) {
-      const posText = width > 400 ? "Position: " : ""
+      const posText = width > 400 ? 'Position: ' : ''
       if (time.year > -1e5)
-        hoverInfo.textContent = `${posText}${time.toRelativeString()} (${time.toLocaleString(
-          undefined,
-          { era: 'short', calendar: 'gregory' }
-        ).replace(/AD/, 'CE').replace(/BC(?!E)/, 'BCE')})`
+        hoverInfo.textContent =
+          `${posText}${time.toRelativeString()} ` +
+          `(${time
+            .toLocaleString()
+            .replace(/AD/, 'CE')
+            .replace(/BC(?!E)/, 'BCE')})`
       else hoverInfo.textContent = `${posText}${time.toRelativeString()}`
     }
   }
@@ -535,7 +535,7 @@ export function initializeTimeline(
         updateHoverInfo(x)
         // Handle panning
         if (isPanning && startTime) {
-          // We want the time that was originally at startX to follow the mouse to x
+          // We want the time startTime to follow the mouse to x
           timeline.panToPosition(startTime, x)
           redrawTimeline()
         }
@@ -554,7 +554,6 @@ export function initializeTimeline(
         isPanning = true
         const [x] = d3.pointer(event)
         updateHoverInfo(x)
-        startX = x
         startTime = timeline.getTimeAtPixel(x)
         parent.style('cursor', 'grabbing')
       })
@@ -623,9 +622,7 @@ export function initializeTimeline(
           // Single touch - start panning
           isPanning = true
           const [x] = getTouchCenter(touches)
-          startX = x
           startTime = timeline.getTimeAtPixel(x)
-          touchStartTime = timeline.getTimeAtPixel(x)
           parent.style('cursor', 'grabbing')
           updateHoverInfo(x)
         } else if (touches.length === 2) {
@@ -633,7 +630,6 @@ export function initializeTimeline(
           isPanning = false
           lastTouchDistance = getTouchDistance(touches)
           const [x] = getTouchCenter(touches)
-          touchStartTime = timeline.getTimeAtPixel(x)
           hoverLine.attr('opacity', 0)
         }
       })
@@ -671,14 +667,12 @@ export function initializeTimeline(
           // All touches ended
           isPanning = false
           startTime = null
-          touchStartTime = null
           lastTouchDistance = 0
           parent.style('cursor', 'grab')
         } else if (touches.length === 1 && lastTouchDistance > 0) {
           // Went from two touches to one - restart single touch mode
           isPanning = true
           const [x] = getTouchCenter(touches)
-          startX = x
           startTime = timeline.getTimeAtPixel(x)
           lastTouchDistance = 0
 

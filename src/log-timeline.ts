@@ -322,21 +322,6 @@ class LogTimeline {
     }
   }
 
-  // Method to format times for display
-  public formatTime(
-    time: DeepTime,
-    options?: Intl.DateTimeFormatOptions
-  ): string {
-    return time.toLocaleString(
-      undefined,
-      options || {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-        calendar: 'gregory'
-      }
-    )
-  }
-
   // Method to get a human-readable description of the time span at a pixel
   public getPixelTimeSpan(pixelPosition: number): string {
     try {

@@ -426,22 +426,31 @@ export class DeepTime {
   }
 
   // Locale-aware formatting
-  toLocaleString(
-    locales?: string | string[],
-    options?: Intl.DateTimeFormatOptions
-  ): string {
+  toLocaleString(): string {
     if (this.isWithinTemporalRange && this.temporal) {
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-      const showTime = this.year > 1900
-      if (showTime)
+      const showTime = this.year > 2000
+      if (showTime) {
+        const showSeconds = this.year > 2024
+        const timeOptions: Intl.DateTimeFormatOptions = showSeconds
+          ? { era: 'short', calendar: 'gregory' }
+          : {
+              era: 'short',
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit'
+            }
         return this.temporal
           .withTimeZone(userTimeZone)
-          .toLocaleString(locales, options)
-      else
+          .toLocaleString(undefined, timeOptions)
+      } else {
         return this.temporal
           .withTimeZone(userTimeZone)
           .toPlainDate()
-          .toLocaleString(locales, options)
+          .toLocaleString(undefined, {era: 'short', calendar: 'gregory'})
+      }
     } else {
       // For dates outside Temporal range, return a simple year representation
       return this.toString()

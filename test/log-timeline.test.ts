@@ -234,35 +234,6 @@ describe('LogTimeline', () => {
     })
   })
 
-  describe('Time Formatting', () => {
-    let timeline: LogTimeline
-
-    beforeEach(() => {
-      timeline = new LogTimeline(400, { yearsAgo: 100 }, { yearsAgo: 1 })
-    })
-
-    it('should format time with default options', () => {
-      const time = new DeepTime('2023-05-15T12:30:00[UTC]')
-      const formatted = timeline.formatTime(time)
-
-      expect(typeof formatted).toBe('string')
-      expect(formatted.length).toBeGreaterThan(0)
-    })
-
-    it('should format time with custom options', () => {
-      const time = new DeepTime('2023-05-15T12:30:00[UTC]')
-      const formatted = timeline.formatTime(time, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      })
-
-      expect(formatted).toContain('2023')
-      expect(formatted).toMatch(/May|M05/)
-      expect(formatted).toContain('15')
-    })
-  })
-
   describe('Pixel Time Span Description', () => {
     let timeline: LogTimeline
 
