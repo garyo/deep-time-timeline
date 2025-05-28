@@ -4,7 +4,7 @@
  */
 
 // Configuration
-const CACHE_TTL = 5 * 60; // Cache for 5 minutes. Reddit limit is 60 req/min, 10M req/day
+const CACHE_TTL = 15 * 60; // Cache for 15 minutes. Reddit limit is 60 req/min, 10M req/day
 const MAX_ARTICLES = 200;
 const BASE_SIGNIFICANCE = 0;
 const SIGNIFICANCE_THRESHOLD = 5;
