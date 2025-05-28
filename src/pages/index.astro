@@ -3,6 +3,11 @@ import Layout from '../layouts/Layout.astro'
 import LogTimelineVisualization from '../components/LogTimelineVisualization.astro'
 ---
 
-<Layout title="Deep-Time Timeline">
+<Layout
+  title="Deep-Time World Timeline"
+  url="https://deep-timeline.oberbrunner.com"
+  ogImage="https://deep-timeline.oberbrunner.com/deep-time-social.jpg"
+  description="Visualize world events through deep time, with log scaling, so you can see how the present (a day, a week, a year) smoothly fades into the very deepest past."
+>
   <LogTimelineVisualization initialYearsAgo={10000} />
 </Layout>
