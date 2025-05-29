@@ -3,6 +3,7 @@
 This is a simple web app to visualize world events through deep time.
 It uses logarithmic scaling, so timescales to the right (toward the
 present) are expanded, and older events are compressed.
+Live version is at https://deep-timeline.oberbrunner.com.
 
 # Idea
 
