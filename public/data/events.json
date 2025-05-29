@@ -275,6 +275,11 @@
     "significance": 10
   },
   {
+    "name": "First evidence of woven cloth",
+    "date": "-7000",
+    "significance": 6
+  },
+  {
     "name": "First cities (Sumer)",
     "date": "3500BC",
     "significance": 8
@@ -300,9 +305,19 @@
     "significance": 7
   },
   {
+    "name": "Stonehenge constructed",
+    "date": "2500BC",
+    "significance": 5
+  },
+  {
     "name": "First dynasty in China",
     "date": "2070BC",
     "significance": 6
+  },
+  {
+    "name": "Maya civilization established",
+    "date": "-2000",
+    "significance": 7
   },
   {
     "name": "Indus Valley peak",
@@ -380,6 +395,11 @@
     "significance": 7
   },
   {
+    "name": "Sappho born",
+    "date": "-0620",
+    "significance": 4
+  },
+  {
     "name": "Birth of Buddha",
     "date": "563BC",
     "significance": 5
@@ -395,14 +415,19 @@
     "significance": 8
   },
   {
-    "name": "Stonehenge constructed",
-    "date": "2500BC",
-    "significance": 5
-  },
-  {
     "name": "Confucius teachings",
     "date": "500BC",
     "significance": 7
+  },
+  {
+    "name": "Hippocrates born",
+    "date": "-0460",
+    "significance": 6
+  },
+  {
+    "name": "Mahabharata begun",
+    "date": "-0400",
+    "significance": 5
   },
   {
     "name": "Alexander conquers Persia",
@@ -418,6 +443,16 @@
     "name": "Qin unites China",
     "date": "221BC",
     "significance": 5
+  },
+  {
+    "name": "Astrolabe invented",
+    "date": "-0150",
+    "significance": 6
+  },
+  {
+    "name": "Cleopatra dies",
+    "date": "-0030",
+    "significance": 6
   },
   {
     "name": "Roman Empire founded",
@@ -440,9 +475,19 @@
     "significance": 5
   },
   {
+    "name": "Hypatia dies",
+    "date": "0415",
+    "significance": 5
+  },
+  {
     "name": "Fall of Rome",
     "date": "476",
     "significance": 8
+  },
+  {
+    "name": "Justinian and Theodora rule Byzantium",
+    "date": "0524",
+    "significance": 5
   },
   {
     "name": "Islam founded",
@@ -455,6 +500,11 @@
     "significance": 5
   },
   {
+    "name": "First mechanical clock (China)",
+    "date": "0725",
+    "significance": 6
+  },
+  {
     "name": "Charlemagne crowned",
     "date": "800-12-25",
     "significance": 6
@@ -463,6 +513,16 @@
     "name": "Song dynasty, gunpowder",
     "date": "904",
     "significance": 7
+  },
+  {
+    "name": "The Tale of Genji written (Japan)",
+    "date": "1010",
+    "significance": 6
+  },
+  {
+    "name": "First clinical drug trials held (Avicenna of Persia)",
+    "date": "1025",
+    "significance": 6
   },
   {
     "name": "First Crusade",
@@ -478,6 +538,21 @@
     "name": "Black Death peaks",
     "date": "1347",
     "significance": 7
+  },
+  {
+    "name": "Inca empire flourishes",
+    "date": "1400",
+    "significance": 5
+  },
+  {
+    "name": "Beijing’s Forbidden City begun",
+    "date": "1420",
+    "significance": 5
+  },
+  {
+    "name": "Brunelleschi’s dome completed",
+    "date": "1436",
+    "significance": 5
   },
   {
     "name": "Printing Press invented",
@@ -497,6 +572,11 @@
   {
     "name": "Magellan circumnavigation",
     "date": "1519",
+    "significance": 6
+  },
+  {
+    "name": "Aztec empire falls",
+    "date": "1521",
     "significance": 6
   },
   {
@@ -520,6 +600,11 @@
     "significance": 5
   },
   {
+    "name": "Taj Mahal completed",
+    "date": "1653",
+    "significance": 5
+  },
+  {
     "name": "Newton writes Principia Mathematica",
     "date": "1687-07-05",
     "significance": 7
@@ -528,6 +613,11 @@
     "name": "Enlightenment peaks",
     "date": "1750",
     "significance": 6
+  },
+  {
+    "name": "First public zoo opens in Austria",
+    "date": "1765",
+    "significance": 4
   },
   {
     "name": "Steam engine patented",
@@ -545,6 +635,11 @@
     "significance": 7
   },
   {
+    "name": "Caroline Herschel becomes first woman to discover a comet",
+    "date": "1786-08-01",
+    "significance": 4
+  },
+  {
     "name": "French Revolution",
     "date": "1789-07-14",
     "significance": 7
@@ -558,6 +653,31 @@
     "name": "Napoleon’s empire rises",
     "date": "1804",
     "significance": 5
+  },
+  {
+    "name": "Mary Shelley publishes Frankenstein",
+    "date": "1818-01-01",
+    "significance": 6
+  },
+  {
+    "name": "Mary Anning discovers the first complete Plesiosaurus skeleton",
+    "date": "1832-12-01",
+    "significance": 5
+  },
+  {
+    "name": "Ada Lovelace publishes the first computer algorithm",
+    "date": "1843-09-01",
+    "significance": 6
+  },
+  {
+    "name": "Harriet Beecher Stowe publishes \"Uncle Tom’s Cabin\"",
+    "date": "1847",
+    "significance": 5
+  },
+  {
+    "name": "Maria Mitchell discovers comet (first American)",
+    "date": "1847-10-01",
+    "significance": 4
   },
   {
     "name": "Darwin publishes Origin of Species",
@@ -575,6 +695,16 @@
     "significance": 6
   },
   {
+    "name": "Red Cross founded",
+    "date": "1863-02-17",
+    "significance": 5
+  },
+  {
+    "name": "U.S. Transcontinental Railroad completed",
+    "date": "1869-05-10",
+    "significance": 4
+  },
+  {
     "name": "Telephone invented",
     "date": "1876-03-07",
     "significance": 6
@@ -585,13 +715,53 @@
     "significance": 6
   },
   {
+    "name": "Nellie Bly circles globe in 72 days",
+    "date": "1890-01-25",
+    "significance": 5
+  },
+  {
+    "name": "Double-Nobelist Marie Curie discovers radium",
+    "date": "1898-12-26",
+    "significance": 6
+  },
+  {
+    "name": "Computer pioneer Grace Hopper born",
+    "date": "1906-12-09",
+    "significance": 5
+  },
+  {
+    "name": "Roald Amundsen reaches South Pole",
+    "date": "1911-12-14",
+    "significance": 5
+  },
+  {
     "name": "World War I",
     "date": "1914-07-28",
     "significance": 8
   },
   {
+    "name": "First electric traffic light installed",
+    "date": "1914-08-05",
+    "significance": 5
+  },
+  {
+    "name": "Panama Canal completed",
+    "date": "1914-08-15",
+    "significance": 6
+  },
+  {
     "name": "Russian Revolution",
     "date": "1917",
+    "significance": 5
+  },
+  {
+    "name": "Walter Gropius founds Bauhaus",
+    "date": "1919-04-12",
+    "significance": 5
+  },
+  {
+    "name": "Wasaburo Oishi discovers jet stream",
+    "date": "1926",
     "significance": 5
   },
   {
@@ -600,14 +770,14 @@
     "significance": 6
   },
   {
+    "name": "Frank Lloyd Wright’s Fallingwater built",
+    "date": "1937",
+    "significance": 5
+  },
+  {
     "name": "World War II",
     "date": "1939-09-01",
     "significance": 8
-  },
-  {
-    "name": "United Nations",
-    "date": "1945-10-24",
-    "significance": 6
   },
   {
     "name": "Nuclear weapons (Hiroshima)",
@@ -620,6 +790,11 @@
     "significance": 7
   },
   {
+    "name": "United Nations founded",
+    "date": "1945-10-24",
+    "significance": 6
+  },
+  {
     "name": "Indian Independence",
     "date": "1947",
     "significance": 5
@@ -628,6 +803,11 @@
     "name": "Transistor invented",
     "date": "1947-12-23",
     "significance": 9
+  },
+  {
+    "name": "UN’s Universal Declaration of Human Rights",
+    "date": "1948-12-10",
+    "significance": 6
   },
   {
     "name": "People’s Republic of China",
@@ -645,12 +825,22 @@
     "significance": 5
   },
   {
-    "name": "Civil Rights Act",
+    "name": "Yuri Gagarin becomes first human in space",
+    "date": "1961-04-12",
+    "significance": 6
+  },
+  {
+    "name": "Valentina Tereshkova becomes first woman in space",
+    "date": "1963-06-16",
+    "significance": 5
+  },
+  {
+    "name": "US Civil Rights Act",
     "date": "1964-07-02",
     "significance": 5
   },
   {
-    "name": "Moon landing",
+    "name": "First moon landing",
     "date": "1969-07-20",
     "significance": 7
   },

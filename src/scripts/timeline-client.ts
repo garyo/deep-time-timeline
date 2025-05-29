@@ -248,6 +248,8 @@ export function initializeTimeline(
       // Calculate local opacity based on local significance threshold
       const localThreshold = getLocalSignificanceThreshold(x, eventPositions)
       const opacity = getOpacity(event.significance, localThreshold)
+      // console.log(`Event at ${x.toFixed(0)}: ${event.name.substring(0, 20)}, sig ${event.significance}: threshold ${localThreshold.toFixed(1)}, opacity ${opacity.toFixed(2)}`)
+
 
       // Event marker
       eventGroup
