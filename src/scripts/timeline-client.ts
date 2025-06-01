@@ -217,7 +217,7 @@ export function initializeTimeline(
     const clusterXSize = eventXSize * 2
     const pushYAmount = 8
     const clusterLeftMargin = eventXSize * 1.75
-    const clusterVerbose = 4
+    const clusterVerbose: number | false = false // set to a number to log at that event (zero-based from oldest)
     if (clusterVerbose)
       console.log(`pushY: checking ${eventStore.events.length} events`)
 
@@ -261,9 +261,10 @@ export function initializeTimeline(
       if (cluster.length > clusterMaxLength || cluster.length <= 1) {
         // cluster is too big to push some up, or only one
         if (clusterVerbose && clusterVerbose == i)
-          console.log(
-            `pushY: ${i} is in cluster of ${cluster.length}, too big or too small`
-          )
+          if (clusterVerbose == i)
+            console.log(
+              `pushY: ${i} is in cluster of ${cluster.length}, too big or too small`
+            )
         continue
       }
       const leftmostIndex = eventStore.findIndex(cluster[0])
@@ -291,13 +292,13 @@ export function initializeTimeline(
           const n = cluster.length - 1 - clusterIndex
           // const dx = cluster[clusterIndex+1].x - event.x
           const yScale = rescaleClamp(minDist, eventXSize / 2, eventXSize, 1, 0)
-          if (clusterVerbose == i)
+          if (clusterVerbose && clusterVerbose == i)
             console.log(
               `pushY: ${i} in cluster! clusterIndex ${clusterIndex} of ${cluster.length}, yScale=${yScale.toFixed(3)} from dist ${minDist.toFixed(3)} (evt: ${event.event.name.substring(0, 30)})`
             )
           event.y = yScale * (n * pushYAmount)
         } else {
-          if (clusterVerbose == i)
+          if (clusterVerbose && clusterVerbose == i)
             console.log(
               `pushY: ${i} is last in cluster! clusterIndex ${clusterIndex} of ${cluster.length} (evt: ${event.event.name.substring(0, 30)})`
             )
@@ -485,6 +486,7 @@ export function initializeTimeline(
     allEvents.push({
       name: 'You started this app',
       date: appStartTime,
+      categories: ['personal'],
       significance: 10
     })
     // Clear events and redraw
@@ -519,8 +521,13 @@ export function initializeTimeline(
     if (autoUpdateInterval > 0) {
       autoUpdateIntervalId = window.setInterval(() => {
         const now = new DeepTime()
-        // Update the right edge, if it's now (= reftime)
-        if (timeline.reftime.equals(timeline.rightmost))
+        // Update the right edge, if it's close to now
+        if (
+          Math.abs(
+            timeline.reftime.minutesSince1970 -
+              timeline.rightmost.minutesSince1970
+          ) < 2
+        )
           timeline.setEndpoints(timeline.leftmost, now)
         timeline.reftime = now
         redrawTimeline()

@@ -2,13 +2,50 @@ import { DeepTime } from '../deep-time'
 
 export interface RawEvent {
   name: string
+  categories?: string[]
   date: string // ISO date or "YYYYBCE" or "YYYYCE" or "YYYYAD" format - will be parsed by DeepTime
   significance: number // 1-10, where 10 is most significant
 }
 
+// Each event can have any number of categories.
+// We try to keep the standard category list short, so it can be presented to users.
+// Events may have categories beyond these -- they're ignored for now.
+// Defined categories as of today:
+// - music
+// - painting
+// - sculpture
+// - architecture
+// - geology
+// - paleontology
+// - astronomy
+// - physics
+// - math
+// - inventions
+// - philosophy
+// - religion
+// - politics
+// - wars
+// - nations
+// - ideas
+// - women
+// - architecture
+// - architecture
+
+// These are presented to the user as combinations:
+// - arts: all arts
+// - natural history: geology, paleontology
+// - sci/tech: astronomy, physics, math, inventions
+// - philosophy/religion
+// - human history: politics, war, nations
+// - women: women
+// - ideas: ???
+// Questions:
+// - others?
+
 export interface Event {
   name: string
   date: DeepTime
+  categories: string[]
   significance: number
 }
 
@@ -25,26 +62,27 @@ export interface VisibleEvent {
  * Process raw events into timeline-ready format using DeepTime
  */
 export function processEvents(events: RawEvent[]): Event[] {
-  return events.map((event) => {
-    try {
+  return events
+    .map((event) => {
+      let date
+      try {
+        date = new DeepTime(event.date)
+      } catch (error) {
+        // Ignore the event
+        console.warn(
+          `Failed to parse date "${event.date}" for event "${event.name}":`,
+          error
+        )
+        return null
+      }
       return {
         name: event.name,
-        date: new DeepTime(event.date),
+        date,
+        categories: event.categories || [],
         significance: event.significance
       }
-    } catch (error) {
-      console.warn(
-        `Failed to parse date "${event.date}" for event "${event.name}":`,
-        error
-      )
-      // Use a fallback date (current time) for unparseable dates
-      return {
-        name: event.name,
-        date: new DeepTime(),
-        significance: event.significance
-      }
-    }
-  })
+    })
+    .filter((item) => item != null)
 }
 
 /**
@@ -53,7 +91,6 @@ export function processEvents(events: RawEvent[]): Event[] {
 // Track last known events for change detection
 let lastEventsJson: string = ''
 let lastModified: string = ''
-let fileCheckInterval: number | null = null
 
 export async function loadEventsFromFile(): Promise<Event[]> {
   try {
@@ -86,7 +123,7 @@ export async function loadEventsFromFile(): Promise<Event[]> {
     throw new Error('Events file not found at any expected location')
   } catch (error) {
     console.warn('Failed to load base events from file:', error)
-    return getFallbackEvents()
+    return []
   }
 }
 
@@ -245,40 +282,6 @@ export async function loadAllEvents(
   )
 
   return { baseEvents, additionalEvents, allEvents }
-}
-
-/**
- * Fallback events in case both file and API fail
- */
-function getFallbackEvents(): Event[] {
-  return [
-    { name: 'Internet', date: new DeepTime('1984'), significance: 8 },
-    {
-      name: 'Industrial Revolution',
-      date: new DeepTime('1775'),
-      significance: 9
-    },
-    { name: 'Writing', date: new DeepTime('3200BC'), significance: 10 },
-    { name: 'First cities', date: new DeepTime('3500BC'), significance: 8 },
-    { name: 'Agriculture', date: new DeepTime('8000BC'), significance: 10 },
-    { name: 'Human species', date: new DeepTime('300000BC'), significance: 10 },
-    {
-      name: 'Dinosaur extinction',
-      date: new DeepTime('66000000BC'),
-      significance: 9
-    },
-    {
-      name: 'First life',
-      date: new DeepTime('3800000000BC'),
-      significance: 10
-    },
-    {
-      name: 'Earth formation',
-      date: new DeepTime('4540000000BC'),
-      significance: 10
-    },
-    { name: 'Big Bang', date: new DeepTime('13800000000BC'), significance: 10 }
-  ]
 }
 
 /**

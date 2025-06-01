@@ -15,27 +15,52 @@ describe('RangeQueryableEvents', () => {
       {
         x: 10,
         y: 20,
-        event: { name: 'Event 1', date: new DeepTime('2020'), significance: 5 }
+        event: {
+          name: 'Event 1',
+          date: new DeepTime('2020'),
+          significance: 5,
+          categories: []
+        }
       },
       {
         x: 15,
         y: 25,
-        event: { name: 'Event 2', date: new DeepTime('2021'), significance: 7 }
+        event: {
+          name: 'Event 2',
+          date: new DeepTime('2021'),
+          significance: 7,
+          categories: []
+        }
       },
       {
         x: 30,
         y: 40,
-        event: { name: 'Event 3', date: new DeepTime('2022'), significance: 8 }
+        event: {
+          name: 'Event 3',
+          date: new DeepTime('2022'),
+          significance: 8,
+          categories: []
+        }
       },
       {
         x: 25,
         y: 35,
-        event: { name: 'Event 4', date: new DeepTime('2023'), significance: 6 }
+        event: {
+          name: 'Event 4',
+          date: new DeepTime('2023'),
+          significance: 6,
+          categories: ['geology', 'astronomy']
+        }
       },
       {
         x: 5,
         y: 15,
-        event: { name: 'Event 5', date: new DeepTime('2019'), significance: 4 }
+        event: {
+          name: 'Event 5',
+          date: new DeepTime('2019'),
+          significance: 4,
+          categories: ['arts']
+        }
       }
     ]
   })
@@ -120,7 +145,8 @@ describe('RangeQueryableEvents', () => {
         event: {
           name: 'A Different Event',
           date: new DeepTime('2021'),
-          significance: 7
+          significance: 7,
+          categories: []
         },
         significance: 0.7
       }
@@ -245,7 +271,8 @@ describe('RangeQueryableEvents', () => {
         event: {
           name: 'Non-existent',
           date: new DeepTime('2025'),
-          significance: 1
+          significance: 1,
+          categories: []
         },
         significance: 0.1
       }
@@ -310,7 +337,8 @@ describe('RangeQueryableEvents', () => {
           event: {
             name: `Event ${i}`,
             date: new DeepTime('2020'),
-            significance: 5
+            significance: 5,
+            categories: []
           }
         })
       }
@@ -333,7 +361,8 @@ describe('RangeQueryableEvents', () => {
           event: {
             name: 'Negative 1',
             date: new DeepTime('2020'),
-            significance: 5
+            significance: 5,
+            categories: []
           }
         },
         {
@@ -342,13 +371,19 @@ describe('RangeQueryableEvents', () => {
           event: {
             name: 'Negative 2',
             date: new DeepTime('2021'),
-            significance: 6
+            significance: 6,
+            categories: []
           }
         },
         {
           x: 0,
           y: 20,
-          event: { name: 'Zero', date: new DeepTime('2022'), significance: 7 }
+          event: {
+            name: 'Zero',
+            date: new DeepTime('2022'),
+            significance: 7,
+            categories: []
+          }
         }
       ]
 
@@ -368,7 +403,8 @@ describe('RangeQueryableEvents', () => {
           event: {
             name: 'Float 1',
             date: new DeepTime('2020'),
-            significance: 5
+            significance: 5,
+            categories: []
           }
         },
         {
@@ -377,7 +413,8 @@ describe('RangeQueryableEvents', () => {
           event: {
             name: 'Float 2',
             date: new DeepTime('2021'),
-            significance: 6
+            significance: 6,
+            categories: []
           }
         },
         {
@@ -386,7 +423,8 @@ describe('RangeQueryableEvents', () => {
           event: {
             name: 'Float 3',
             date: new DeepTime('2022'),
-            significance: 7
+            significance: 7,
+            categories: []
           }
         }
       ]
@@ -407,7 +445,8 @@ describe('RangeQueryableEvents', () => {
           event: {
             name: 'Duplicate 1',
             date: new DeepTime('2020'),
-            significance: 5
+            significance: 5,
+            categories: []
           }
         },
         {
@@ -416,7 +455,8 @@ describe('RangeQueryableEvents', () => {
           event: {
             name: 'Duplicate 2',
             date: new DeepTime('2021'),
-            significance: 6
+            significance: 6,
+            categories: []
           }
         },
         {
@@ -425,7 +465,8 @@ describe('RangeQueryableEvents', () => {
           event: {
             name: 'Duplicate 3',
             date: new DeepTime('2022'),
-            significance: 7
+            significance: 7,
+            categories: []
           }
         }
       ]
