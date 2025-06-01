@@ -2,946 +2,1135 @@
   {
     "name": "Big Bang",
     "date": "-13.8e9",
-    "significance": 10
+    "significance": 10,
+    "categories": ["astronomy", "physics"]
   },
   {
     "name": "First atoms",
     "date": "-13.7e9",
-    "significance": 5
+    "significance": 5,
+    "categories": ["physics", "astronomy"]
   },
   {
     "name": "First stars form",
     "date": "-13.5e9",
-    "significance": 5
+    "significance": 5,
+    "categories": ["astronomy", "physics"]
   },
   {
     "name": "Milky Way is formed",
     "date": "-13.0e9",
-    "significance": 6
+    "significance": 6,
+    "categories": ["astronomy"]
   },
   {
     "name": "Large spiral galaxies form",
     "date": "-9e9",
-    "significance": 5
+    "significance": 5,
+    "categories": ["astronomy"]
   },
   {
     "name": "Solar systems create metals",
     "date": "-8e9",
-    "significance": 5
+    "significance": 5,
+    "categories": ["astronomy", "physics"]
   },
   {
     "name": "Milky Way structure matures",
     "date": "-5.5e9",
-    "significance": 6
+    "significance": 6,
+    "categories": ["astronomy"]
   },
   {
     "name": "Solar System is formed",
     "date": "-4.6e9",
-    "significance": 7
+    "significance": 7,
+    "categories": ["astronomy", "geology"]
   },
   {
     "name": "Earth is formed",
     "date": "-4.54e9",
-    "significance": 10
+    "significance": 10,
+    "categories": ["geology", "astronomy"]
   },
   {
     "name": "Moon is formed",
     "date": "-4.510e9",
-    "significance": 6
+    "significance": 6,
+    "categories": ["astronomy", "geology"]
   },
   {
     "name": "First oceans form",
     "date": "-4.2e9",
-    "significance": 7
+    "significance": 7,
+    "categories": ["geology", "biology"]
   },
   {
     "name": "Earliest life emerges",
     "date": "-3.8e9",
-    "significance": 10
+    "significance": 10,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "Photosynthesis begins",
     "date": "-3.5e9",
-    "significance": 7
+    "significance": 7,
+    "categories": ["biology"]
   },
   {
     "name": "Oxygenation of atmosphere begins",
     "date": "-2.4e9",
-    "significance": 7
+    "significance": 7,
+    "categories": ["biology", "geology"]
   },
   {
     "name": "Eukaryotes evolve",
     "date": "-2.0e9",
-    "significance": 5
+    "significance": 5,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "Multicellular life begins",
     "date": "-1.0e9",
-    "significance": 6
+    "significance": 6,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "First animals emerge",
     "date": "-600e6",
-    "significance": 7
+    "significance": 7,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "Cambrian explosion",
     "date": "-541e6",
-    "significance": 9
+    "significance": 9,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "First land plants",
     "date": "-470e6",
-    "significance": 6
+    "significance": 6,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "First land animals",
     "date": "-428e6",
-    "significance": 7
+    "significance": 7,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "First insects appear",
     "date": "-400e6",
-    "significance": 5
+    "significance": 5,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "Amphibians appear",
     "date": "-370e6",
-    "significance": 5
+    "significance": 5,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "First reptiles appear",
     "date": "-310e6",
-    "significance": 5
+    "significance": 5,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "Permian extinction",
     "date": "-252e6",
-    "significance": 8
+    "significance": 8,
+    "categories": ["paleontology", "geology", "biology"]
   },
   {
     "name": "Dinosaurs dominate",
     "date": "-230e6",
-    "significance": 7
+    "significance": 7,
+    "categories": ["paleontology", "biology"]
   },
   {
     "name": "First mammals appear",
     "date": "-200e6",
-    "significance": 7
+    "significance": 7,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "First flowering plants",
     "date": "-160e6",
-    "significance": 5
+    "significance": 5,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "Archaeopteryx & early birds",
     "date": "-150e6",
-    "significance": 5
+    "significance": 5,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "Cretaceous Period begins",
     "date": "-145e6",
-    "significance": 6
+    "significance": 6,
+    "categories": ["geology", "paleontology"]
   },
   {
     "name": "K-Pg dinosaur extinction event",
     "date": "-66.0e6",
-    "significance": 9
+    "significance": 9,
+    "categories": ["paleontology", "geology", "astronomy"]
   },
   {
     "name": "First primates appear",
     "date": "-55e6",
-    "significance": 6
+    "significance": 6,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "First monkeys",
     "date": "-40e6",
-    "significance": 5
+    "significance": 5,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "First apes",
     "date": "-25e6",
-    "significance": 6
+    "significance": 6,
+    "categories": ["biology", "paleontology"]
   },
   {
     "name": "First hominids",
     "date": "-6.0e6",
-    "significance": 7
+    "significance": 7,
+    "categories": ["biology", "paleontology", "anthropology"]
   },
   {
     "name": "Australopithecus appears",
     "date": "-4.0e6",
-    "significance": 6
+    "significance": 6,
+    "categories": ["paleontology", "anthropology"]
   },
   {
     "name": "Paleolithic Stone Tools",
     "date": "-2.6e6",
-    "significance": 7
+    "significance": 7,
+    "categories": ["inventions", "anthropology"]
   },
   {
     "name": "Genus Homo appears",
     "date": "-2500000",
-    "significance": 6
+    "significance": 6,
+    "categories": ["paleontology", "anthropology"]
   },
   {
     "name": "Homo erectus migrates",
     "date": "-1.8e6",
-    "significance": 4
+    "significance": 4,
+    "categories": ["anthropology", "migration"]
   },
   {
     "name": "Controlled fire use",
     "date": "-790000",
-    "significance": 7
+    "significance": 7,
+    "categories": ["inventions", "anthropology"]
   },
   {
     "name": "Neanderthals appear",
     "date": "-400000",
-    "significance": 6
+    "significance": 6,
+    "categories": ["paleontology", "anthropology"]
   },
   {
     "name": "Homo Sapiens evolves",
     "date": "300000BC",
-    "significance": 10
+    "significance": 10,
+    "categories": ["biology", "paleontology", "anthropology"]
   },
   {
     "name": "First use of ochre pigment",
     "date": "-164000",
-    "significance": 5
+    "significance": 5,
+    "categories": ["art", "anthropology"]
   },
   {
     "name": "Last interglacial period (Eemian)",
     "date": "-125000",
-    "significance": 6
+    "significance": 6,
+    "categories": ["geology", "climate"]
   },
   {
     "name": "Earliest clothing use",
     "date": "-100000",
-    "significance": 5
+    "significance": 5,
+    "categories": ["inventions", "anthropology"]
   },
   {
     "name": "First art (shell beads)",
     "date": "-75000",
-    "significance": 5
+    "significance": 5,
+    "categories": ["art", "anthropology"]
   },
   {
     "name": "Modern language emerges",
     "date": "70000BC",
-    "significance": 9
+    "significance": 9,
+    "categories": ["anthropology", "communication"]
   },
   {
     "name": "Humans migrate out of Africa",
     "date": "60000BC",
-    "significance": 9
+    "significance": 9,
+    "categories": ["anthropology", "migration"]
   },
   {
     "name": "Australia is settled",
     "date": "50000BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["anthropology", "migration"]
   },
   {
     "name": "Cave art appears",
     "date": "40000BC",
-    "significance": 8
+    "significance": 8,
+    "categories": ["painting", "art", "anthropology"]
   },
   {
     "name": "Neanderthals become extinct",
     "date": "39000BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["paleontology", "anthropology"]
   },
   {
     "name": "Bow and arrow first used",
     "date": "30000BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["inventions", "anthropology"]
   },
   {
     "name": "Last Glacial Maximum",
     "date": "20000BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["geology", "climate"]
   },
   {
     "name": "America settled",
     "date": "15000BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["anthropology", "migration"]
   },
   {
     "name": "Dogs domesticated",
     "date": "14000BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["biology", "anthropology", "domestication"]
   },
   {
     "name": "Agriculture",
     "date": "8000BC",
-    "significance": 10
+    "significance": 10,
+    "categories": ["agriculture", "inventions", "anthropology"]
   },
   {
     "name": "First evidence of woven cloth",
     "date": "-7000",
-    "significance": 6
+    "significance": 6,
+    "categories": ["inventions", "anthropology"]
   },
   {
     "name": "First cities (Sumer)",
     "date": "3500BC",
-    "significance": 8
+    "significance": 8,
+    "categories": ["civilization", "architecture", "anthropology"]
   },
   {
     "name": "Bronze Age begins",
     "date": "3300BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["inventions", "metallurgy", "anthropology"]
   },
   {
     "name": "Writing",
     "date": "3200BC",
-    "significance": 10
+    "significance": 10,
+    "categories": ["inventions", "communication", "anthropology"]
   },
   {
     "name": "Egyptian Old Kingdom",
     "date": "2686BC",
-    "significance": 5
+    "significance": 5,
+    "categories": ["nations", "politics", "civilization"]
   },
   {
     "name": "Great Pyramid built",
     "date": "2560BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["architecture", "civilization"]
   },
   {
     "name": "Stonehenge constructed",
     "date": "2500BC",
-    "significance": 5
+    "significance": 5,
+    "categories": ["architecture", "religion", "civilization"]
   },
   {
     "name": "First dynasty in China",
     "date": "2070BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["nations", "politics", "civilization"]
   },
   {
     "name": "Maya civilization established",
     "date": "-2000",
-    "significance": 7
+    "significance": 7,
+    "categories": ["civilization", "nations"]
   },
   {
     "name": "Indus Valley peak",
     "date": "2000BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["civilization", "nations"]
   },
   {
     "name": "Babylon rises",
     "date": "1894BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["nations", "politics", "civilization"]
   },
   {
     "name": "Alphabet invented",
     "date": "1800BC",
-    "significance": 9
+    "significance": 9,
+    "categories": ["inventions", "communication"]
   },
   {
-    "name": "Hammurabi’s Code",
+    "name": "Hammurabi's Code",
     "date": "1754BC",
-    "significance": 8
+    "significance": 8,
+    "categories": ["politics", "law", "civilization"]
   },
   {
     "name": "Chariots in warfare",
     "date": "1700BC",
-    "significance": 5
+    "significance": 5,
+    "categories": ["wars", "inventions", "transportation"]
   },
   {
     "name": "Moses Exodus legend",
     "date": "1250BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["religion", "migration"]
   },
   {
     "name": "Olmec civilization",
     "date": "1200BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["civilization", "nations"]
   },
   {
     "name": "Phoenician trade rises",
     "date": "1200BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["trade", "nations", "transportation"]
   },
   {
     "name": "Iron Age begins",
     "date": "1200BC",
-    "significance": 8
+    "significance": 8,
+    "categories": ["inventions", "metallurgy"]
   },
   {
     "name": "Trojan War",
     "date": "1180BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["wars", "literature"]
   },
   {
     "name": "Assyrian empire peak",
     "date": "900BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["nations", "politics", "wars"]
   },
   {
     "name": "Carthage founded",
     "date": "814BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["nations", "civilization", "trade"]
   },
   {
     "name": "Etruscan civilization",
     "date": "800BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["civilization", "nations"]
   },
   {
     "name": "Greek Olympics start",
     "date": "776BC",
-    "significance": 4
+    "significance": 4,
+    "categories": ["sports", "civilization", "religion"]
   },
   {
     "name": "Rome founded",
     "date": "753BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["nations", "civilization"]
   },
   {
     "name": "Sappho born",
     "date": "-0620",
-    "significance": 4
+    "significance": 4,
+    "categories": ["literature", "women", "art"]
   },
   {
     "name": "Birth of Buddha",
     "date": "563BC",
-    "significance": 5
+    "significance": 5,
+    "categories": ["religion", "philosophy"]
   },
   {
     "name": "Roman Republic founded",
     "date": "509BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["politics", "nations", "ideas"]
   },
   {
     "name": "Athenian democracy",
     "date": "508BC",
-    "significance": 8
+    "significance": 8,
+    "categories": ["politics", "ideas", "civilization"]
   },
   {
     "name": "Confucius teachings",
     "date": "500BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["philosophy", "ideas", "religion"]
   },
   {
     "name": "Hippocrates born",
     "date": "-0460",
-    "significance": 6
+    "significance": 6,
+    "categories": ["medicine", "philosophy"]
   },
   {
     "name": "Mahabharata begun",
     "date": "-0400",
-    "significance": 5
+    "significance": 5,
+    "categories": ["literature", "religion"]
   },
   {
     "name": "Alexander conquers Persia",
     "date": "331BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["wars", "politics", "nations"]
   },
   {
     "name": "Great Wall begun",
     "date": "221BC",
-    "significance": 6
+    "significance": 6,
+    "categories": ["architecture", "wars"]
   },
   {
     "name": "Qin unites China",
     "date": "221BC",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "nations", "wars"]
   },
   {
     "name": "Astrolabe invented",
     "date": "-0150",
-    "significance": 6
+    "significance": 6,
+    "categories": ["inventions", "astronomy", "navigation"]
   },
   {
     "name": "Cleopatra dies",
     "date": "-0030",
-    "significance": 6
+    "significance": 6,
+    "categories": ["politics", "women"]
   },
   {
     "name": "Roman Empire founded",
     "date": "27BC",
-    "significance": 7
+    "significance": 7,
+    "categories": ["politics", "nations"]
   },
   {
     "name": "Birth of Jesus",
     "date": "4BC",
-    "significance": 8
+    "significance": 8,
+    "categories": ["religion"]
   },
   {
     "name": "Han dynasty peaks",
     "date": "100",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "civilization"]
   },
   {
     "name": "Mayan Classic era",
     "date": "250",
-    "significance": 5
+    "significance": 5,
+    "categories": ["civilization", "nations", "art"]
   },
   {
     "name": "Hypatia dies",
     "date": "0415",
-    "significance": 5
+    "significance": 5,
+    "categories": ["women", "math", "astronomy", "philosophy"]
   },
   {
     "name": "Fall of Rome",
     "date": "476",
-    "significance": 8
+    "significance": 8,
+    "categories": ["politics", "nations", "wars"]
   },
   {
     "name": "Justinian and Theodora rule Byzantium",
     "date": "0524",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "women", "nations", "law"]
   },
   {
     "name": "Islam founded",
     "date": "610",
-    "significance": 6
+    "significance": 6,
+    "categories": ["religion"]
   },
   {
     "name": "Tang dynasty begins",
     "date": "618",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "nations", "civilization"]
   },
   {
     "name": "First mechanical clock (China)",
     "date": "0725",
-    "significance": 6
+    "significance": 6,
+    "categories": ["inventions", "timekeeping", "astronomy"]
   },
   {
     "name": "Algebra created by Al-Khwarizmi in Baghdad",
     "date": "0820",
-    "significance": 6
+    "significance": 6,
+    "categories": ["math", "ideas"]
   },
   {
     "name": "Charlemagne crowned",
     "date": "800-12-25",
-    "significance": 6
+    "significance": 6,
+    "categories": ["politics", "nations", "religion"]
   },
   {
     "name": "Song dynasty, gunpowder",
     "date": "904",
-    "significance": 7
+    "significance": 7,
+    "categories": ["inventions", "nations", "wars"]
   },
   {
     "name": "The Tale of Genji written (Japan)",
     "date": "1010",
-    "significance": 6
+    "significance": 6,
+    "categories": ["literature", "women", "art"]
   },
   {
     "name": "First clinical drug trials held (Avicenna of Persia)",
     "date": "1025",
-    "significance": 6
+    "significance": 6,
+    "categories": ["medicine", "science"]
   },
   {
     "name": "First Crusade",
     "date": "1096",
-    "significance": 5
+    "significance": 5,
+    "categories": ["wars", "religion", "politics"]
   },
   {
     "name": "Mongol Empire rises",
     "date": "1206",
-    "significance": 5
+    "significance": 5,
+    "categories": ["nations", "wars", "politics"]
   },
   {
     "name": "Black Death peaks",
     "date": "1347",
-    "significance": 7
+    "significance": 7,
+    "categories": ["disease", "medicine"]
   },
   {
     "name": "Inca empire flourishes",
     "date": "1400",
-    "significance": 5
+    "significance": 5,
+    "categories": ["nations", "civilization"]
   },
   {
-    "name": "Beijing’s Forbidden City begun",
+    "name": "Beijing's Forbidden City begun",
     "date": "1420",
-    "significance": 5
+    "significance": 5,
+    "categories": ["architecture", "nations", "politics"]
   },
   {
-    "name": "Brunelleschi’s dome completed",
+    "name": "Brunelleschi's dome completed",
     "date": "1436",
-    "significance": 5
+    "significance": 5,
+    "categories": ["architecture", "art", "inventions"]
   },
   {
     "name": "Printing Press invented",
     "date": "1440",
-    "significance": 10
+    "significance": 10,
+    "categories": ["inventions", "communication", "ideas"]
   },
   {
     "name": "Columbus lands in America",
     "date": "1492-10-12",
-    "significance": 6
+    "significance": 6,
+    "categories": ["exploration", "nations", "colonialism"]
   },
   {
     "name": "Protestant Reformation",
     "date": "1517-10-31",
-    "significance": 7
+    "significance": 7,
+    "categories": ["religion", "politics", "ideas"]
   },
   {
     "name": "Magellan circumnavigation",
     "date": "1519",
-    "significance": 6
+    "significance": 6,
+    "categories": ["exploration", "navigation", "geography", "civilization"]
   },
   {
     "name": "Aztec empire falls",
     "date": "1521",
-    "significance": 6
+    "significance": 6,
+    "categories": ["wars", "colonialism", "nations"]
   },
   {
     "name": "Copernicus publishes heliocentrism",
     "date": "1543",
-    "significance": 6
+    "significance": 6,
+    "categories": ["astronomy", "ideas", "science"]
   },
   {
     "name": "Spanish Armada defeated",
     "date": "1588",
-    "significance": 4
+    "significance": 4,
+    "categories": ["wars", "nations", "naval"]
   },
   {
     "name": "Jamestown settlement founded",
     "date": "1607",
-    "significance": 5
+    "significance": 5,
+    "categories": ["colonialism", "nations", "civilization"]
   },
   {
-    "name": "Galileo’s telescope",
+    "name": "Galileo's telescope",
     "date": "1609",
-    "significance": 5
+    "significance": 5,
+    "categories": ["astronomy", "inventions", "science"]
   },
   {
     "name": "Taj Mahal completed",
     "date": "1653",
-    "significance": 5
+    "significance": 5,
+    "categories": ["architecture", "art"]
   },
   {
     "name": "Newton writes Principia Mathematica",
     "date": "1687-07-05",
-    "significance": 7
+    "significance": 7,
+    "categories": ["physics", "math", "science", "ideas"]
   },
   {
     "name": "Enlightenment peaks",
     "date": "1750",
-    "significance": 6
+    "significance": 6,
+    "categories": ["philosophy", "ideas", "science"]
   },
   {
     "name": "First public zoo opens in Austria",
     "date": "1765",
-    "significance": 4
+    "significance": 4,
+    "categories": ["conservation", "entertainment", "biology", "ideas"]
   },
   {
     "name": "Steam engine patented",
     "date": "1769",
-    "significance": 7
+    "significance": 7,
+    "categories": ["inventions", "industrialization", "transportation"]
   },
   {
     "name": "Industrial Revolution",
     "date": "1775",
-    "significance": 9
+    "significance": 9,
+    "categories": ["industrialization", "inventions", "economics"]
   },
   {
     "name": "American Revolution",
     "date": "1776-07-04",
-    "significance": 7
+    "significance": 7,
+    "categories": ["politics", "wars", "nations", "ideas"]
   },
   {
     "name": "Caroline Herschel becomes first woman to discover a comet",
     "date": "1786-08-01",
-    "significance": 4
+    "significance": 4,
+    "categories": ["astronomy", "women", "science"]
   },
   {
     "name": "French Revolution",
     "date": "1789-07-14",
-    "significance": 7
+    "significance": 7,
+    "categories": ["politics", "wars", "ideas", "nations"]
   },
   {
     "name": "Haitian Revolution",
     "date": "1791",
-    "significance": 4
+    "significance": 4,
+    "categories": ["politics", "wars", "slavery", "nations"]
   },
   {
-    "name": "Napoleon’s empire rises",
+    "name": "Napoleon's empire rises",
     "date": "1804",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "wars", "nations"]
   },
   {
     "name": "Mary Shelley publishes Frankenstein",
     "date": "1818-01-01",
-    "significance": 6
+    "significance": 6,
+    "categories": ["literature", "women", "science", "art"]
   },
   {
     "name": "Mary Anning discovers the first complete Plesiosaurus skeleton",
     "date": "1832-12-01",
-    "significance": 5
+    "significance": 5,
+    "categories": ["paleontology", "women", "science"]
   },
   {
     "name": "Ada Lovelace publishes the first computer algorithm",
     "date": "1843-09-01",
-    "significance": 6
+    "significance": 6,
+    "categories": ["math", "inventions", "women", "computing"]
   },
   {
-    "name": "Harriet Beecher Stowe publishes \"Uncle Tom’s Cabin\"",
+    "name": "Harriet Beecher Stowe publishes \"Uncle Tom's Cabin\"",
     "date": "1847",
-    "significance": 5
+    "significance": 5,
+    "categories": ["literature", "women", "slavery", "politics"]
   },
   {
     "name": "Maria Mitchell discovers comet (first American)",
     "date": "1847-10-01",
-    "significance": 4
+    "significance": 4,
+    "categories": ["astronomy", "women", "science"]
   },
   {
     "name": "Darwin publishes Origin of Species",
     "date": "1859-11-24",
-    "significance": 7.5
+    "significance": 7.5,
+    "categories": ["biology", "science", "ideas"]
   },
   {
     "name": "US Civil War",
     "date": "1861-04-12",
-    "significance": 7
+    "significance": 7,
+    "categories": ["wars", "politics", "slavery", "nations"]
   },
   {
     "name": "Emancipation Proclamation",
     "date": "1863-01-01",
-    "significance": 6
+    "significance": 6,
+    "categories": ["politics", "slavery", "human rights", "nations"]
   },
   {
     "name": "Red Cross founded",
     "date": "1863-02-17",
-    "significance": 5
+    "significance": 5,
+    "categories": ["humanitarian", "medicine", "organizations"]
   },
   {
     "name": "U.S. Transcontinental Railroad completed",
     "date": "1869-05-10",
-    "significance": 4
+    "significance": 4,
+    "categories": ["transportation", "industrialization", "nations"]
   },
   {
     "name": "Telephone invented",
     "date": "1876-03-07",
-    "significance": 6
+    "significance": 6,
+    "categories": ["inventions", "communication"]
   },
   {
-    "name": "Edison’s light bulb",
+    "name": "Edison's light bulb created",
     "date": "1879-10-01",
-    "significance": 6
+    "significance": 6,
+    "categories": ["inventions", "electricity"]
   },
   {
     "name": "Nellie Bly circles globe in 72 days",
     "date": "1890-01-25",
-    "significance": 5
+    "significance": 5,
+    "categories": ["women", "journalism", "transportation", "exploration"]
   },
   {
     "name": "Double-Nobelist Marie Curie discovers radium",
     "date": "1898-12-26",
-    "significance": 6
+    "significance": 6,
+    "categories": ["physics", "women", "science", "medicine"]
   },
   {
     "name": "Computer pioneer Grace Hopper born",
     "date": "1906-12-09",
-    "significance": 5
+    "significance": 5,
+    "categories": ["computing", "women", "inventions"]
   },
   {
     "name": "Roald Amundsen reaches South Pole",
     "date": "1911-12-14",
-    "significance": 5
+    "significance": 5,
+    "categories": ["exploration", "geography", "civilization"]
   },
   {
     "name": "World War I",
     "date": "1914-07-28",
-    "significance": 8
+    "significance": 8,
+    "categories": ["wars", "politics", "nations"]
   },
   {
     "name": "First electric traffic light installed",
     "date": "1914-08-05",
-    "significance": 5
+    "significance": 5,
+    "categories": ["inventions", "transportation", "urban planning"]
   },
   {
     "name": "Panama Canal completed",
     "date": "1914-08-15",
-    "significance": 6
+    "significance": 6,
+    "categories": ["engineering", "transportation", "trade"]
   },
   {
     "name": "Russian Revolution",
     "date": "1917",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "wars", "nations", "ideas"]
   },
   {
     "name": "Walter Gropius founds Bauhaus",
     "date": "1919-04-12",
-    "significance": 5
+    "significance": 5,
+    "categories": ["art", "architecture", "design", "education"]
   },
   {
     "name": "Wasaburo Oishi discovers jet stream",
     "date": "1926",
-    "significance": 5
+    "significance": 4,
+    "categories": ["meteorology", "science", "aviation"]
   },
   {
     "name": "Great Depression",
     "date": "1929-10-24",
-    "significance": 6
+    "significance": 6,
+    "categories": ["economics", "politics", "nations"]
   },
   {
-    "name": "Frank Lloyd Wright’s Fallingwater built",
+    "name": "Frank Lloyd Wright's Fallingwater built",
     "date": "1937",
-    "significance": 5
+    "significance": 5,
+    "categories": ["architecture", "art", "design"]
   },
   {
     "name": "World War II",
     "date": "1939-09-01",
-    "significance": 8
+    "significance": 8,
+    "categories": ["wars", "politics", "nations"]
   },
   {
     "name": "Nuclear weapons (Hiroshima)",
     "date": "1945-08-06",
-    "significance": 6
+    "significance": 6,
+    "categories": ["physics", "wars", "inventions", "ethics"]
   },
   {
     "name": "World War II ends",
     "date": "1945-09-02",
-    "significance": 7
+    "significance": 7,
+    "categories": ["wars", "politics", "nations"]
   },
   {
     "name": "United Nations founded",
     "date": "1945-10-24",
-    "significance": 6
+    "significance": 6,
+    "categories": ["politics", "international relations", "organizations"]
   },
   {
     "name": "Indian Independence",
     "date": "1947",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "nations", "decolonization"]
   },
   {
     "name": "Transistor invented",
     "date": "1947-12-23",
-    "significance": 9
+    "significance": 9,
+    "categories": ["inventions", "physics", "computing"]
   },
   {
-    "name": "UN’s Universal Declaration of Human Rights",
+    "name": "UN's Universal Declaration of Human Rights",
     "date": "1948-12-10",
-    "significance": 6
+    "significance": 6,
+    "categories": ["politics", "human rights", "international relations"]
   },
   {
-    "name": "People’s Republic of China",
+    "name": "People's Republic of China",
     "date": "1949",
-    "significance": 6
+    "significance": 6,
+    "categories": ["politics", "nations", "revolution"]
   },
   {
     "name": "DNA structure discovered",
     "date": "1953-02-28",
-    "significance": 5
+    "significance": 5,
+    "categories": ["biology", "science", "medicine"]
   },
   {
     "name": "Sputnik launch",
     "date": "1957-10-04",
-    "significance": 5
+    "significance": 5,
+    "categories": ["astronomy", "inventions", "space exploration"]
   },
   {
     "name": "Yuri Gagarin becomes first human in space",
     "date": "1961-04-12",
-    "significance": 6
+    "significance": 6,
+    "categories": ["astronomy", "space exploration", "inventions"]
   },
   {
     "name": "Valentina Tereshkova becomes first woman in space",
     "date": "1963-06-16",
-    "significance": 5
+    "significance": 5,
+    "categories": ["astronomy", "women", "space exploration"]
   },
   {
     "name": "US Civil Rights Act",
     "date": "1964-07-02",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "human rights", "nations"]
   },
   {
     "name": "First moon landing",
     "date": "1969-07-20",
-    "significance": 7
+    "significance": 7,
+    "categories": ["astronomy", "space exploration", "inventions"]
   },
   {
     "name": "Personal computers",
     "date": "1977",
-    "significance": 4
+    "significance": 4,
+    "categories": ["computing", "inventions"]
   },
   {
     "name": "Internet developed",
     "date": "1983-01-01",
-    "significance": 4
+    "significance": 4,
+    "categories": ["computing", "communication", "inventions"]
   },
   {
     "name": "Fall of Berlin Wall",
     "date": "1989-11-09",
-    "significance": 6
+    "significance": 6,
+    "categories": ["politics", "wars", "nations"]
   },
   {
     "name": "Internet public launch",
     "date": "1991-08-06",
-    "significance": 5
+    "significance": 5,
+    "categories": ["computing", "communication", "inventions"]
   },
   {
     "name": "End of apartheid in SA",
     "date": "1994-04-27",
-    "significance": 4
+    "significance": 4,
+    "categories": ["politics", "human rights", "nations"]
   },
   {
     "name": "9/11 attacks",
     "date": "2001-09-11[America/New_York]",
-    "significance": 6
+    "significance": 6,
+    "categories": ["terrorism", "politics", "nations"]
   },
   {
     "name": "Human genome mapped",
     "date": "2003-04-14",
-    "significance": 5
+    "significance": 5,
+    "categories": ["biology", "medicine", "science"]
   },
   {
     "name": "Global financial crisis",
     "date": "2008-09-15",
-    "significance": 4
+    "significance": 4,
+    "categories": ["economics", "politics"]
   },
   {
     "name": "Same-sex marriage legal in US",
     "date": "2015-06-26",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "human rights", "nations"]
   },
   {
     "name": "Paris Climate Accord",
     "date": "2015-12-12",
-    "significance": 5
+    "significance": 5,
+    "categories": ["politics", "environment", "international relations"]
   },
   {
     "name": "COVID-19 pandemic",
     "date": "2020-03-21",
-    "significance": 7
+    "significance": 7,
+    "categories": ["disease", "medicine", "politics"]
   },
   {
     "name": "Malaria vaccine approved by WHO",
     "date": "2021-10-06",
-    "significance": 5
+    "significance": 5,
+    "categories": ["medicine", "disease", "organizations"]
   },
   {
     "name": "James Webb telescope launch",
     "date": "2021-12-25[America/New_York]",
-    "significance": 4
+    "significance": 4,
+    "categories": ["astronomy", "space exploration", "inventions"]
   },
   {
     "name": "Ukraine invasion",
     "date": "2022-02-24",
-    "significance": 5
+    "significance": 5,
+    "categories": ["wars", "politics", "nations"]
   },
   {
     "name": "Renewables surpass coal in US",
     "date": "2022-06-01",
-    "significance": 4
+    "significance": 4,
+    "categories": ["environment", "energy", "nations"]
   },
   {
     "name": "India Moon landing",
     "date": "2023-08-23",
-    "significance": 3
+    "significance": 3,
+    "categories": ["astronomy", "space exploration", "nations"]
   },
   {
     "name": "CRISPR treats sickle cell",
     "date": "2023-12-08",
-    "significance": 5
+    "significance": 5,
+    "categories": ["medicine", "biology", "genetics"]
   },
   {
     "name": "First gene-therapy cure",
     "date": "2025-04-01",
-    "significance": 5
+    "significance": 5,
+    "categories": ["medicine", "biology", "genetics"]
   },
   {
     "name": "HIV vaccine trials succeed",
     "date": "2025-05-16",
-    "significance": 4
+    "significance": 4,
+    "categories": ["medicine", "disease", "biology"]
   }
 ]

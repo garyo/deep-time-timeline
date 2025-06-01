@@ -13,8 +13,8 @@
     "test:run": "vitest run",
     "test:watch": "vitest --watch",
     "test-timeline": "node --loader tsx log-timeline.ts",
-    "format": "prettier --write '{src,test}/**/*.{ts,tsx,js,jsx,json,md,astro}'",
-    "format:check": "prettier --check '{src,test}/**/*.{ts,tsx,js,jsx,json,md,astro}'"
+    "format": "prettier --write '{src,test,extra}/**/*.{ts,tsx,js,jsx,json,md,astro}'",
+    "format:check": "prettier --check '{src,test,extra}/**/*.{ts,tsx,js,jsx,json,md,astro}'"
   },
   "dependencies": {
     "@astrojs/solid-js": "5.1.0",

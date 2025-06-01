@@ -14,22 +14,37 @@ export interface RawEvent {
 // - music
 // - painting
 // - sculpture
+// - literature
+// - art (generic)
+// - design
 // - architecture
 // - geology
+// - geography
 // - paleontology
+// - biology
 // - astronomy
 // - physics
 // - math
+// - agriculture
+// - communication
+// - anthropology
+// - medicine (incl health)
+// - education
 // - inventions
 // - philosophy
 // - religion
+// - civilization
+// - law
 // - politics
+// - economics
 // - wars
 // - nations
 // - ideas
 // - women
-// - architecture
-// - architecture
+// - climate
+// - sports
+// - computing
+// - human rights
 
 // These are presented to the user as combinations:
 // - arts: all arts
