@@ -95,6 +95,10 @@ export function initializeTimeline(
     .attr('class', 'axis-group')
     .attr('transform', `translate(0, ${axis_position})`)
 
+  // Create persistent containers for ticks and events
+  const ticksContainer = axisGroup.append('g').attr('class', 'ticks-container')
+  const eventsContainer = g.append('g').attr('class', 'events-container')
+
   // Main timeline line
   axisGroup
     .append('line')
@@ -134,17 +138,12 @@ export function initializeTimeline(
   }
 
   // Function to draw time ticks
-  function drawTicks() {
-    // Get the current axis group from the SVG
-    const currentAxisGroup = g.select('.axis-group')
-
-    // Remove existing ticks
-    currentAxisGroup.selectAll('.tick-group').remove()
-
+  function drawTicks(container = ticksContainer) {
+    container.node()!.innerHTML = '' // clear existing ticks
     const ticks = timeline.generateLogTicks(50)
 
     // Draw ticks
-    const tickGroups = currentAxisGroup
+    const tickGroups = container
       .selectAll('.tick-group')
       .data(ticks)
       .enter()
@@ -308,9 +307,11 @@ export function initializeTimeline(
   }
 
   // Draw events if they're in range
-  function drawEvents(currentAxisPosition = axis_position) {
-    // Remove existing events
-    g.selectAll('.event-marker').remove()
+  function drawEvents(
+    container = eventsContainer,
+    currentAxisPosition = axis_position
+  ) {
+    container.node()!.innerHTML = '' // clear (this is quick)
 
     // First pass: collect all visible events with their positions
     let visibleEvents: VisibleEvent[] = []
@@ -332,7 +333,7 @@ export function initializeTimeline(
     })
 
     sortedVisibleEvents.forEach(({ x, y, event }) => {
-      const eventGroup = g
+      const eventGroup = container
         .append('g')
         .attr('class', 'event-marker')
         .attr('transform', `translate(${x}, ${currentAxisPosition})`)
@@ -361,26 +362,30 @@ export function initializeTimeline(
         .attr('class', 'text-pair')
         .attr('transform', `translate(0, ${-y})`)
       // shadow
-      textGroup
-        .append('text')
-        .attr('x', textOffsetX + 1)
-        .attr('y', textOffsetY + 1)
-        .attr('text-anchor', 'start')
-        .attr('fill', 'black')
-        .attr('font-size', '11px')
-        .attr('transform', slant)
-        .attr('opacity', opacity)
-        .text(event.name)
-      textGroup
-        .append('text')
-        .attr('x', textOffsetX - 1)
-        .attr('y', textOffsetY - 1)
-        .attr('text-anchor', 'start')
-        .attr('fill', 'black')
-        .attr('font-size', '11px')
-        .attr('transform', slant)
-        .attr('opacity', opacity)
-        .text(event.name)
+      if (opacity > 0.2) {
+        textGroup
+          .append('text')
+          .attr('x', textOffsetX + 1)
+          .attr('y', textOffsetY + 1)
+          .attr('text-anchor', 'start')
+          .attr('fill', 'black')
+          .attr('font-size', '11px')
+          .attr('transform', slant)
+          .attr('opacity', opacity)
+          .text(event.name)
+      }
+      if (opacity > 0.7) {
+        textGroup
+          .append('text')
+          .attr('x', textOffsetX - 1)
+          .attr('y', textOffsetY - 1)
+          .attr('text-anchor', 'start')
+          .attr('fill', 'black')
+          .attr('font-size', '11px')
+          .attr('transform', slant)
+          .attr('opacity', opacity)
+          .text(event.name)
+      }
       // main text
       textGroup
         .append('text')
@@ -410,8 +415,8 @@ export function initializeTimeline(
   // Function to handle full redraw (used for zoom, pan, and auto-update)
   function redrawTimeline() {
     updateTimeLabels()
-    drawTicks()
-    drawEvents(axis_position)
+    drawTicks(ticksContainer)
+    drawEvents(eventsContainer, axis_position)
   }
 
   // Animation function for smooth panning
@@ -482,7 +487,8 @@ export function initializeTimeline(
       date: appStartTime,
       significance: 10
     })
-    drawEvents() // Redraw events with new data
+    // Clear events and redraw
+    drawEvents(eventsContainer) // Redraw events with new data
     console.log(
       `Updated timeline with ${allEvents.length} events (${baseEvents.length} base + ${additionalEvents.length} additional)`
     )
@@ -533,7 +539,7 @@ export function initializeTimeline(
 
   // Initial draw
   updateTimeLabels()
-  drawTicks()
+  drawTicks(ticksContainer)
 
   // Start auto-update
   startAutoUpdate()

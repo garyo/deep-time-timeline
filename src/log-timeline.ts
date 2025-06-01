@@ -178,7 +178,7 @@ class LogTimeline {
 
   public getPixelPosition(time: DeepTime | DeepTimeSpec): number {
     // Convert input to DeepTime
-    const deepTime = new DeepTime(time)
+    const deepTime = time instanceof DeepTime ? time : new DeepTime(time)
 
     // If the time is outside our range, clamp it (only on the right, to avoid NaNs)
     if (deepTime.compare(this.rightmostTime) >= 0) {
