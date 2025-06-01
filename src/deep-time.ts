@@ -449,7 +449,7 @@ export class DeepTime {
         return this.temporal
           .withTimeZone(userTimeZone)
           .toPlainDate()
-          .toLocaleString(undefined, {era: 'short', calendar: 'gregory'})
+          .toLocaleString(undefined, { era: 'short', calendar: 'gregory' })
       }
     } else {
       // For dates outside Temporal range, return a simple year representation

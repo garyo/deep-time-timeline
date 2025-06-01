@@ -7,6 +7,12 @@ export default defineConfig(
       globals: true,
       environment: "node",
       setupFiles: "./test/setup.ts",
+      exclude: [
+        '**/timeline-events-worker/**',
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/.{idea,git,cache,output,temp}/**'
+      ],
     },
   })
 );

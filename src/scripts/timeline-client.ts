@@ -1,12 +1,14 @@
 import * as d3 from 'd3'
 import { LogTimeline, DeepTime } from '../log-timeline'
+import { rescale, rescaleClamp } from '../utils'
 import {
   loadEventsFromFile,
   loadEventsFromAPI,
   EventUpdater,
-  EventFileWatcher
+  EventFileWatcher,
+  RangeQueryableEvents
 } from './events'
-import type { ProcessedEvent } from './events'
+import type { Event, VisibleEvent } from './events'
 
 // Helper function to get container dimensions accounting for padding
 function getContainerDimensions(container: HTMLElement): {
@@ -116,9 +118,9 @@ export function initializeTimeline(
     .style('pointer-events', 'none') // Don't block mouse events
 
   // Store current events
-  let baseEvents: ProcessedEvent[] = []
-  let additionalEvents: ProcessedEvent[] = []
-  let allEvents: ProcessedEvent[] = []
+  let baseEvents: Event[] = []
+  let additionalEvents: Event[] = []
+  let allEvents: Event[] = []
 
   // Function to update time labels
   function updateTimeLabels() {
@@ -190,7 +192,7 @@ export function initializeTimeline(
 
   function getLocalSignificanceThreshold(
     x: number,
-    allVisibleEvents: { x: number; significance: number }[]
+    allVisibleEvents: VisibleEvent[]
   ): number {
     // Define a window around this position to calculate local density
     const windowSize = 50 // pixels - adjust this to control how "local" the threshold is
@@ -209,36 +211,127 @@ export function initializeTimeline(
     return remap(localDensity, 0, maxDensity, 0, 10)
   }
 
+  // Push up (in Y) events when 2 or 3 are close, with no others nearby on the left.
+  function pushClustersForVisibility(eventStore: RangeQueryableEvents) {
+    const clusterMaxLength = 4
+    const eventXSize = 16
+    const clusterXSize = eventXSize * 2
+    const pushYAmount = 8
+    const clusterLeftMargin = eventXSize * 1.75
+    const clusterVerbose = 4
+    if (clusterVerbose)
+      console.log(`pushY: checking ${eventStore.events.length} events`)
+
+    // preallocate to avoid repeated allocations
+    let cluster: Readonly<VisibleEvent>[] = []
+
+    for (let i = 0; i < eventStore.events.length; i++) {
+      const event = eventStore.events[i]
+      eventStore.queryRangeInto(
+        event.x - clusterXSize / 2,
+        event.x + clusterXSize / 2,
+        cluster
+      )
+      // keep adding events to the right, if within eventXSize. This
+      // prevents thinking the left event is in a cluster but the
+      // right ones not.
+      while (true) {
+        const clusterEndX = cluster[cluster.length - 1].x
+        const i = eventStore.findIndex(cluster[cluster.length - 1])
+        if (
+          i &&
+          i < eventStore.events.length - 1 &&
+          eventStore.events[i + 1].x - clusterEndX < eventXSize
+        ) {
+          cluster.push(eventStore.events[i + 1])
+        } else {
+          break
+        }
+      }
+      // Same to the left
+      while (true) {
+        const clusterStartX = cluster[0].x
+        const i = eventStore.findIndex(cluster[0])
+        if (i > 0 && clusterStartX - eventStore.events[i - 1].x < eventXSize) {
+          cluster.unshift(eventStore.events[i - 1]) // add at start
+        } else {
+          break
+        }
+      }
+
+      if (cluster.length > clusterMaxLength || cluster.length <= 1) {
+        // cluster is too big to push some up, or only one
+        if (clusterVerbose && clusterVerbose == i)
+          console.log(
+            `pushY: ${i} is in cluster of ${cluster.length}, too big or too small`
+          )
+        continue
+      }
+      const leftmostIndex = eventStore.findIndex(cluster[0])
+      const hasLeftMarginFree =
+        leftmostIndex == 0 ||
+        eventStore.events[leftmostIndex! - 1].x + clusterLeftMargin <
+          cluster[0].x
+      if (!hasLeftMarginFree) {
+        if (clusterVerbose && clusterVerbose == i)
+          console.log(
+            `pushY: ${i} has no free left margin (cluster left=${cluster[0].x}, prev=${eventStore.events[leftmostIndex! - 1].x}), skipping`
+          )
+        continue
+      }
+      // We're in a pushable cluster
+      const clusterIndex = cluster.findIndex((v) => v === event) // which one are we (0..clusterMaxLength-1)
+      // Scale y by min dist for all cluster elements
+      let minDist = Infinity
+      for (let i = 1; i < cluster.length; i++) {
+        minDist = Math.min(minDist, cluster[i].x - cluster[i - 1].x)
+      }
+
+      if (clusterIndex >= 0) {
+        if (clusterIndex < cluster.length - 1) {
+          const n = cluster.length - 1 - clusterIndex
+          // const dx = cluster[clusterIndex+1].x - event.x
+          const yScale = rescaleClamp(minDist, eventXSize / 2, eventXSize, 1, 0)
+          if (clusterVerbose == i)
+            console.log(
+              `pushY: ${i} in cluster! clusterIndex ${clusterIndex} of ${cluster.length}, yScale=${yScale.toFixed(3)} from dist ${minDist.toFixed(3)} (evt: ${event.event.name.substring(0, 30)})`
+            )
+          event.y = yScale * (n * pushYAmount)
+        } else {
+          if (clusterVerbose == i)
+            console.log(
+              `pushY: ${i} is last in cluster! clusterIndex ${clusterIndex} of ${cluster.length} (evt: ${event.event.name.substring(0, 30)})`
+            )
+        }
+      }
+    }
+  }
+
   // Draw events if they're in range
   function drawEvents(currentAxisPosition = axis_position) {
     // Remove existing events
     g.selectAll('.event-marker').remove()
 
     // First pass: collect all visible events with their positions
-    const visibleEvents: {
-      x: number
-      event: ProcessedEvent
-      significance: number
-    }[] = []
+    let visibleEvents: VisibleEvent[] = []
     allEvents.forEach((event) => {
       if (timeline.isTimeInRange(event.date)) {
         const x = timeline.getPixelPosition(event.date)
-        visibleEvents.push({ x, event, significance: event.significance })
+        visibleEvents.push({ x, y: 0, event })
       }
     })
 
-    // Create a simplified array for threshold calculation
-    const eventPositions = visibleEvents.map((ve) => ({
-      x: ve.x,
-      significance: ve.significance
-    }))
+    const eventStore = new RangeQueryableEvents()
+    eventStore.addAll(visibleEvents)
+
+    pushClustersForVisibility(eventStore)
 
     // Draw in significance order, highest last so they show up on top
     const sortedVisibleEvents = visibleEvents.sort((a, b) => {
-      return a.significance - b.significance
+      return a.event.significance - b.event.significance
     })
 
-    sortedVisibleEvents.forEach(({ x, event }) => {
+    sortedVisibleEvents.forEach(({ x, y, event }) => {
       const eventGroup = g
         .append('g')
         .attr('class', 'event-marker')
@@ -246,10 +339,9 @@ export function initializeTimeline(
         .style('pointer-events', 'none') // Don't block mouse events
 
       // Calculate local opacity based on local significance threshold
-      const localThreshold = getLocalSignificanceThreshold(x, eventPositions)
+      const localThreshold = getLocalSignificanceThreshold(x, visibleEvents)
       const opacity = getOpacity(event.significance, localThreshold)
       // console.log(`Event at ${x.toFixed(0)}: ${event.name.substring(0, 20)}, sig ${event.significance}: threshold ${localThreshold.toFixed(1)}, opacity ${opacity.toFixed(2)}`)
-
 
       // Event marker
       eventGroup
@@ -264,7 +356,10 @@ export function initializeTimeline(
       const textOffsetX = 5 // Start 5px to the right of the dot
       const textOffsetY = -5 // Start 5px above the dot (Y is + down)
       const slant = `rotate(-35)` // Slant up and right
-      const textGroup = eventGroup.append('g').attr('class', 'text-pair')
+      const textGroup = eventGroup
+        .append('g')
+        .attr('class', 'text-pair')
+        .attr('transform', `translate(0, ${-y})`)
       // shadow
       textGroup
         .append('text')
@@ -297,6 +392,18 @@ export function initializeTimeline(
         .attr('transform', slant)
         .attr('opacity', opacity)
         .text(event.name)
+      // vline for pushed events
+      if (y > 0) {
+        textGroup
+          .append('line')
+          .attr('x1', 0)
+          .attr('y1', -5.5)
+          .attr('x2', 0)
+          .attr('y2', -5.5 + y)
+          .attr('stroke', '#fff')
+          .attr('opacity', opacity)
+          .attr('stroke-width', 1)
+      }
     })
   }
 
@@ -382,7 +489,7 @@ export function initializeTimeline(
   }
 
   // Function to handle base events update
-  function handleBaseEventsUpdate(newBaseEvents: ProcessedEvent[]) {
+  function handleBaseEventsUpdate(newBaseEvents: Event[]) {
     console.log(
       `File watcher detected change: ${newBaseEvents.length} base events`
     )
@@ -391,7 +498,7 @@ export function initializeTimeline(
   }
 
   // Function to handle additional events from API
-  function handleAdditionalEvents(newAdditionalEvents: ProcessedEvent[]) {
+  function handleAdditionalEvents(newAdditionalEvents: Event[]) {
     console.log(
       `Received ${newAdditionalEvents.length} additional events from API`
     )
@@ -517,11 +624,16 @@ export function initializeTimeline(
     if (x === null) {
       hoverLine.attr('opacity', 0) // hide hover line
       const hoverInfo = document.getElementById('hover-info')
-      if (hoverInfo)
-        hoverInfo.textContent = ''
+      if (hoverInfo) hoverInfo.textContent = ''
     } else {
       // Update hover line position
-      hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
+      const lineElement = hoverLine.node() as SVGLineElement
+      const xpos = x.toString()
+      const currentOpacity = lineElement.getAttribute('opacity')
+      if (currentOpacity != '0.5') lineElement.setAttribute('opacity', '0.5')
+      lineElement.setAttribute('x1', xpos)
+      lineElement.setAttribute('x2', xpos)
+      // hoverLine.attr('opacity', 0.5).attr('x1', x).attr('x2', x)
 
       // Update hover info
       const time = timeline.getTimeAtPixel(x)

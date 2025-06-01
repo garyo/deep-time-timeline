@@ -437,7 +437,7 @@ describe('DeepTime', () => {
   describe('Locale Formatting', () => {
     it('should format temporal dates with locale', () => {
       const date = new DeepTime({ year: 2023 })
-      const localeStr = date.toLocaleString('en-US')
+      const localeStr = date.toLocaleString()
 
       expect(typeof localeStr).toBe('string')
       expect(localeStr.length).toBeGreaterThan(0)
@@ -445,7 +445,7 @@ describe('DeepTime', () => {
 
     it('should format year precision dates with locale', () => {
       const ancient = new DeepTime({ year: -1000 })
-      const localeStr = ancient.toLocaleString('en-US')
+      const localeStr = ancient.toLocaleString()
 
       // This is actually within Temporal range, so it formats as a date
       expect(typeof localeStr).toBe('string')
