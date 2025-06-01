@@ -1,17 +1,21 @@
 {
-  "arts": [
+  "Arts & Culture": [
     "art",
     "painting",
     "sculpture",
     "architecture",
     "music",
     "literature",
-    "design"
+    "design",
+    "sports",
+    "entertainment",
+    "journalism"
   ],
-  "natural history": ["geology", "paleontology", "biology", "climate"],
-  "sci/tech": [
+  "Natural History": ["geology", "paleontology", "anthropology", "climate"],
+  "Sci/Tech": [
     "astronomy",
     "physics",
+    "biology",
     "math",
     "inventions",
     "science",
@@ -32,9 +36,16 @@
     "timekeeping",
     "meteorology"
   ],
-  "philosophy/religion": ["philosophy", "religion", "ideas", "ethics"],
-  "human history": [
+  "Philosophy/Religion/Ethics": [
+    "philosophy",
+    "religion",
+    "ideas",
+    "ethics",
+    "peace"
+  ],
+  "Human History": [
     "politics",
+    "government",
     "wars",
     "naval",
     "nations",
@@ -44,6 +55,7 @@
     "colonialism",
     "slavery",
     "human rights",
+    "civil rights",
     "law",
     "trade",
     "economics",
@@ -56,20 +68,13 @@
     "exploration",
     "geography"
   ],
-  "women": ["women"],
-  "environment": [
+  "Women": ["women"],
+  "Environment": [
     "environment",
+    "climate",
     "conservation",
     "agriculture",
     "domestication"
   ],
-  "culture": [
-    "sports",
-    "entertainment",
-    "journalism",
-    "education",
-    "urban planning",
-    "humanitarian",
-    "ethics"
-  ]
+  "News": ["news"]
 }

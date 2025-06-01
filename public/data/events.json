@@ -333,7 +333,7 @@
     "name": "First evidence of woven cloth",
     "date": "-7000",
     "significance": 6,
-    "categories": ["inventions", "anthropology"]
+    "categories": ["inventions", "women", "anthropology"]
   },
   {
     "name": "First cities (Sumer)",
@@ -372,6 +372,12 @@
     "categories": ["architecture", "religion", "civilization"]
   },
   {
+    "name": "Kubaba of Sumer becomes first female monarch",
+    "date": "2500BC",
+    "significance": 6,
+    "categories": ["nations", "politics", "civilization", "women"]
+  },
+  {
     "name": "First dynasty in China",
     "date": "2070BC",
     "significance": 6,
@@ -394,6 +400,12 @@
     "date": "1894BC",
     "significance": 7,
     "categories": ["nations", "politics", "civilization"]
+  },
+  {
+    "name": "Sobekneferu of Egypt becomes first female pharaoh",
+    "date": "1806BC",
+    "significance": 5,
+    "categories": ["nations", "politics", "civilization", "women"]
   },
   {
     "name": "Alphabet invented",
@@ -606,16 +618,16 @@
     "categories": ["inventions", "timekeeping", "astronomy"]
   },
   {
-    "name": "Algebra created by Al-Khwarizmi in Baghdad",
-    "date": "0820",
-    "significance": 6,
-    "categories": ["math", "ideas"]
-  },
-  {
     "name": "Charlemagne crowned",
     "date": "800-12-25",
     "significance": 6,
     "categories": ["politics", "nations", "religion"]
+  },
+  {
+    "name": "Algebra created by Al-Khwarizmi in Baghdad",
+    "date": "0820",
+    "significance": 6,
+    "categories": ["math", "ideas"]
   },
   {
     "name": "Song dynasty, gunpowder",
@@ -737,6 +749,13 @@
     "significance": 7,
     "categories": ["physics", "math", "science", "ideas"]
   },
+  {
+    "name": "Little Ice Age peaks",
+    "date": "1700",
+    "significance": 5,
+    "categories": ["geology", "climate"]
+  },
+
   {
     "name": "Enlightenment peaks",
     "date": "1750",
@@ -996,6 +1015,12 @@
     "categories": ["astronomy", "inventions", "space exploration"]
   },
   {
+    "name": "Sirimavo Bandaranaike of Ceylon becomes first elected female PM",
+    "date": "1960",
+    "significance": 5,
+    "categories": ["nations", "politics", "civilization", "women"]
+  },
+  {
     "name": "Yuri Gagarin becomes first human in space",
     "date": "1961-04-12",
     "significance": 6,
@@ -1018,6 +1043,12 @@
     "date": "1969-07-20",
     "significance": 7,
     "categories": ["astronomy", "space exploration", "inventions"]
+  },
+  {
+    "name": "Isabel Perón of Argentina becomes first female president",
+    "date": "1974",
+    "significance": 5,
+    "categories": ["nations", "politics", "civilization", "women"]
   },
   {
     "name": "Personal computers",
@@ -1044,6 +1075,12 @@
     "categories": ["computing", "communication", "inventions"]
   },
   {
+    "name": "Ruth Bader Ginsburg appointed to U.S. Supreme Court",
+    "date": "1993-08-10",
+    "significance": 5,
+    "categories": ["women", "politics", "law", "government"]
+  },
+  {
     "name": "End of apartheid in SA",
     "date": "1994-04-27",
     "significance": 4,
@@ -1062,10 +1099,28 @@
     "categories": ["biology", "medicine", "science"]
   },
   {
+    "name": "Wangari Maathai wins Nobel Peace Prize",
+    "date": "2004-10-08",
+    "significance": 5,
+    "categories": ["women", "environment", "peace", "politics"]
+  },
+  {
+    "name": "Ellen Johnson Sirleaf elected president of Liberia",
+    "date": "2005-11-23",
+    "significance": 4,
+    "categories": ["women", "politics", "government", "Africa"]
+  },
+  {
     "name": "Global financial crisis",
     "date": "2008-09-15",
     "significance": 4,
     "categories": ["economics", "politics"]
+  },
+  {
+    "name": "Malala Yousafzai wins Nobel Peace Prize",
+    "date": "2014-10-10",
+    "significance": 6,
+    "categories": ["women", "education", "peace", "human rights", "Asia"]
   },
   {
     "name": "Same-sex marriage legal in US",
@@ -1080,10 +1135,40 @@
     "categories": ["politics", "environment", "international relations"]
   },
   {
+    "name": "Hillary Clinton becomes first female U.S. major-party presidential nominee",
+    "date": "2016-07-26",
+    "significance": 4,
+    "categories": ["women", "politics", "government", "United States"]
+  },
+  {
+    "name": "Global temps cross 1°C above pre-industrial level",
+    "date": "2017",
+    "significance": 5,
+    "categories": ["climate", "environment"]
+  },
+  {
+    "name": "#MeToo movement goes global",
+    "date": "2017-10",
+    "significance": 5,
+    "categories": ["women", "social movement", "law", "civil rights"]
+  },
+  {
+    "name": "Saudi women gain right to drive",
+    "date": "2018-06-24",
+    "significance": 5,
+    "categories": ["women", "civil rights", "law", "Middle East"]
+  },
+  {
     "name": "COVID-19 pandemic",
     "date": "2020-03-21",
     "significance": 7,
     "categories": ["disease", "medicine", "politics"]
+  },
+  {
+    "name": "Kamala Harris elected first female U.S. Vice President",
+    "date": "2020-11-07",
+    "significance": 5,
+    "categories": ["women", "politics", "government", "United States"]
   },
   {
     "name": "Malaria vaccine approved by WHO",
@@ -1108,6 +1193,12 @@
     "date": "2022-06-01",
     "significance": 4,
     "categories": ["environment", "energy", "nations"]
+  },
+  {
+    "name": "Women lead Iran protests after death of Mahsa Amini",
+    "date": "2022-09-16",
+    "significance": 4,
+    "categories": ["women", "human rights", "politics"]
   },
   {
     "name": "India Moon landing",

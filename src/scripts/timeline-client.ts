@@ -45,7 +45,7 @@ function getContainerDimensions(container: HTMLElement): {
   }
 }
 
-export function initializeTimeline(
+export async function initializeTimeline(
   container: HTMLElement,
   initialYearsAgo: number,
   apiUrl: string = 'https://timeline-events-api.garyo.workers.dev',
@@ -85,6 +85,148 @@ export function initializeTimeline(
     { yearsAgo: initialYearsAgo },
     { yearsAgo: 0 } // 0 years ago = now
   )
+
+  function selectCategoriesByGroups(
+    groups: Record<string, string[]>,
+    groupNames?: string[]
+  ) {
+    selectedCategories = new Set<string>()
+    Object.entries(groups).forEach(([groupName, categories]) => {
+      if (groupNames === undefined || groupNames.includes(groupName)) {
+        categories.forEach((category) => {
+          selectedCategories.add(category)
+        })
+      }
+    })
+    return selectedCategories
+  }
+
+  // Get category groups from server-side data and select all by default
+  let categoryGroups: Record<string, string[]> = {}
+  let selectedCategories = new Set<string>()
+
+  try {
+    const categoryGroupsData = container.dataset.categoryGroups
+    if (categoryGroupsData) {
+      categoryGroups = JSON.parse(categoryGroupsData)
+      selectedCategories = selectCategoriesByGroups(categoryGroups)
+
+      // Wire up event handlers for server-generated checkboxes
+      setupCategoryCheckboxHandlers()
+
+      // Set initial master toggle state
+      updateAllToggleState()
+    }
+  } catch (error) {
+    console.error('Failed to parse category groups data:', error)
+  }
+
+  // Function to set up event handlers for server-generated checkboxes
+  function setupCategoryCheckboxHandlers() {
+    // Add event listeners to all group checkboxes
+    Object.keys(categoryGroups).forEach((groupName) => {
+      const checkbox = document.getElementById(
+        `category-${groupName}`
+      ) as HTMLInputElement
+      if (checkbox) {
+        checkbox.addEventListener('change', updateSelectedCategoriesForEvent)
+      }
+    })
+
+    // Add event listener to the master toggle checkbox
+    const allToggle = document.getElementById(
+      'category-all-toggle'
+    ) as HTMLInputElement
+    if (allToggle) {
+      allToggle.addEventListener('change', handleAllToggleChange)
+    }
+  }
+
+  // Update selected categories based on checked checkboxes
+  function updateSelectedCategories(updateToggle: boolean = true) {
+    const checkedGroups: string[] = []
+
+    // Get all checked group names
+    Object.keys(categoryGroups).forEach((groupName) => {
+      const checkbox = document.getElementById(
+        `category-${groupName}`
+      ) as HTMLInputElement
+      if (checkbox && checkbox.checked) {
+        checkedGroups.push(groupName)
+      }
+    })
+
+    // Update selected categories and redraw
+    selectCategoriesByGroups(categoryGroups, checkedGroups)
+    drawEvents(eventsContainer, axis_position)
+
+    // Update the master toggle state (avoid infinite loop)
+    if (updateToggle) {
+      updateAllToggleState()
+    }
+  }
+  function updateSelectedCategoriesForEvent() {
+    return updateSelectedCategories(true)
+  }
+
+  // Handle master toggle checkbox changes
+  function handleAllToggleChange() {
+    const allToggle = document.getElementById(
+      'category-all-toggle'
+    ) as HTMLInputElement
+    if (!allToggle) return
+
+    // When the toggle is clicked:
+    // - If it was checked (all on), uncheck everything
+    // - If it was unchecked or indeterminate, check everything
+    const shouldCheckAll = allToggle.checked
+
+    // Set all group checkboxes to the same state
+    Object.keys(categoryGroups).forEach((groupName) => {
+      const checkbox = document.getElementById(
+        `category-${groupName}`
+      ) as HTMLInputElement
+      if (checkbox) {
+        checkbox.checked = shouldCheckAll
+      }
+    })
+
+    // Clear indeterminate state
+    allToggle.indeterminate = false
+
+    // Update selected categories (don't update toggle state to avoid loop)
+    updateSelectedCategories(false)
+  }
+
+  // Update the master toggle state based on individual checkboxes
+  function updateAllToggleState() {
+    const allToggle = document.getElementById(
+      'category-all-toggle'
+    ) as HTMLInputElement
+    if (!allToggle) return
+
+    const groupNames = Object.keys(categoryGroups)
+    const checkedCount = groupNames.filter((groupName) => {
+      const checkbox = document.getElementById(
+        `category-${groupName}`
+      ) as HTMLInputElement
+      return checkbox && checkbox.checked
+    }).length
+
+    if (checkedCount === 0) {
+      // None checked
+      allToggle.checked = false
+      allToggle.indeterminate = false
+    } else if (checkedCount === groupNames.length) {
+      // All checked
+      allToggle.checked = true
+      allToggle.indeterminate = false
+    } else {
+      // Some checked
+      allToggle.checked = false
+      allToggle.indeterminate = true
+    }
+  }
 
   // Create main group
   const g = svg.append('g')
@@ -314,10 +456,13 @@ export function initializeTimeline(
   ) {
     container.node()!.innerHTML = '' // clear (this is quick)
 
-    // First pass: collect all visible events with their positions
+    // First pass: collect all selected visible events with their positions
     let visibleEvents: VisibleEvent[] = []
     allEvents.forEach((event) => {
-      if (timeline.isTimeInRange(event.date)) {
+      if (
+        timeline.isTimeInRange(event.date) &&
+        event.categories.some((cat) => selectedCategories.has(cat))
+      ) {
         const x = timeline.getPixelPosition(event.date)
         visibleEvents.push({ x, y: 0, event })
       }

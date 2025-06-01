@@ -10,52 +10,7 @@ export interface RawEvent {
 // Each event can have any number of categories.
 // We try to keep the standard category list short, so it can be presented to users.
 // Events may have categories beyond these -- they're ignored for now.
-// Defined categories as of today:
-// - music
-// - painting
-// - sculpture
-// - literature
-// - art (generic)
-// - design
-// - architecture
-// - geology
-// - geography
-// - paleontology
-// - biology
-// - astronomy
-// - physics
-// - math
-// - agriculture
-// - communication
-// - anthropology
-// - medicine (incl health)
-// - education
-// - inventions
-// - philosophy
-// - religion
-// - civilization
-// - law
-// - politics
-// - economics
-// - wars
-// - nations
-// - ideas
-// - women
-// - climate
-// - sports
-// - computing
-// - human rights
-
-// These are presented to the user as combinations:
-// - arts: all arts
-// - natural history: geology, paleontology
-// - sci/tech: astronomy, physics, math, inventions
-// - philosophy/religion
-// - human history: politics, war, nations
-// - women: women
-// - ideas: ???
-// Questions:
-// - others?
+// See public/data/event-categories.json for details.
 
 export interface Event {
   name: string
@@ -257,15 +212,15 @@ export async function loadEventsFromAPI(
   apiUrl: string = 'https://timeline-events-api.garyo.workers.dev'
 ): Promise<Event[]> {
   try {
-    console.log(`Loading additional events from ${apiUrl}...`)
     const response = await fetch(apiUrl)
     if (!response.ok) {
       throw new Error(`API request failed: ${response.status}`)
     }
     const events: RawEvent[] = await response.json()
-    console.log(
-      `Successfully loaded ${events.length} additional events from API`
-    )
+    events.map((event) => (event.categories = ['news']))
+    // console.log(
+    //   `Successfully loaded ${events.length} additional events from API`
+    // )
     return processEvents(events)
   } catch (error) {
     console.warn('Failed to load additional events from API:', error)

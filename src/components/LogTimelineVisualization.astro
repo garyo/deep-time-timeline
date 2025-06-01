@@ -10,6 +10,19 @@ const {
   apiUrl = 'https://timeline-events-api.garyo.workers.dev',
   autoUpdateInterval = 5000
 } = Astro.props
+
+// Load category groups server-side
+let categoryGroups: Record<string, string[]> = {}
+try {
+  const response = await fetch(
+    new URL('/data/event-categories.json', Astro.url)
+  )
+  if (response.ok) {
+    categoryGroups = await response.json()
+  }
+} catch (error) {
+  console.error('Failed to load event-categories.json:', error)
+}
 ---
 
 <div
@@ -17,6 +30,7 @@ const {
   data-initial-years-ago={initialYearsAgo}
   data-api-url={apiUrl}
   data-auto-update-interval={autoUpdateInterval}
+  data-category-groups={JSON.stringify(categoryGroups)}
 >
   <div class="timeline-controls">
     <div class="time-display left-time" id="left-time">Loading...</div>
@@ -54,20 +68,37 @@ const {
   <div class="timeline-container">
     <!-- Heads-up display overlay -->
     <div class="hud-overlay">
-      <div class="hud-title">Controls</div>
+      <div class="hud-title">Categories</div>
       <div class="hud-content">
-        <div class="hud-item">Events: <span id="hud-events">0</span></div>
-        <div class="hud-item">Zoom: <span id="hud-zoom">1.0x</span></div>
-        <div class="hud-item">Range: <span id="hud-range">--</span></div>
-        <!-- Example UI elements -->
-        <div class="hud-item">
-          <label>
-            <input type="checkbox" id="hud-checkbox" /> Show labels
-          </label>
-        </div>
-        <div class="hud-item">
-          <label>Opacity:</label>
-          <input type="range" id="hud-slider" min="0" max="100" value="50" />
+        <div class="hud-group" id="hud-categories">
+          <div id="category-checkboxes">
+            {/* Master toggle checkbox */}
+            <div class="hud-item category-checkbox">
+              <label>
+                <input
+                  type="checkbox"
+                  id="category-all-toggle"
+                  checked={true}
+                />
+                All
+              </label>
+            </div>
+            {
+              Object.keys(categoryGroups).map((groupName) => (
+                <div class="hud-item category-checkbox">
+                  <label title={categoryGroups[groupName].join(', ')}>
+                    <input
+                      type="checkbox"
+                      id={`category-${groupName}`}
+                      checked={true}
+                      data-group-name={groupName}
+                    />
+                    {groupName}
+                  </label>
+                </div>
+              ))
+            }
+          </div>
         </div>
       </div>
     </div>
@@ -182,11 +213,32 @@ const {
     accent-color: #4a9eff;
   }
 
+  /* Master toggle checkbox styling */
+  #category-all-toggle {
+    accent-color: #ff9f1a !important;
+  }
+
+  /* Indeterminate state styling */
+  #category-all-toggle:indeterminate {
+    accent-color: #ffcc66 !important;
+  }
+
+  /* Add separator after master toggle */
+  .hud-item:has(#category-all-toggle) {
+    border-bottom: 1px solid #3a3a3a;
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+  }
+
   .hud-item input[type='range'] {
     width: 60px;
     height: 12px;
     accent-color: #4a9eff;
     margin-top: 2px;
+  }
+
+  .category-checkbox {
+    font-size: 0.8rem;
   }
 
   .time-display {
@@ -381,7 +433,7 @@ const {
     })
   }
 
-  function initializeApp() {
+  async function initializeApp() {
     const container = document.querySelector(
       '.timeline-container'
     ) as HTMLElement
@@ -396,7 +448,12 @@ const {
     )
 
     // Initialize timeline
-    initializeTimeline(container, initialYearsAgo, apiUrl, autoUpdateInterval)
+    await initializeTimeline(
+      container,
+      initialYearsAgo,
+      apiUrl,
+      autoUpdateInterval
+    )
 
     // Setup fullscreen toggle
     setupFullscreenToggle()
@@ -407,6 +464,6 @@ const {
     document.addEventListener('DOMContentLoaded', initializeApp)
   } else {
     // DOM already loaded
-    initializeApp()
+    await initializeApp()
   }
 </script>
