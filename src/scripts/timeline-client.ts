@@ -244,6 +244,7 @@ export async function initializeTimeline(
   // Main timeline line
   axisGroup
     .append('line')
+    .attr('class', 'main-axis-line')
     .attr('x1', 0)
     .attr('y1', 0)
     .attr('x2', width)
@@ -734,6 +735,9 @@ export async function initializeTimeline(
             eventUpdater.stop()
             fileWatcher.stop()
             stopAutoUpdate()
+            // Clean up event listeners
+            window.removeEventListener('resize', resizeHandler)
+            document.removeEventListener('keydown', keydownHandler)
           })
 
           // Don't update while hidden
@@ -993,7 +997,7 @@ export async function initializeTimeline(
   // Key navigation -- global
   const KEY_PAN_DX = 10
   const KEY_ZOOM_DZ = 1.05
-  document.addEventListener('keydown', (e) => {
+  function keydownHandler(e: KeyboardEvent) {
     if (e.key === 'ArrowLeft') {
       const x = timeline.pixelWidth / 2
       const t = timeline.getTimeAtPixel(x)
@@ -1014,11 +1018,13 @@ export async function initializeTimeline(
       timeline.zoomAroundPixel(1 / KEY_ZOOM_DZ, width / 2)
       redrawTimeline()
     }
-  })
+  }
+
+  document.addEventListener('keydown', keydownHandler)
 
   // Handle window resize with debounce
   let resizeTimeout: number | null = null
-  window.addEventListener('resize', () => {
+  function resizeHandler() {
     // Clear any existing timeout
     if (resizeTimeout) {
       window.clearTimeout(resizeTimeout)
@@ -1043,7 +1049,7 @@ export async function initializeTimeline(
       svg.attr('width', newWidth).attr('height', newHeight)
       timeline.pixelWidth = newWidth
       axisGroup.attr('transform', `translate(0, ${newAxisPosition})`)
-      axisGroup.select('line').attr('x2', newWidth)
+      axisGroup.select('line.main-axis-line').attr('x2', newWidth)
       hoverLine.attr('y2', newHeight)
 
       width = newWidth
@@ -1055,7 +1061,9 @@ export async function initializeTimeline(
 
       resizeTimeout = null
     }, 50) // delay to ensure DOM has updated
-  })
+  }
+
+  window.addEventListener('resize', resizeHandler)
 
   // Connect navigation buttons
   document.getElementById('zoom-in')?.addEventListener('click', () => {
