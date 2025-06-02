@@ -69,7 +69,7 @@ try {
     <!-- Heads-up display overlay -->
     <div class="hud-overlay">
       <div class="hud-header">
-        <div class="hud-title">Categories</div>
+        <div class="hud-title" id="hud-title">Categories</div>
         <button class="hud-toggle" id="hud-toggle" title="Toggle categories">
           <svg
             width="12"
@@ -500,6 +500,7 @@ try {
   function setupHUDToggle() {
     const hudOverlay = document.querySelector('.hud-overlay') as HTMLElement
     const hudToggle = document.getElementById('hud-toggle') as HTMLButtonElement
+    const hudTitle = document.getElementById('hud-title') as HTMLElement
 
     if (!hudToggle || !hudOverlay) return
 
@@ -518,6 +519,9 @@ try {
     }
 
     hudToggle.addEventListener('click', () => {
+      hudOverlay.classList.toggle('collapsed')
+    })
+    hudTitle.addEventListener('click', () => {
       hudOverlay.classList.toggle('collapsed')
     })
 
