@@ -502,9 +502,29 @@ try {
 
     if (!hudToggle || !hudOverlay) return
 
+    function handleResize() {
+      const viewportHeight = window.innerHeight
+      const isCurrentlyCollapsed = hudOverlay.classList.contains('collapsed')
+
+      // Auto-collapse on small screens
+      if (viewportHeight < 600 && !isCurrentlyCollapsed) {
+        hudOverlay.classList.add('collapsed')
+      }
+      // Auto-expand on larger screens (unless user manually closed it)
+      else if (viewportHeight > 700 && isCurrentlyCollapsed) {
+        hudOverlay.classList.remove('collapsed')
+      }
+    }
+
     hudToggle.addEventListener('click', () => {
       hudOverlay.classList.toggle('collapsed')
     })
+
+    // Listen for resize events
+    window.addEventListener('resize', handleResize)
+
+    // Run initial check
+    handleResize()
   }
 
   async function initializeApp() {
