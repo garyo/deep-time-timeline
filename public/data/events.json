@@ -534,6 +534,18 @@
     "categories": ["wars", "politics", "nations"]
   },
   {
+    "name": "Euclid writes \"Elements\"",
+    "date": "-300",
+    "significance": 6,
+    "categories": ["math", "science", "ideas", "education"]
+  },
+  {
+    "name": "Eratosthenes calculates Earth's circumference",
+    "date": "240BC",
+    "significance": 6,
+    "categories": ["math", "science", "astronomy", "geography"]
+  },
+  {
     "name": "Great Wall begun",
     "date": "221BC",
     "significance": 6,
@@ -582,10 +594,10 @@
     "categories": ["civilization", "nations", "art"]
   },
   {
-    "name": "Hypatia dies",
-    "date": "0415",
-    "significance": 5,
-    "categories": ["women", "math", "astronomy", "philosophy"]
+    "name": "Hypatia teaches mathematics and astronomy in Alexandria",
+    "date": "400",
+    "significance": 6,
+    "categories": ["women", "math", "astronomy", "philosophy", "science"]
   },
   {
     "name": "Fall of Rome",
@@ -696,6 +708,18 @@
     "categories": ["exploration", "nations", "colonialism"]
   },
   {
+    "name": "Leonardo da Vinci paints the Mona Lisa",
+    "date": "1503",
+    "significance": 8,
+    "categories": ["art", "painting"]
+  },
+  {
+    "name": "Michelangelo paints Sistine Chapel ceiling",
+    "date": "1512",
+    "significance": 7,
+    "categories": ["art", "painting", "religion"]
+  },
+  {
     "name": "Protestant Reformation",
     "date": "1517-10-31",
     "significance": 7,
@@ -755,7 +779,6 @@
     "significance": 5,
     "categories": ["geology", "climate"]
   },
-
   {
     "name": "Enlightenment peaks",
     "date": "1750",

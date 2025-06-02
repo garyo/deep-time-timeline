@@ -5,8 +5,10 @@ const srcFile = 'public/data/events.json'
 const dstFile = 'public/data/sorted-events.json'
 
 interface Event {
-  title: string
-  date: string // assuming date will be in string format
+  name: string
+  date: string
+  significance: number
+  categories: string[]
 }
 
 interface FormatOptions {
@@ -48,7 +50,7 @@ function formatJsonWithInlineArrays(
       JSON.stringify(obj).length <= maxInlineArrayItems
 
     if (shouldInline) {
-      return JSON.stringify(obj)
+      return JSON.stringify(obj).replace(/,/g, ', ') // one space between elements
     }
 
     // Format as multi-line array
@@ -56,7 +58,7 @@ function formatJsonWithInlineArrays(
       (item) =>
         nextSpaces + formatJsonWithInlineArrays(item, options, nextIndent)
     )
-    return '[\n' + items.join(',\n') + '\n' + spaces + ']'
+    return '[\n' + items.join(',\n') + '\n' + spaces + ']\n'
   }
 
   // Handle objects
@@ -69,6 +71,51 @@ function formatJsonWithInlineArrays(
   })
 
   return '{\n' + items.join(',\n') + '\n' + spaces + '}'
+}
+
+function generateSignificanceHistogram(events: Event[]) {
+  // Count events by significance level
+  const histogram: Record<number, number> = {}
+
+  events.forEach((event) => {
+    const sig = event.significance
+    histogram[sig] = (histogram[sig] || 0) + 1
+  })
+
+  // Sort by significance level
+  const sortedKeys = Object.keys(histogram)
+    .map(Number)
+    .sort((a, b) => a - b)
+
+  console.log('\n=== Significance Histogram ===')
+  console.log('Significance | Count | Percentage | Bar')
+  console.log('-------------|-------|------------|' + '-'.repeat(40))
+
+  const total = events.length
+  const maxCount = Math.max(...Object.values(histogram))
+  const maxBarLength = 40
+
+  sortedKeys.forEach((sig) => {
+    const count = histogram[sig]
+    const percentage = ((count / total) * 100).toFixed(1)
+    const barLength = Math.round((count / maxCount) * maxBarLength)
+    const bar = '█'.repeat(barLength)
+
+    console.log(
+      `${sig.toString().padStart(11)} | ` +
+        `${count.toString().padStart(5)} | ` +
+        `${percentage.padStart(9)}% | ` +
+        `${bar}`
+    )
+  })
+
+  console.log(`\nTotal events: ${total}`)
+  console.log(
+    `Significance range: ${Math.min(...sortedKeys)} - ${Math.max(...sortedKeys)}`
+  )
+  console.log(
+    `Average significance: ${(events.reduce((sum, e) => sum + e.significance, 0) / total).toFixed(2)}`
+  )
 }
 
 function sortEvents() {
@@ -98,3 +145,6 @@ function sortEvents() {
 // Execute the function
 const sortedEvents = sortEvents()
 console.log(`Events sorted into ${dstFile}`)
+
+// Generate and display histogram
+generateSignificanceHistogram(sortedEvents)
