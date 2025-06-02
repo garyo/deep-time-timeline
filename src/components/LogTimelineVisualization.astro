@@ -1,4 +1,6 @@
 ---
+import eventCategoriesData from '../../public/data/event-categories.json'
+
 export interface Props {
   initialYearsAgo?: number
   apiUrl?: string
@@ -14,12 +16,7 @@ const {
 // Load category groups server-side
 let categoryGroups: Record<string, string[]> = {}
 try {
-  const response = await fetch(
-    new URL('/data/event-categories.json', Astro.url)
-  )
-  if (response.ok) {
-    categoryGroups = await response.json()
-  }
+  categoryGroups = eventCategoriesData
 } catch (error) {
   console.error('Failed to load event-categories.json:', error)
 }

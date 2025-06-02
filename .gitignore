@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 .wrangler/
+dist/
 
 # Environment variables  
 .env
