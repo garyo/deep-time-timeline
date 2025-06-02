@@ -68,8 +68,22 @@ try {
   <div class="timeline-container">
     <!-- Heads-up display overlay -->
     <div class="hud-overlay">
-      <div class="hud-title">Categories</div>
-      <div class="hud-content">
+      <div class="hud-header">
+        <div class="hud-title">Categories</div>
+        <button class="hud-toggle" id="hud-toggle" title="Toggle categories">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path class="chevron" d="M3 4.5l3 3 3-3"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="hud-content" id="hud-content">
         <div class="hud-group" id="hud-categories">
           <div id="category-checkboxes">
             {/* Master toggle checkbox */}
@@ -175,18 +189,67 @@ try {
     z-index: 10;
   }
 
+  .hud-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
   .hud-title {
     color: #e0e0e0;
     font-size: 12px;
     font-weight: bold;
-    text-align: center;
-    margin-bottom: 8px;
+    flex-grow: 1;
+  }
+
+  .hud-toggle {
+    background: none;
+    border: none;
+    color: #b0b0b0;
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+  }
+
+  .hud-toggle:hover {
+    color: #4a9eff;
+    background-color: rgba(74, 158, 255, 0.1);
+  }
+
+  .hud-toggle .chevron {
+    transition: transform 0.3s ease;
+    transform-origin: 50% 50%;
+  }
+
+  .hud-overlay.collapsed .hud-toggle .chevron {
+    transform: rotate(90deg);
   }
 
   .hud-content {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    overflow: hidden;
+    transition:
+      max-height 0.3s ease,
+      opacity 0.3s ease;
+    max-height: 300px;
+    opacity: 1;
+  }
+
+  .hud-overlay.collapsed .hud-content {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+  }
+
+  .hud-overlay.collapsed .hud-header {
+    margin-bottom: 0;
   }
 
   .hud-item {
@@ -433,6 +496,17 @@ try {
     })
   }
 
+  function setupHUDToggle() {
+    const hudOverlay = document.querySelector('.hud-overlay') as HTMLElement
+    const hudToggle = document.getElementById('hud-toggle') as HTMLButtonElement
+
+    if (!hudToggle || !hudOverlay) return
+
+    hudToggle.addEventListener('click', () => {
+      hudOverlay.classList.toggle('collapsed')
+    })
+  }
+
   async function initializeApp() {
     const container = document.querySelector(
       '.timeline-container'
@@ -457,6 +531,9 @@ try {
 
     // Setup fullscreen toggle
     setupFullscreenToggle()
+
+    // Setup HUD toggle
+    setupHUDToggle()
   }
 
   // Wait for DOM to load before initializing
