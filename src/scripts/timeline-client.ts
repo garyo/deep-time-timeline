@@ -632,7 +632,7 @@ export async function initializeTimeline(
     allEvents.push({
       name: 'You started this app',
       date: appStartTime,
-      categories: ['personal'],
+      categories: ['personal', 'news'],
       significance: 10
     })
     // Clear events and redraw
