@@ -712,10 +712,10 @@ export async function initializeTimeline(
           console.log(
             `Loaded ${loadedAdditionalEvents.length} additional events from API`
           )
-          handleAdditionalEvents(loadedAdditionalEvents)
 
           // Set up periodic API updates (every 15 minutes)
           // This will go past my free account limit quickly if this gets popular
+          // This does one update immediately
           const eventUpdater = new EventUpdater(
             apiUrl,
             handleAdditionalEvents,
