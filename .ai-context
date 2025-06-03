@@ -1,0 +1,149 @@
+# Deep-Time Visualization Project - AI Context
+
+## Project Overview
+The Deep-Time Timeline is an interactive web application that visualizes world events through deep time using logarithmic scaling. It allows users to zoom from the Big Bang to the present day, with recent events taking up more space and ancient events compressed. The project is inspired by a physical log-scale geological timeline created on adding-machine tape in the 1970s.
+
+**Live Site**: https://deep-timeline.oberbrunner.com
+**License**: MIT
+
+## Tech Stack
+- **Framework**: Astro 5.8.0 (static site generator with component islands)
+- **Runtime**: Bun (package manager and runtime)
+- **Visualization**: D3.js 7.9.0 for timeline rendering
+- **Styling**: TailwindCSS 4.1.7 (utility-first CSS)
+- **Reactivity**: Solid.js 1.9.7 (enabled but minimal usage)
+- **Date/Time**: Temporal Polyfill for precise date arithmetic
+- **Testing**: Vitest for unit tests
+- **Deployment**: Cloudflare (static site + worker)
+
+## Architecture & Core Classes
+
+### Key Files Structure
+```
+src/
+├── deep-time.ts          # Core time representation class
+├── log-timeline.ts       # Timeline visualization logic
+├── components/
+│   ├── LogTimelineVisualization.astro  # Main timeline component
+│   └── AboutPopup.astro               # Info modal
+├── pages/
+│   └── index.astro       # Single page app entry
+└── styles/               # CSS styling
+```
+
+### Core Classes
+
+#### `DeepTime` (`src/deep-time.ts`)
+- **Purpose**: Universal time representation using 64-bit float minutes since 1970 UTC
+- **Range**: From Big Bang (~13.8B years ago) to far future with minute precision
+- **Key Features**:
+  - Handles times outside JavaScript Date/Temporal ranges
+  - Supports parsing from multiple formats (ISO, "1000BC", years ago, etc.)
+  - Logarithmic scaling methods for timeline positioning
+  - Precise arithmetic using Temporal when possible, fallback to astronomical calculations
+- **Usage**: `new DeepTime("13.8e9 years ago")` or `new DeepTime({year: -66000000})`
+
+#### `LogTimeline` (`src/log-timeline.ts`)
+- **Purpose**: Manages logarithmic timeline positioning and interactions
+- **Key Features**:
+  - Pixel ↔ time conversion with log scaling
+  - Zoom/pan operations around focal points
+  - Automatic tick generation for time labels
+  - Reference time (usually "now") for relative positioning
+- **Usage**: `new LogTimeline(width, leftTime, rightTime)`
+
+### Data & Events
+- Historical events are loaded dynamically (structure in `test/events.test.ts`)
+- Real-time news feed via Cloudflare Worker (`timeline-events-worker/`)
+- Uses Reddit's r/worldnews as current events source
+
+## Development Patterns
+
+### Code Style
+- **Prettier**: Single quotes, no semicolons, no trailing commas
+- **TypeScript**: Strict mode enabled
+- **Import Style**: ES modules with explicit `.ts` extensions
+- **Error Handling**: Comprehensive validation with descriptive error messages
+
+### Time Handling Conventions
+- All internal time stored as minutes since 1970 UTC (float64)
+- Use `DeepTime` for all time operations, never raw Date objects
+- Astronomical year numbering (year 0 = 1 BCE)
+- Prefer Temporal API when within range (~±270K years from 1970)
+
+### Testing
+- Comprehensive unit tests in `test/` directory
+- Test files mirror source structure (`deep-time.test.ts`, etc.)
+- Focus on edge cases (Big Bang, far future, leap years, etc.)
+- Run with: `bun test`
+
+## Key Algorithms
+
+### Logarithmic Scaling
+The core insight is mapping time to log space relative to "now":
+```typescript
+// Convert time to log position
+logTime = log(refTime - time.minutesSinceEpoch)
+// With clamping to prevent log(0) or log(negative)
+```
+
+### Zoom Implementation
+Zooming preserves a focal point by scaling log-space distances:
+```typescript
+// Get log distances from focal point to endpoints
+logDistLeft = leftTime.toLog(refTime) - focalTime.toLog(refTime)
+logDistRight = focalTime.toLog(refTime) - rightTime.toLog(refTime)
+// Scale distances by zoom factor
+newLogDistLeft = logDistLeft / zoomFactor
+```
+
+## Development Workflow
+
+### Commands
+- `bun install` - Install dependencies
+- `bun run dev` - Start dev server (localhost:4321)
+- `bun run build` - Build for production
+- `bun run test` - Run test suite
+- `bun run format` - Format code with Prettier
+
+### File Organization
+- No barrel exports - import directly from specific files
+- CSS in `src/styles/` - component-specific styles in `.astro` files
+- Tests mirror source structure in `test/` directory
+- Documentation in markdown files at root level
+
+## Common Tasks & Patterns
+
+### Adding New Historical Events
+Events are structured objects with `date`, `title`, `description`, and `significance` fields. See test files for examples.
+
+### Time Parsing
+The `DeepTime` constructor accepts many formats:
+- ISO strings: `"2025-01-01T00:00:00Z"`
+- Historical: `"1000BC"`, `"65000000 years ago"`
+- Objects: `{year: -66000000}`, `{yearsAgo: 1000}`
+
+### Performance Considerations
+- D3 handles DOM manipulation for smooth animations
+- Log calculations are cached where possible
+- Temporal API avoided for very ancient dates (performance)
+- Large time ranges require careful precision management
+
+## Current Focus Areas
+- Real-time event integration via Cloudflare Worker
+- Interactive zoom/pan performance optimization
+- Historical event data curation and accuracy
+- Mobile responsiveness and touch interactions
+
+## Known Issues & Limitations
+- JavaScript float precision limits at extreme time scales
+- Temporal API has ~±270K year range limitation
+- Mobile touch interactions need refinement
+- News feed depends on Reddit API availability
+
+## Future Enhancement Ideas
+- Custom event collections/themes
+- Collaborative event editing
+- Multiple timeline tracks (science, politics, art)
+- 3D visualization experiments
+- Educational curriculum integration

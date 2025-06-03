@@ -60,13 +60,16 @@ describe('LogTimeline', () => {
   describe('getPixelPosition', () => {
     let timeline: LogTimeline
     let prevTime: Temporal.ZonedDateTime
+    let expected: number
 
     beforeEach(() => {
       const fixedNow = Temporal.ZonedDateTime.from('2025-05-21T12:00:00[UTC]')
       prevTime = fixedNow.subtract({ months: 1 })
-      timeline = new LogTimeline(400, { yearsAgo: 100 }, fixedNow) // 100 years ago to "now"
-      // Mock Temporal.Now.zonedDateTimeISO() to return a fixed time
-      vi.spyOn(Temporal.Now, 'zonedDateTimeISO').mockReturnValue(fixedNow)
+      const oldestTime = fixedNow.subtract({ years: 100 })
+      // console.log(`Timeline in: ${oldestTime} to ${fixedNow}, test time=${prevTime}`)
+      timeline = new LogTimeline(400, oldestTime, fixedNow, fixedNow) // 100 years ago to "now", using fixed ref point
+      expected = 159.849
+      // console.log(`Timeline out: ${timeline}`)
     })
 
     afterEach(() => {
@@ -80,21 +83,21 @@ describe('LogTimeline', () => {
       // For a 100-year log scale timeline, the fixed time should be well to the right
       // but not at the edge since it's in the past
       // Actual value: 289.955
-      expect(position).toBeCloseTo(290, -2)
+      expect(position).toBeCloseTo(expected, 3)
     })
 
     it('should handle Temporal.ZonedDateTime input', () => {
       const zonedDateTime = prevTime
       const position = timeline.getPixelPosition(zonedDateTime)
 
-      expect(position).toBeCloseTo(290, -2)
+      expect(position).toBeCloseTo(expected, 3)
     })
 
     it('should handle JavaScript Date input', () => {
       const jsDate = new Date(prevTime.epochMilliseconds)
       const position = timeline.getPixelPosition(jsDate)
 
-      expect(position).toBeCloseTo(290, -2)
+      expect(position).toBeCloseTo(expected, 3)
     })
 
     it('should place very old dates at leftmost pixel', () => {

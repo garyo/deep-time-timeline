@@ -20,7 +20,8 @@ class LogTimeline {
   constructor(
     width: number,
     leftmostTime: DeepTime | DeepTimeSpec,
-    rightmostTime: DeepTime | DeepTimeSpec
+    rightmostTime: DeepTime | DeepTimeSpec,
+    refTime?: DeepTime | DeepTimeSpec
   ) {
     // Input validation
     if (width <= 0) throw new Error('Width must be positive')
@@ -28,6 +29,8 @@ class LogTimeline {
     this.width = width
 
     this.setEndpoints(leftmostTime, rightmostTime)
+
+    this.refTime = refTime instanceof DeepTime ? refTime : new DeepTime(refTime)
   }
 
   /**
