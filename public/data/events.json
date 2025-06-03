@@ -306,6 +306,12 @@
     "categories": ["inventions", "anthropology"]
   },
   {
+    "name": "Venus of Willendorf created",
+    "date": "25000BC",
+    "significance": 7,
+    "categories": ["women", "art", "civilization", "anthropology", "sculpture"]
+  },
+  {
     "name": "Last Glacial Maximum",
     "date": "20000BC",
     "significance": 7,
@@ -327,7 +333,7 @@
     "name": "Agriculture",
     "date": "8000BC",
     "significance": 10,
-    "categories": ["agriculture", "inventions", "anthropology"]
+    "categories": ["agriculture", "inventions", "anthropology", "women", "civilization"]
   },
   {
     "name": "First evidence of woven cloth",
