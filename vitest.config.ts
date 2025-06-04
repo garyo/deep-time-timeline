@@ -5,7 +5,7 @@ export default defineConfig(
   getViteConfig({
     test: {
       globals: true,
-      environment: "node",
+      environment: "happy-dom", // Changed from "node" to support DOM APIs
       setupFiles: "./test/setup.ts",
       exclude: [
         '**/timeline-events-worker/**',

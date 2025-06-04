@@ -1,0 +1,27 @@
+import type { Component } from 'solid-js'
+import { LogTimeline } from '../log-timeline.ts'
+import { interactionState } from '../stores/interaction-store.ts'
+
+interface TimelineAxisProps {
+  timeline: LogTimeline
+}
+
+export const TimelineAxis: Component<TimelineAxisProps> = (props) => {
+  return (
+    <g
+      class="axis-group"
+      transform={`translate(0, ${interactionState.dimensions.axisPosition})`}
+    >
+      <line
+        class="main-axis-line"
+        x1="0"
+        y1="0"
+        x2={props.timeline.pixelWidth}
+        y2="0"
+        stroke="#4a9eff"
+        stroke-width="2"
+        style={{ 'pointer-events': 'none' }}
+      />
+    </g>
+  )
+}
