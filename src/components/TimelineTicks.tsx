@@ -1,9 +1,9 @@
 import type { Component } from 'solid-js'
 import { createMemo, For } from 'solid-js'
-import { LogTimeline } from '../log-timeline.ts'
+import { LogTimeline, DeepTime } from '../log-timeline.ts'
 
 interface Tick {
-  t: any // DeepTime
+  t: DeepTime
   pos: number
   label: string
 }

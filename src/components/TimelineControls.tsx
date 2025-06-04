@@ -1,6 +1,6 @@
 import type { Component } from 'solid-js'
 import { onMount, onCleanup } from 'solid-js'
-import { globalTimeline } from '../stores/global-timeline.ts'
+import { globalTimeline, timelineReady } from '../stores/global-timeline.ts'
 import { DeepTime } from '../deep-time.ts'
 
 export const TimelineControls: Component = () => {
@@ -90,8 +90,18 @@ export const TimelineControls: Component = () => {
 
   onMount(() => {
     mounted = true
-    // Set up event handlers after a brief delay to ensure DOM is ready
-    setTimeout(setupControlHandlers, 100)
+
+    // Wait for timelineReady signal before setting up handlers
+    const checkAndSetup = () => {
+      if (timelineReady()) {
+        setupControlHandlers()
+      } else {
+        // Retry after a short delay if timeline isn't ready
+        setTimeout(checkAndSetup, 50)
+      }
+    }
+
+    checkAndSetup()
   })
 
   onCleanup(() => {

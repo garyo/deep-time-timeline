@@ -1,6 +1,7 @@
 import type { Component } from 'solid-js'
 import { onMount, onCleanup, createEffect } from 'solid-js'
 import { eventsState, eventsActions } from '../stores/events-store.ts'
+import { timelineReady } from '../stores/global-timeline.ts'
 
 export const CategoryControls: Component = () => {
   let mounted = false
@@ -144,26 +145,37 @@ export const CategoryControls: Component = () => {
 
   onMount(() => {
     mounted = true
-    // Set up event handlers after a brief delay to ensure DOM is ready
-    setTimeout(() => {
-      setupCategoryHandlers()
-      // Initialize checkbox states
-      const selectedCategories = eventsState.selectedCategories
-      Object.entries(eventsState.categoryGroups).forEach(
-        ([groupName, categories]) => {
-          const checkbox = document.getElementById(
-            `category-${groupName}`
-          ) as HTMLInputElement
-          if (checkbox) {
-            const allSelected = categories.every((cat) =>
-              selectedCategories.has(cat)
-            )
-            checkbox.checked = allSelected
+
+    // Wait for timeline ready and category groups to be available
+    const checkAndSetup = () => {
+      if (
+        timelineReady() &&
+        Object.keys(eventsState.categoryGroups).length > 0
+      ) {
+        setupCategoryHandlers()
+        // Initialize checkbox states
+        const selectedCategories = eventsState.selectedCategories
+        Object.entries(eventsState.categoryGroups).forEach(
+          ([groupName, categories]) => {
+            const checkbox = document.getElementById(
+              `category-${groupName}`
+            ) as HTMLInputElement
+            if (checkbox) {
+              const allSelected = categories.every((cat) =>
+                selectedCategories.has(cat)
+              )
+              checkbox.checked = allSelected
+            }
           }
-        }
-      )
-      updateMasterToggleState()
-    }, 100)
+        )
+        updateMasterToggleState()
+      } else {
+        // Retry after a short delay
+        setTimeout(checkAndSetup, 50)
+      }
+    }
+
+    checkAndSetup()
   })
 
   onCleanup(() => {

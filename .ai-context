@@ -7,11 +7,11 @@ The Deep-Time Timeline is an interactive web application that visualizes world e
 **License**: MIT
 
 ## Tech Stack
-- **Framework**: Astro 5.8.0 (static site generator with component islands)
+- **Framework**: Astro 5.8.0 (static site generator + component islands)
 - **Runtime**: Bun (package manager and runtime)
-- **Visualization**: D3.js 7.9.0 for timeline rendering
+- **Reactivity**: Solid.js 1.9.7 (primary reactive framework)
+- **Visualization**: Pure SVG + Solid.js (no D3 - completely removed)
 - **Styling**: TailwindCSS 4.1.7 (utility-first CSS)
-- **Reactivity**: Solid.js 1.9.7 (enabled but minimal usage)
 - **Date/Time**: Temporal Polyfill for precise date arithmetic
 - **Testing**: Vitest for unit tests
 - **Deployment**: Cloudflare (static site + worker)
@@ -21,14 +21,27 @@ The Deep-Time Timeline is an interactive web application that visualizes world e
 ### Key Files Structure
 ```
 src/
-├── deep-time.ts          # Core time representation class
-├── log-timeline.ts       # Timeline visualization logic
-├── components/
-│   ├── LogTimelineVisualization.astro  # Main timeline component
-│   └── AboutPopup.astro               # Info modal
-├── pages/
-│   └── index.astro       # Single page app entry
-└── styles/               # CSS styling
+├── deep-time.ts              # Core time representation class
+├── log-timeline.ts           # Timeline visualization logic
+├── stores/                   # Solid.js reactive stores
+│   ├── global-timeline.ts    # Global timeline state
+│   ├── events-store.ts       # Events and category state
+│   └── interaction-store.ts  # UI interaction state
+├── components/               # Solid.js reactive components
+│   ├── Timeline.tsx          # Main orchestration component
+│   ├── TimelineSVG.tsx       # SVG container with interactions
+│   ├── TimelineAxis.tsx      # Axis rendering
+│   ├── TimelineTicks.tsx     # Tick marks and labels
+│   ├── TimelineEvents.tsx    # Event visualization
+│   ├── TimelineHover.tsx     # Hover indicators
+│   ├── TimelineControls.tsx  # Invisible control handlers
+│   ├── CategoryControls.tsx  # Invisible category handlers
+│   ├── TimeDisplay.tsx       # Time display components
+│   └── AboutPopup.astro      # Info modal (legacy Astro)
+├── scripts/
+│   └── events.ts            # Event loading and management
+└── pages/
+    └── index.astro          # Entry point with static HTML structure
 ```
 
 ### Core Classes
@@ -50,12 +63,33 @@ src/
   - Zoom/pan operations around focal points
   - Automatic tick generation for time labels
   - Reference time (usually "now") for relative positioning
+  - **New**: Reactive updates via callback system
 - **Usage**: `new LogTimeline(width, leftTime, rightTime)`
 
+### Reactive State Architecture (Solid.js)
+
+#### Stores (`src/stores/`)
+- **`global-timeline.ts`**: Central timeline instance and ready state
+- **`events-store.ts`**: Event data, filtering, and category management
+- **`interaction-store.ts`**: UI state (hover, panning, dimensions)
+
+#### Component Hierarchy
+```
+Timeline.tsx (orchestrator)
+├── TimelineControls.tsx (invisible - handles zoom/pan buttons)
+├── CategoryControls.tsx (invisible - handles category checkboxes)
+└── TimelineSVG.tsx (main SVG container)
+    ├── TimelineAxis.tsx (blue timeline axis)
+    ├── TimelineTicks.tsx (time labels)
+    ├── TimelineEvents.tsx (event markers with clustering)
+    └── TimelineHover.tsx (hover line indicator)
+```
+
 ### Data & Events
-- Historical events are loaded dynamically (structure in `test/events.test.ts`)
+- Historical events loaded from JSON files via `scripts/events.ts`
 - Real-time news feed via Cloudflare Worker (`timeline-events-worker/`)
 - Uses Reddit's r/worldnews as current events source
+- Event clustering algorithm prevents visual overlap
 
 ## Development Patterns
 
@@ -65,11 +99,23 @@ src/
 - **Import Style**: ES modules with explicit `.ts` extensions
 - **Error Handling**: Comprehensive validation with descriptive error messages
 
+### Reactive Patterns
+- **Signals**: Used for simple reactive values (`timelineReady`, `globalTimeline`)
+- **Stores**: Used for complex state objects (`eventsState`, `interactionState`)
+- **Memos**: Used for derived computations (`visibleEvents`, `ticks`)
+- **Effects**: Used for syncing reactive state to DOM elements
+
 ### Time Handling Conventions
 - All internal time stored as minutes since 1970 UTC (float64)
 - Use `DeepTime` for all time operations, never raw Date objects
 - Astronomical year numbering (year 0 = 1 BCE)
 - Prefer Temporal API when within range (~±270K years from 1970)
+
+### SVG Rendering (Pure Solid.js)
+- **No D3**: All SVG generation done with Solid.js JSX
+- **Reactive**: SVG elements update automatically via Solid.js reactivity
+- **Performance**: Memoized computations prevent unnecessary re-renders
+- **Interactions**: Native event handlers on SVG elements
 
 ### Testing
 - Comprehensive unit tests in `test/` directory
@@ -97,6 +143,31 @@ logDistRight = focalTime.toLog(refTime) - rightTime.toLog(refTime)
 newLogDistLeft = logDistLeft / zoomFactor
 ```
 
+### Event Clustering
+Prevents visual overlap of events:
+- Groups nearby events within configurable pixel distance
+- Pushes clustered events vertically with connecting lines
+- Uses significance-based opacity for visual hierarchy
+
+## Component Design Patterns
+
+### Invisible Control Components
+- **Purpose**: Bridge between static HTML (from Astro) and reactive Solid.js state
+- **Pattern**: Components that return `null` but manage DOM event handlers
+- **Examples**: `TimelineControls.tsx`, `CategoryControls.tsx`
+- **Benefits**: Separation of concerns, modularity, clean state management
+
+### Reactive SVG Architecture
+- **TimelineSVG**: Container with interaction handlers (mouse, touch, wheel)
+- **Sub-components**: Specialized rendering for axis, ticks, events, hover
+- **Props flow**: Timeline instance passed down, stores accessed directly
+- **Performance**: Memoized calculations, efficient re-rendering
+
+### State Management
+- **Global timeline**: Single source of truth via `globalTimeline` signal
+- **Event data**: Managed in `eventsStore` with filtering and categorization
+- **UI interactions**: Tracked in `interactionStore` (hover, panning, dimensions)
+
 ## Development Workflow
 
 ### Commands
@@ -108,14 +179,22 @@ newLogDistLeft = logDistLeft / zoomFactor
 
 ### File Organization
 - No barrel exports - import directly from specific files
-- CSS in `src/styles/` - component-specific styles in `.astro` files
+- CSS in `src/styles/` - component-specific styles in components
 - Tests mirror source structure in `test/` directory
 - Documentation in markdown files at root level
 
 ## Common Tasks & Patterns
 
-### Adding New Historical Events
-Events are structured objects with `date`, `title`, `description`, and `significance` fields. See test files for examples.
+### Adding New Timeline Features
+1. Update `LogTimeline` class if core functionality needed
+2. Add reactive state to appropriate store
+3. Create or update Solid.js components
+4. Add tests for new functionality
+
+### Adding Event Visualizations
+- Extend `TimelineEvents.tsx` component
+- Use `createMemo` for expensive calculations
+- Follow clustering and significance patterns
 
 ### Time Parsing
 The `DeepTime` constructor accepts many formats:
@@ -124,10 +203,10 @@ The `DeepTime` constructor accepts many formats:
 - Objects: `{year: -66000000}`, `{yearsAgo: 1000}`
 
 ### Performance Considerations
-- D3 handles DOM manipulation for smooth animations
+- Solid.js reactivity handles efficient updates automatically
+- Event clustering prevents performance issues with many events
 - Log calculations are cached where possible
-- Temporal API avoided for very ancient dates (performance)
-- Large time ranges require careful precision management
+- Timeline updates use batched callbacks to prevent cascade updates
 
 ## Current Focus Areas
 - Real-time event integration via Cloudflare Worker
@@ -141,9 +220,25 @@ The `DeepTime` constructor accepts many formats:
 - Mobile touch interactions need refinement
 - News feed depends on Reddit API availability
 
+## Architecture Benefits of Current Design
+
+### Solid.js + Pure SVG Advantages
+- **Performance**: Solid.js fine-grained reactivity is faster than D3's DOM manipulation
+- **Simplicity**: Pure SVG components are easier to understand and debug
+- **Maintainability**: Standard React-like component patterns
+- **Bundle size**: Smaller without D3 dependency
+- **Type safety**: Better TypeScript integration than D3
+
+### Store-based State Management
+- **Predictable**: Clear data flow through reactive stores
+- **Debuggable**: Easy to track state changes
+- **Modular**: Each store handles specific concerns
+- **Testable**: Stores can be tested independently
+
 ## Future Enhancement Ideas
 - Custom event collections/themes
 - Collaborative event editing
 - Multiple timeline tracks (science, politics, art)
 - 3D visualization experiments
 - Educational curriculum integration
+- Animation system for smooth transitions
