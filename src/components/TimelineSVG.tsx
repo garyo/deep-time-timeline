@@ -242,13 +242,13 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
       onTouchCancel={handleTouchEnd}
     >
       <g>
-        <TimelineAxis timeline={props.timeline} />
         <g
           transform={`translate(0, ${interactionState.dimensions.axisPosition})`}
         >
+          <TimelineAxis timeline={props.timeline} />
           <TimelineTicks timeline={props.timeline} />
+          <TimelineEvents timeline={props.timeline} />
         </g>
-        <TimelineEvents timeline={props.timeline} />
         <TimelineHover />
       </g>
     </svg>

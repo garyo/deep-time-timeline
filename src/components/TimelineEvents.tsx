@@ -160,7 +160,7 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
           return (
             <g
               class="event-marker"
-              transform={`translate(${visibleEvent.x}, ${interactionState.dimensions.axisPosition})`}
+              transform={`translate(${visibleEvent.x}, 0)`}
               style={{ 'pointer-events': 'none' }}
             >
               {/* Event marker circle */}
