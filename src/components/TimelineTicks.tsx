@@ -1,6 +1,7 @@
 import type { Component } from 'solid-js'
 import { createMemo, For } from 'solid-js'
 import { LogTimeline, DeepTime } from '../log-timeline.ts'
+import { timelineState } from '../stores/global-timeline.ts'
 
 interface Tick {
   t: DeepTime
@@ -14,6 +15,8 @@ interface TimelineTicksProps {
 
 export const TimelineTicks: Component<TimelineTicksProps> = (props) => {
   const ticks = createMemo((): Tick[] => {
+    // Force reactivity by accessing timelineState
+    const _ = timelineState.width
     return props.timeline.generateLogTicks(50) as Tick[]
   })
 

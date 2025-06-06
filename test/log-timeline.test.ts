@@ -1,12 +1,38 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { createStore } from 'solid-js/store'
 import { LogTimeline } from '../src/log-timeline'
 import { DeepTime } from '../src/deep-time'
 import { Temporal } from 'temporal-polyfill'
+import type { TimelineState } from '../src/stores/global-timeline'
+
+// Helper function to create a LogTimeline for testing
+function createTestTimeline(
+  width: number,
+  leftmostTime: any,
+  rightmostTime: any,
+  refTime?: any
+): LogTimeline {
+  // Create a mock store for testing
+  const [state, setState] = createStore<TimelineState>({
+    leftmostTime: new DeepTime({ yearsAgo: 1000 }),
+    rightmostTime: new DeepTime(),
+    refTime: new DeepTime(),
+    width: 800
+  })
+
+  const timeline = new LogTimeline(() => state, setState)
+  timeline.initialize(width, leftmostTime, rightmostTime, refTime)
+  return timeline
+}
 
 describe('LogTimeline', () => {
   describe('Constructor', () => {
     it('should create a timeline with default parameters', () => {
-      const timeline = new LogTimeline(800, { yearsAgo: 1000 }, { yearsAgo: 0 })
+      const timeline = createTestTimeline(
+        800,
+        { yearsAgo: 1000 },
+        { yearsAgo: 0 }
+      )
 
       expect(timeline.timeSpan, `${timeline}`).toBeCloseTo(1000, 0)
       expect(timeline.pixelWidth).toBe(800)
@@ -19,7 +45,7 @@ describe('LogTimeline', () => {
     it('should create a timeline with DeepTimes and timezone', () => {
       const leftmost = new DeepTime({ yearsAgo: 5000 })
       const rightmost = new DeepTime({ yearsAgo: 0 })
-      const timeline = new LogTimeline(1200, leftmost, rightmost)
+      const timeline = createTestTimeline(1200, leftmost, rightmost)
 
       expect(timeline.timeSpan).toBeCloseTo(5000, 0)
       expect(timeline.pixelWidth).toBe(1200)
@@ -28,7 +54,7 @@ describe('LogTimeline', () => {
     it('should create a timeline with non-zero rightmost', () => {
       const leftmost = new DeepTime({ yearsAgo: 5000 })
       const rightmost = new DeepTime({ yearsAgo: 1000 })
-      const timeline = new LogTimeline(1200, leftmost, rightmost)
+      const timeline = createTestTimeline(1200, leftmost, rightmost)
 
       expect(timeline.timeSpan).toBeCloseTo(4000, 0)
       expect(timeline.pixelWidth).toBe(1200)
@@ -37,12 +63,12 @@ describe('LogTimeline', () => {
     })
 
     it('should handle small time spans', () => {
-      const timeline = new LogTimeline(100, { yearsAgo: 1 }, { yearsAgo: 0 })
+      const timeline = createTestTimeline(100, { yearsAgo: 1 }, { yearsAgo: 0 })
 
       expect(timeline.timeSpan).toBeCloseTo(1, 0)
     })
     it('should handle time spans of less than 1 year', () => {
-      const timeline = new LogTimeline(
+      const timeline = createTestTimeline(
         100,
         { yearsAgo: 1 / 52 },
         { yearsAgo: 0 }
@@ -67,7 +93,7 @@ describe('LogTimeline', () => {
       prevTime = fixedNow.subtract({ months: 1 })
       const oldestTime = fixedNow.subtract({ years: 100 })
       // console.log(`Timeline in: ${oldestTime} to ${fixedNow}, test time=${prevTime}`)
-      timeline = new LogTimeline(400, oldestTime, fixedNow, fixedNow) // 100 years ago to "now", using fixed ref point
+      timeline = createTestTimeline(400, oldestTime, fixedNow, fixedNow) // 100 years ago to "now", using fixed ref point
       expected = 159.849
       // console.log(`Timeline out: ${timeline}`)
     })
@@ -149,7 +175,7 @@ describe('LogTimeline', () => {
     let fixedNow: Temporal.ZonedDateTime
 
     beforeEach(() => {
-      timeline = new LogTimeline(400, { yearsAgo: 100 }, { yearsAgo: 0 }) // 100 years ago to now
+      timeline = createTestTimeline(400, { yearsAgo: 100 }, { yearsAgo: 0 }) // 100 years ago to now
       fixedNow = Temporal.ZonedDateTime.from('2025-05-21T12:00:00[UTC]')
       vi.spyOn(Temporal.Now, 'zonedDateTimeISO').mockReturnValue(fixedNow)
     })
@@ -174,7 +200,7 @@ describe('LogTimeline', () => {
     })
 
     it('should handle very ancient dates (using years)', () => {
-      const longTimeline = new LogTimeline(
+      const longTimeline = createTestTimeline(
         400,
         { yearsAgo: 10000 },
         { yearsAgo: 1 }
@@ -210,13 +236,17 @@ describe('LogTimeline', () => {
       })
 
       it('should create timeline from years ago', () => {
-        const timeline = new LogTimeline(400, { yearsAgo: 1 }, { yearsAgo: 0 })
+        const timeline = createTestTimeline(
+          400,
+          { yearsAgo: 1 },
+          { yearsAgo: 0 }
+        )
 
         expect(timeline.timeSpan).toBeCloseTo(1, 0)
       })
 
       it('should handle large year spans', () => {
-        const timeline = new LogTimeline(
+        const timeline = createTestTimeline(
           400,
           { yearsAgo: 15000 },
           { yearsAgo: 0 }
@@ -226,7 +256,7 @@ describe('LogTimeline', () => {
       })
 
       it('should handle very large year spans (boundary case)', () => {
-        const timeline = new LogTimeline(
+        const timeline = createTestTimeline(
           400,
           { yearsAgo: 1000000 },
           { yearsAgo: 0 }
@@ -241,7 +271,7 @@ describe('LogTimeline', () => {
     let timeline: LogTimeline
 
     beforeEach(() => {
-      timeline = new LogTimeline(800, { yearsAgo: 10000 }, { yearsAgo: 1 })
+      timeline = createTestTimeline(800, { yearsAgo: 10000 }, { yearsAgo: 1 })
     })
 
     it('should describe time spans for various positions', () => {
@@ -274,7 +304,7 @@ describe('LogTimeline', () => {
     let timeline: LogTimeline
 
     beforeEach(() => {
-      timeline = new LogTimeline(400, { yearsAgo: 1000 }, { yearsAgo: 1 })
+      timeline = createTestTimeline(400, { yearsAgo: 1000 }, { yearsAgo: 1 })
     })
 
     it('should shift timeline correctly', () => {
@@ -302,7 +332,7 @@ describe('LogTimeline', () => {
       expect(() => {
         const left = new DeepTime({ yearsAgo: 100 })
         const right = new DeepTime({ yearsAgo: 0 })
-        new LogTimeline(0, left, right)
+        createTestTimeline(0, left, right)
       }).toThrow('Width must be positive')
     })
 
@@ -310,7 +340,7 @@ describe('LogTimeline', () => {
       expect(() => {
         const left = new DeepTime({ yearsAgo: 100 })
         const right = new DeepTime({ yearsAgo: 0 })
-        new LogTimeline(-1, left, right)
+        createTestTimeline(-1, left, right)
       }).toThrow('Width must be positive')
     })
 
@@ -318,28 +348,28 @@ describe('LogTimeline', () => {
       expect(() => {
         const left = new DeepTime({ yearsAgo: 0 }) // Now
         const right = new DeepTime({ yearsAgo: 100 }) // 100 years ago
-        new LogTimeline(400, left, right)
+        createTestTimeline(400, left, right)
       }).toThrow('Leftmost time must be older (smaller) than rightmost time')
     })
 
     it('should accept valid timezone', () => {
       expect(() => {
-        new LogTimeline(400, { yearsAgo: 100 }, { yearsAgo: 1 })
+        createTestTimeline(400, { yearsAgo: 100 }, { yearsAgo: 1 })
       }).not.toThrow()
 
       expect(() => {
-        new LogTimeline(400, { yearsAgo: 100 }, { yearsAgo: 1 })
+        createTestTimeline(400, { yearsAgo: 100 }, { yearsAgo: 1 })
       }).not.toThrow()
     })
 
     it('should handle width of 1', () => {
-      const timeline = new LogTimeline(1, { yearsAgo: 100 }, { yearsAgo: 0 })
+      const timeline = createTestTimeline(1, { yearsAgo: 100 }, { yearsAgo: 0 })
 
       expect(timeline.pixelWidth).toBe(1)
     })
 
     it('should handle very large time spans', () => {
-      const timeline = new LogTimeline(
+      const timeline = createTestTimeline(
         400,
         { yearsAgo: 1000000000 },
         { yearsAgo: 0 }
@@ -349,7 +379,7 @@ describe('LogTimeline', () => {
     })
 
     it('should allow out-of-bounds pixel positions', () => {
-      const timeline = new LogTimeline(
+      const timeline = createTestTimeline(
         400,
         '1925-05-21T12:00:00[UTC]',
         '2025-05-21T12:00:00[UTC]'
@@ -367,7 +397,7 @@ describe('LogTimeline', () => {
     let fixedNow: Temporal.ZonedDateTime
 
     beforeEach(() => {
-      timeline = new LogTimeline(400, { yearsAgo: 1000 }, { yearsAgo: 0 })
+      timeline = createTestTimeline(400, { yearsAgo: 1000 }, { yearsAgo: 0 })
       fixedNow = Temporal.ZonedDateTime.from('2025-05-21T12:00:00[UTC]')
       vi.spyOn(Temporal.Now, 'zonedDateTimeISO').mockReturnValue(fixedNow)
     })
@@ -415,7 +445,11 @@ describe('LogTimeline', () => {
 
   describe('Performance and Stability', () => {
     it('should handle many rapid calculations without degradation', () => {
-      const timeline = new LogTimeline(400, { yearsAgo: 1000 }, { yearsAgo: 0 })
+      const timeline = createTestTimeline(
+        400,
+        { yearsAgo: 1000 },
+        { yearsAgo: 0 }
+      )
       const startTime = performance.now()
 
       // Perform many calculations
@@ -430,7 +464,11 @@ describe('LogTimeline', () => {
     })
 
     it('should produce stable results for same inputs', () => {
-      const timeline = new LogTimeline(400, { yearsAgo: 1000 }, { yearsAgo: 0 })
+      const timeline = createTestTimeline(
+        400,
+        { yearsAgo: 1000 },
+        { yearsAgo: 0 }
+      )
       const testPixel = 200
 
       const results = Array.from({ length: 10 }, () => {
@@ -449,7 +487,7 @@ describe('LogTimeline', () => {
   describe('Tick generation', () => {
     it('should be able to generate ticks', () => {
       const now = new DeepTime()
-      let timeline = new LogTimeline(1000, { yearsAgo: 1 }, 'now')
+      let timeline = createTestTimeline(1000, { yearsAgo: 1 }, 'now')
       let ticks = timeline.generateLogTicks(100)
       expect(ticks).toBeDefined
       expect(ticks.length).toBeGreaterThan(5)
@@ -458,7 +496,7 @@ describe('LogTimeline', () => {
       expect(ticks[0].label).toBe('2 minutes ago')
 
       // million years ago to now
-      timeline = new LogTimeline(1000, { yearsAgo: 1e6 }, 'now')
+      timeline = createTestTimeline(1000, { yearsAgo: 1e6 }, 'now')
       ticks = timeline.generateLogTicks(100)
       expect(ticks).toBeDefined
       expect(ticks.length).toBeGreaterThan(5)
@@ -470,7 +508,7 @@ describe('LogTimeline', () => {
 
   describe('Real-world Usage Scenarios', () => {
     it('should handle typical web application timeline (1 week)', () => {
-      const timeline = new LogTimeline(
+      const timeline = createTestTimeline(
         400,
         { yearsAgo: 1 / 52 },
         { yearsAgo: 0 }
@@ -492,7 +530,7 @@ describe('LogTimeline', () => {
     })
 
     it('should handle historical timeline (1000 years)', () => {
-      const timeline = new LogTimeline(
+      const timeline = createTestTimeline(
         1000,
         { yearsAgo: 1000 },
         { yearsAgo: 1 }
@@ -511,7 +549,7 @@ describe('LogTimeline', () => {
     })
 
     it('should handle geological timeline (4.5 billion years)', () => {
-      const timeline = new LogTimeline(
+      const timeline = createTestTimeline(
         800,
         { yearsAgo: 4500000000 },
         { yearsAgo: 1 }

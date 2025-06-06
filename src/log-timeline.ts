@@ -1,70 +1,47 @@
 import { Temporal } from 'temporal-polyfill'
 import { batch } from 'solid-js'
-import { createStore } from 'solid-js/store'
 import { DeepTime, MINUTES_PER_YEAR } from './deep-time.ts'
 import type { DeepTimeSpec } from './deep-time.ts'
+import type { SetStoreFunction } from 'solid-js/store'
+import type { TimelineState } from './stores/global-timeline.ts'
 
 class LogTimeline {
-  private store
-  private setStore
-  private _updateScheduled = false
-  private _updateCallback?: () => void
+  constructor(
+    private getState: () => TimelineState,
+    private setState: SetStoreFunction<TimelineState>
+  ) {}
 
   /**
-   * LogTimeline constructor
-   * @param width - width in pixels
-   * @param leftmostTime - start time
-   * @param rightmostTime - end time
-   * Times can be DeepTime, Date, date-string (ISO or "1000BC"), Temporal, or other forms
+   * Initialize timeline with given parameters
    */
-  constructor(
+  public initialize(
     width: number,
     leftmostTime: DeepTime | DeepTimeSpec,
     rightmostTime: DeepTime | DeepTimeSpec,
     refTime?: DeepTime | DeepTimeSpec
-  ) {
+  ): void {
     // Input validation
     if (width <= 0) throw new Error('Width must be positive')
 
-    // Create reactive store for timeline math
-    const [store, setStore] = createStore({
-      leftmostTime: new DeepTime(leftmostTime),
-      rightmostTime: new DeepTime(rightmostTime),
-      refTime: refTime instanceof DeepTime ? refTime : new DeepTime(refTime),
-      width: width
-    })
-
-    this.store = store
-    this.setStore = setStore
+    const newLeftmost = new DeepTime(leftmostTime)
+    const newRightmost = new DeepTime(rightmostTime)
+    const newRefTime =
+      refTime instanceof DeepTime ? refTime : new DeepTime(refTime)
 
     // Validate endpoints
-    if (this.store.leftmostTime.compare(this.store.rightmostTime) >= 0) {
+    if (newLeftmost.compare(newRightmost) >= 0) {
       throw new Error(
         'Leftmost time must be older (smaller) than rightmost time'
       )
     }
-  }
 
-  /**
-   * Set a callback to be called when timeline updates are batched
-   * This allows external reactive systems to be notified of changes
-   */
-  public setUpdateCallback(callback: () => void) {
-    this._updateCallback = callback
-  }
-
-  /**
-   * Schedule a batched update - all changes within a single tick get batched
-   */
-  private scheduleUpdate() {
-    if (!this._updateScheduled) {
-      this._updateScheduled = true
-      queueMicrotask(() => {
-        // Trigger external reactive updates
-        this._updateCallback?.()
-        this._updateScheduled = false
-      })
-    }
+    // Set all initial state
+    batch(() => {
+      this.setState('leftmostTime', newLeftmost)
+      this.setState('rightmostTime', newRightmost)
+      this.setState('refTime', newRefTime)
+      this.setState('width', width)
+    })
   }
 
   /**
@@ -86,10 +63,9 @@ class LogTimeline {
 
     // Batch both updates together
     batch(() => {
-      this.setStore('leftmostTime', newLeftmost)
-      this.setStore('rightmostTime', newRightmost)
+      this.setState('leftmostTime', newLeftmost)
+      this.setState('rightmostTime', newRightmost)
     })
-    this.scheduleUpdate()
   }
 
   // Method to zoom around a specific time point
@@ -100,35 +76,34 @@ class LogTimeline {
       throw new Error('Zoom factor must be positive')
     }
 
+    const state = this.getState()
+
+    // Get current log distances from center to left/right
+    const logDistLeft =
+      state.leftmostTime.toLog(state.refTime) - focalTime.toLog(state.refTime)
+    const logDistRight =
+      focalTime.toLog(state.refTime) - state.rightmostTime.toLog(state.refTime)
+
+    // Apply zoom: shrink distances by factor
+    const newLogDistLeft = logDistLeft / factor
+    const newLogDistRight = logDistRight / factor
+
+    // Set new left/right times, keeping the time at focal point fixed
+    const logFocalTime = focalTime.toLog(state.refTime)
+    const newLeftmost = new DeepTime()
+    newLeftmost.minutesSince1970 = DeepTime.fromLog(
+      logFocalTime + newLogDistLeft,
+      state.refTime
+    )
+    const newRightmost = new DeepTime()
+    newRightmost.minutesSince1970 = DeepTime.fromLog(
+      logFocalTime - newLogDistRight,
+      state.refTime
+    )
+
     batch(() => {
-      // Get current log distances from center to left/right
-      const logDistLeft =
-        this.store.leftmostTime.toLog(this.store.refTime) -
-        focalTime.toLog(this.store.refTime)
-      const logDistRight =
-        focalTime.toLog(this.store.refTime) -
-        this.store.rightmostTime.toLog(this.store.refTime)
-
-      // Apply zoom: shrink distances by factor
-      const newLogDistLeft = logDistLeft / factor
-      const newLogDistRight = logDistRight / factor
-
-      // Set new left/right times, keeping the time at focal point fixed
-      const logFocalTime = focalTime.toLog(this.store.refTime)
-      const newLeftmost = new DeepTime()
-      newLeftmost.minutesSince1970 = DeepTime.fromLog(
-        logFocalTime + newLogDistLeft,
-        this.store.refTime
-      )
-      const newRightmost = new DeepTime()
-      newRightmost.minutesSince1970 = DeepTime.fromLog(
-        logFocalTime - newLogDistRight,
-        this.store.refTime
-      )
-
-      this.setStore('leftmostTime', newLeftmost)
-      this.setStore('rightmostTime', newRightmost)
-      this.scheduleUpdate()
+      this.setState('leftmostTime', newLeftmost)
+      this.setState('rightmostTime', newRightmost)
     })
   }
 
@@ -140,14 +115,16 @@ class LogTimeline {
 
   // Method to shift the timeline window
   public shift(years: number): void {
-    const newLeftmost = this.store.leftmostTime.add({ years })
-    const newRightmost = this.store.rightmostTime.add({ years })
+    const state = this.getState()
+    const newLeftmost = state.leftmostTime.add({ years })
+    const newRightmost = state.rightmostTime.add({ years })
     this.setEndpoints(newLeftmost, newRightmost)
   }
 
   // Method to pan the timeline so that a specific time appears at a specific pixel position
   public panToPosition(targetTime: DeepTime, targetPixel: number): void {
-    const nowMinutes = this.store.refTime.minutesSince1970
+    const state = this.getState()
+    const nowMinutes = state.refTime.minutesSince1970
 
     const targetMinutesFromNow = Math.max(
       nowMinutes - targetTime.minutesSince1970,
@@ -156,43 +133,41 @@ class LogTimeline {
 
     // Get current log range per pixel
     const currentLeftMinutes = Math.max(
-      nowMinutes - this.store.leftmostTime.minutesSince1970,
+      nowMinutes - state.leftmostTime.minutesSince1970,
       1
     )
     const currentRightMinutes = Math.max(
-      nowMinutes - this.store.rightmostTime.minutesSince1970,
+      nowMinutes - state.rightmostTime.minutesSince1970,
       1
     )
 
     // Calculate log scale per pixel
     const logRange =
       Math.log(currentLeftMinutes) - Math.log(currentRightMinutes)
-    const logPerPixel = logRange / this.store.width
+    const logPerPixel = logRange / state.width
 
     // Calculate what should be at left and right edges
     const logTarget = Math.log(targetMinutesFromNow)
     const logLeft = logTarget + logPerPixel * targetPixel
-    const logRight = logTarget - logPerPixel * (this.store.width - targetPixel)
+    const logRight = logTarget - logPerPixel * (state.width - targetPixel)
 
     const newLeftMinutes = Math.exp(logLeft)
     const newRightMinutes = Math.exp(logRight)
 
     // Convert back to DeepTime
-    const newLeftTime = this.store.refTime.subtract({
+    const newLeftTime = state.refTime.subtract({
       minutes: Math.round(newLeftMinutes)
     })
-    const newRightTime = this.store.refTime.subtract({
+    const newRightTime = state.refTime.subtract({
       minutes: Math.round(newRightMinutes)
     })
 
     // Ensure the times are valid
     if (newLeftTime.compare(newRightTime) < 0) {
-      // Batch both updates together
       batch(() => {
-        this.setStore('leftmostTime', newLeftTime)
-        this.setStore('rightmostTime', newRightTime)
+        this.setState('leftmostTime', newLeftTime)
+        this.setState('rightmostTime', newRightTime)
       })
-      this.scheduleUpdate()
     }
   }
 
@@ -206,9 +181,9 @@ class LogTimeline {
     const newLeftTime = this.getTimeAtPixel(pixels)
 
     // Calculate the time span to maintain in minutes
+    const state = this.getState()
     const currentSpanMinutes =
-      this.store.rightmostTime.minutesSince1970 -
-      this.store.leftmostTime.minutesSince1970
+      state.rightmostTime.minutesSince1970 - state.leftmostTime.minutesSince1970
 
     // Set new right time to maintain the same time span
     const newRightTime = newLeftTime.add({
@@ -221,23 +196,24 @@ class LogTimeline {
   public getPixelPosition(time: DeepTime | DeepTimeSpec): number {
     // Convert input to DeepTime
     const deepTime = time instanceof DeepTime ? time : new DeepTime(time)
+    const state = this.getState()
 
     // If the time is outside our range, clamp it (only on the right, to avoid NaNs)
-    if (deepTime.compare(this.store.rightmostTime) >= 0) {
-      return this.store.width
+    if (deepTime.compare(state.rightmostTime) >= 0) {
+      return state.width
     }
 
     // Calculate position using logarithmic scaling relative to "now"
-    const nowMinutes = this.store.refTime.minutesSince1970
+    const nowMinutes = state.refTime.minutesSince1970
 
     // Get minutes from now for each point
     const minutesFromNow = Math.max(nowMinutes - deepTime.minutesSince1970, 1)
     const leftMinutesFromNow = Math.max(
-      nowMinutes - this.store.leftmostTime.minutesSince1970,
+      nowMinutes - state.leftmostTime.minutesSince1970,
       1
     )
     const rightMinutesFromNow = Math.max(
-      nowMinutes - this.store.rightmostTime.minutesSince1970,
+      nowMinutes - state.rightmostTime.minutesSince1970,
       1
     )
 
@@ -248,27 +224,28 @@ class LogTimeline {
 
     // Linear interpolation in log space
     const normalizedPosition = (logTime - logLeft) / (logRight - logLeft)
-    const pixelPosition = normalizedPosition * this.store.width
+    const pixelPosition = normalizedPosition * state.width
 
-    return Math.max(0, Math.min(this.store.width, pixelPosition))
+    return Math.max(0, Math.min(state.width, pixelPosition))
   }
 
   public getTimeAtPixel(pixelPosition: number): DeepTime {
     // Calculate time based on logarithmic scaling relative to "now"
-    const nowMinutes = this.store.refTime.minutesSince1970
+    const state = this.getState()
+    const nowMinutes = state.refTime.minutesSince1970
 
     // Get minutes from now for endpoints
     const leftMinutesFromNow = Math.max(
-      nowMinutes - this.store.leftmostTime.minutesSince1970,
+      nowMinutes - state.leftmostTime.minutesSince1970,
       1
     )
     const rightMinutesFromNow = Math.max(
-      nowMinutes - this.store.rightmostTime.minutesSince1970,
+      nowMinutes - state.rightmostTime.minutesSince1970,
       1
     )
 
     // Map pixel position to normalized position [0, 1]
-    const normalizedPosition = pixelPosition / this.store.width
+    const normalizedPosition = pixelPosition / state.width
 
     // Map to log space
     const logLeft = Math.log(leftMinutesFromNow)
@@ -279,17 +256,18 @@ class LogTimeline {
     const minutesFromNow = Math.exp(logTime)
 
     // Convert to DeepTime
-    return this.store.refTime.subtract({ minutes: Math.round(minutesFromNow) })
+    return state.refTime.subtract({ minutes: Math.round(minutesFromNow) })
   }
 
   /** Time span in years */
   public get timeSpan(): number {
-    const timeDiff = this.store.rightmostTime.since(this.store.leftmostTime)
+    const state = this.getState()
+    const timeDiff = state.rightmostTime.since(state.leftmostTime)
     return Math.abs(timeDiff / MINUTES_PER_YEAR)
   }
 
   public get pixelWidth(): number {
-    return this.store.width
+    return this.getState().width
   }
 
   /**
@@ -298,25 +276,23 @@ class LogTimeline {
    */
   public set pixelWidth(newWidth: number) {
     if (newWidth <= 0) throw new Error('Width must be positive')
-    this.setStore('width', newWidth)
-    this.scheduleUpdate()
+    this.setState('width', newWidth)
   }
 
   public get leftmost(): DeepTime {
-    return this.store.leftmostTime
+    return this.getState().leftmostTime
   }
 
   public get rightmost(): DeepTime {
-    return this.store.rightmostTime
+    return this.getState().rightmostTime
   }
 
   public get reftime(): DeepTime {
-    return this.store.refTime
+    return this.getState().refTime
   }
 
   public set reftime(newRefTime: DeepTime | DeepTimeSpec) {
-    this.setStore('refTime', new DeepTime(newRefTime))
-    this.scheduleUpdate()
+    this.setState('refTime', new DeepTime(newRefTime))
     // Note: This will affect all position calculations since they're relative to refTime
     // The caller should redraw the timeline after updating refTime
   }
@@ -328,23 +304,21 @@ class LogTimeline {
    */
   public resetRightmostToNow(): boolean {
     const now = new DeepTime()
+    const state = this.getState()
 
     // If rightmost is already at now (within ε), do nothing
-    if (now.equals(this.store.rightmostTime)) {
+    if (now.equals(state.rightmostTime)) {
       return false
     }
 
     // Calculate the current time span in minutes
-    const timeSpanMinutes = this.store.rightmostTime.since(
-      this.store.leftmostTime
-    )
+    const timeSpanMinutes = state.rightmostTime.since(state.leftmostTime)
 
     // Batch both updates together
     batch(() => {
-      this.setStore('rightmostTime', now)
-      this.setStore('leftmostTime', now.subtract({ minutes: timeSpanMinutes }))
+      this.setState('rightmostTime', now)
+      this.setState('leftmostTime', now.subtract({ minutes: timeSpanMinutes }))
     })
-    this.scheduleUpdate()
 
     return true
   }
@@ -354,13 +328,14 @@ class LogTimeline {
     time: DeepTime | Temporal.ZonedDateTime | Date
   ): boolean {
     const position = this.getPixelPosition(time)
-    return position > 0 && position < this.store.width
+    return position > 0 && position < this.getState().width
   }
 
   public getTimelineRange(): { start: DeepTime; end: DeepTime } {
+    const state = this.getState()
     return {
-      start: this.store.leftmostTime,
-      end: this.store.rightmostTime
+      start: state.leftmostTime,
+      end: state.rightmostTime
     }
   }
 
@@ -375,23 +350,20 @@ class LogTimeline {
   }
 
   toString(): string {
-    return `LogTimeline(${this.store.width}px, ${this.store.leftmostTime} - ${this.store.rightmostTime}`
+    const state = this.getState()
+    return `LogTimeline(${state.width}px, ${state.leftmostTime} - ${state.rightmostTime})`
   }
 
   // Generate ticks for timeline display
+  // Note: log values increase to the left (more negative to the right, now=0)
   public generateLogTicks(
     minPixelSpacing = 100
   ): { t: DeepTime; pos: number; label: string }[] {
-    // Get log-space bounds
-    // Note: log values increase to the left (more negative to the right, now=0)
-
-    // Candidates: factors of 1, 2, 5 * 10^n in years or days
-    // We'll build up tick values in years, months, days, hours as needed
-    // For deep time: years, then switch to days for < 5 years ago
-
-    // We'll scan log-space for nice tick values
+    const state = this.getState()
 
     // Helper to find the next "nice" tick >= a value
+    // Candidates: factors of 1, 2, 5 * 10^n in years or days
+    // We'll build up tick values in years, months, days, hours as needed
     function nextNiceValue(val: number): number {
       // Finds next 1, 2, or 5 * 10^n >= val
       const exp = Math.floor(Math.log10(val))
@@ -431,7 +403,7 @@ class LogTimeline {
 
     // We'll create ticks in order from right (now) to left (past)
     let ticks: { t: DeepTime; pos: number; label: string }[] = []
-    let lastTickPos = this.store.width + 100
+    let lastTickPos = state.width + 100
 
     // minutes ago
     for (
@@ -439,11 +411,11 @@ class LogTimeline {
       val < 3600 && lastCheckPos > 0;
       val = nextNiceValue(val)
     ) {
-      let tickTime = this.store.refTime.subtract({ minutes: val })
+      let tickTime = state.refTime.subtract({ minutes: val })
       let tickPos = this.getPixelPosition(tickTime)
       lastCheckPos = tickPos
       if (
-        tickPos < this.store.width &&
+        tickPos < state.width &&
         tickPos > 0 &&
         tickPos < lastTickPos - minPixelSpacing
       ) {
@@ -459,11 +431,11 @@ class LogTimeline {
       val < 365 && lastCheckPos > 0;
       val = nextNiceValue(val)
     ) {
-      let tickTime = this.store.refTime.subtract({ days: val })
+      let tickTime = state.refTime.subtract({ days: val })
       let tickPos = this.getPixelPosition(tickTime)
       lastCheckPos = tickPos
       if (
-        tickPos < this.store.width &&
+        tickPos < state.width &&
         tickPos > 0 &&
         tickPos < lastTickPos - minPixelSpacing
       ) {
@@ -482,7 +454,7 @@ class LogTimeline {
       let tickPos = this.getPixelPosition(tickTime)
       lastCheckPos = tickPos
       if (
-        tickPos < this.store.width &&
+        tickPos < state.width &&
         tickPos > 0 &&
         tickPos < lastTickPos - minPixelSpacing
       ) {
@@ -499,11 +471,11 @@ class LogTimeline {
       val > -1e12 && lastCheckPos > 0;
       val = prevNiceYear(val)
     ) {
-      let tickTime = this.store.refTime.subtract({ years: -val })
+      let tickTime = state.refTime.subtract({ years: -val })
       let tickPos = this.getPixelPosition(tickTime)
       lastCheckPos = tickPos
       if (
-        tickPos < this.store.width &&
+        tickPos < state.width &&
         tickPos > 0 &&
         tickPos < lastTickPos - minPixelSpacing
       ) {

@@ -5,6 +5,7 @@ import {
   interactionState,
   interactionActions
 } from '../stores/interaction-store.ts'
+import { timelineState } from '../stores/global-timeline.ts'
 import { TimelineAxis } from './TimelineAxis.tsx'
 import { TimelineTicks } from './TimelineTicks.tsx'
 import { TimelineEvents } from './TimelineEvents.tsx'
@@ -13,7 +14,6 @@ import { LogTimeline, DeepTime } from '../log-timeline.ts'
 
 interface TimelineSVGProps {
   timeline: LogTimeline
-  onTimelineChange?: (timeline: LogTimeline) => void
 }
 
 export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
@@ -89,7 +89,6 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
     // Handle panning
     if (interactionState.isPanning && interactionState.startTime) {
       props.timeline.panToPosition(interactionState.startTime, x)
-      // Timeline is now reactive - no need to call onTimelineChange
     }
   }
 
@@ -133,13 +132,11 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
 
       // Zoom around mouse position
       props.timeline.zoomAroundPixel(factor, x)
-      // Timeline is now reactive - no need to call onTimelineChange
       updateHoverInfo(null, null)
     } else {
       // Pan
       const targetTime = props.timeline.getTimeAtPixel(x - deltaX)
       props.timeline.panToPosition(targetTime, x)
-      // Timeline is now reactive - no need to call onTimelineChange
     }
   }
 
@@ -173,7 +170,6 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
       const [x] = getTouchCenter(touches)
       updateHoverInfo(x, props.timeline.getTimeAtPixel(x))
       props.timeline.panToPosition(interactionState.startTime, x)
-      // Timeline is now reactive - no need to call onTimelineChange
     } else if (touches.length === 2) {
       const currentDistance = getTouchDistance(touches)
       const [x] = getTouchCenter(touches)
@@ -181,7 +177,6 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
       if (interactionState.lastTouchDistance > 0) {
         const factor = currentDistance / interactionState.lastTouchDistance
         props.timeline.zoomAroundPixel(factor, x)
-        // Timeline is now reactive - no need to call onTimelineChange
         updateHoverInfo(null, null)
       }
 
@@ -209,18 +204,36 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
   onMount(() => {
     // Set initial dimensions
     interactionActions.setDimensions(
-      props.timeline.pixelWidth,
+      timelineState.width,
       interactionState.dimensions.height
     )
 
     // Set cursor style
     svgRef.style.cursor = 'grab'
+
+    // Add non-passive event listeners for preventDefault support
+    svgRef.addEventListener('wheel', handleWheel, { passive: false })
+    svgRef.addEventListener('touchstart', handleTouchStart, { passive: false })
+    svgRef.addEventListener('touchmove', handleTouchMove, { passive: false })
+    svgRef.addEventListener('touchend', handleTouchEnd, { passive: false })
+    svgRef.addEventListener('touchcancel', handleTouchEnd, { passive: false })
+  })
+
+  onCleanup(() => {
+    // Remove event listeners
+    if (svgRef) {
+      svgRef.removeEventListener('wheel', handleWheel)
+      svgRef.removeEventListener('touchstart', handleTouchStart)
+      svgRef.removeEventListener('touchmove', handleTouchMove)
+      svgRef.removeEventListener('touchend', handleTouchEnd)
+      svgRef.removeEventListener('touchcancel', handleTouchEnd)
+    }
   })
 
   return (
     <svg
       ref={svgRef!}
-      width={props.timeline.pixelWidth}
+      width={timelineState.width}
       height={interactionState.dimensions.height}
       style={{
         display: 'block',
@@ -235,11 +248,6 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
       onMouseLeave={handleMouseLeave}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
-      onWheel={handleWheel}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
     >
       <g>
         <g

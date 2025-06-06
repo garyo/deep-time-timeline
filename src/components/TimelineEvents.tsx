@@ -2,6 +2,7 @@ import type { Component } from 'solid-js'
 import { createMemo, For } from 'solid-js'
 import { eventsState } from '../stores/events-store.ts'
 import { interactionState } from '../stores/interaction-store.ts'
+import { timelineState } from '../stores/global-timeline.ts'
 import { LogTimeline } from '../log-timeline.ts'
 import { RangeQueryableEvents } from '../scripts/events.ts'
 import type { VisibleEvent } from '../scripts/events.ts'
@@ -117,8 +118,10 @@ interface TimelineEventsProps {
 
 export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
   const visibleEvents = createMemo(() => {
-    // Use the passed timeline directly
+    // Access timeline state for reactivity, use timeline for methods
     const timeline = props.timeline
+    // Force reactivity by accessing timelineState
+    const _ = timelineState.width // This makes the memo reactive to state changes
 
     // Calculate visible events
     let events: VisibleEvent[] = []

@@ -8,8 +8,8 @@ import {
 import {
   globalTimeline,
   setGlobalTimeline,
-  timelineReady,
-  setTimelineReady
+  timelineState,
+  setTimelineState
 } from '../stores/global-timeline.ts'
 import { TimelineSVG } from './TimelineSVG.tsx'
 import { TimelineControls } from './TimelineControls.tsx'
@@ -76,17 +76,18 @@ export const Timeline: Component<TimelineProps> = (props) => {
       const width = containerRect.width - paddingLeft - paddingRight
       const height = containerRect.height - paddingTop - paddingBottom
 
-      // Create timeline
+      // Create timeline with state references
       const timelineInstance = new LogTimeline(
+        () => timelineState,
+        setTimelineState
+      )
+
+      // Initialize the timeline
+      timelineInstance.initialize(
         width,
         { yearsAgo: props.initialYearsAgo || 10000 },
         { yearsAgo: 0 }
       )
-
-      // Set up batched update callback
-      timelineInstance.setUpdateCallback(() => {
-        setGlobalTimeline(timelineInstance)
-      })
 
       setGlobalTimeline(timelineInstance)
 
@@ -172,12 +173,9 @@ export const Timeline: Component<TimelineProps> = (props) => {
         }
       }
 
-      // Signal that timeline is ready (do this last)
-      setTimelineReady(true)
+      // Timeline is now ready (timeline instance is set)
     } catch (error) {
       console.error('Error in Timeline onMount:', error)
-      // Set ready to true anyway so we don't get stuck in loading
-      setTimelineReady(true)
     }
   })
 
@@ -212,11 +210,6 @@ export const Timeline: Component<TimelineProps> = (props) => {
       }
     ]
     eventsActions.updateAllEvents(combinedEvents)
-  }
-
-  function handleTimelineChange(updatedTimeline: LogTimeline) {
-    // Note: batching handled by LogTimeline.setUpdateCallback
-    setGlobalTimeline(updatedTimeline)
   }
 
   function startAutoUpdate() {
@@ -315,7 +308,7 @@ export const Timeline: Component<TimelineProps> = (props) => {
 
   return (
     <Show
-      when={timelineReady() && globalTimeline()}
+      when={globalTimeline()}
       fallback={
         <div
           style={{
@@ -326,17 +319,13 @@ export const Timeline: Component<TimelineProps> = (props) => {
             'justify-content': 'center'
           }}
         >
-          Loading timeline... (ready: {String(timelineReady())}, hasTimeline:{' '}
-          {String(!!globalTimeline())})
+          Loading timeline...
         </div>
       }
     >
       <TimelineControls />
       <CategoryControls />
-      <TimelineSVG
-        timeline={globalTimeline()!}
-        onTimelineChange={handleTimelineChange}
-      />
+      <TimelineSVG timeline={globalTimeline()!} />
     </Show>
   )
 }

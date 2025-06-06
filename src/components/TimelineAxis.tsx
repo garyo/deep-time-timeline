@@ -1,5 +1,6 @@
 import type { Component } from 'solid-js'
 import { LogTimeline } from '../log-timeline.ts'
+import { timelineState } from '../stores/global-timeline.ts'
 
 interface TimelineAxisProps {
   timeline: LogTimeline
@@ -12,7 +13,7 @@ export const TimelineAxis: Component<TimelineAxisProps> = (props) => {
         class="main-axis-line"
         x1="0"
         y1="0"
-        x2={props.timeline.pixelWidth}
+        x2={timelineState.width}
         y2="0"
         stroke="#4a9eff"
         stroke-width="2"

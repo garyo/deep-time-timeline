@@ -1,7 +1,7 @@
 import type { Component } from 'solid-js'
 import { onMount, onCleanup, createEffect } from 'solid-js'
 import { eventsState, eventsActions } from '../stores/events-store.ts'
-import { timelineReady } from '../stores/global-timeline.ts'
+import { globalTimeline } from '../stores/global-timeline.ts'
 
 export const CategoryControls: Component = () => {
   let mounted = false
@@ -146,10 +146,10 @@ export const CategoryControls: Component = () => {
   onMount(() => {
     mounted = true
 
-    // Wait for timeline ready and category groups to be available
+    // Wait for timeline instance and category groups to be available
     const checkAndSetup = () => {
       if (
-        timelineReady() &&
+        globalTimeline() &&
         Object.keys(eventsState.categoryGroups).length > 0
       ) {
         setupCategoryHandlers()
