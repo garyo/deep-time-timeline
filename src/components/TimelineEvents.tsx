@@ -7,6 +7,7 @@ import { LogTimeline } from '../log-timeline.ts'
 import { RangeQueryableEvents } from '../scripts/events.ts'
 import type { VisibleEvent } from '../scripts/events.ts'
 import { rescaleClamp } from '../utils.ts'
+import { FormattedText } from './FormattedText.tsx'
 
 function remap(
   x: number,
@@ -182,46 +183,40 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
               >
                 {/* Drop shadow for high opacity text */}
                 {opacity > 0.2 && (
-                  <text
+                  <FormattedText
+                    text={visibleEvent.event.name}
                     x={textOffsetX + 1}
                     y={textOffsetY + 1}
-                    text-anchor="start"
                     fill="black"
-                    font-size="11px"
+                    fontSize="11px"
                     transform={slant}
                     opacity={opacity}
-                  >
-                    {visibleEvent.event.name}
-                  </text>
+                  />
                 )}
 
                 {/* Additional shadow for very high opacity */}
                 {opacity > 0.7 && (
-                  <text
+                  <FormattedText
+                    text={visibleEvent.event.name}
                     x={textOffsetX - 1}
                     y={textOffsetY - 1}
-                    text-anchor="start"
                     fill="black"
-                    font-size="11px"
+                    fontSize="11px"
                     transform={slant}
                     opacity={opacity}
-                  >
-                    {visibleEvent.event.name}
-                  </text>
+                  />
                 )}
 
                 {/* Main text */}
-                <text
+                <FormattedText
+                  text={visibleEvent.event.name}
                   x={textOffsetX}
                   y={textOffsetY}
-                  text-anchor="start"
                   fill="#e0e0e0"
-                  font-size="11px"
+                  fontSize="11px"
                   transform={slant}
                   opacity={opacity}
-                >
-                  {visibleEvent.event.name}
-                </text>
+                />
 
                 {/* Vertical line for clustered events */}
                 {visibleEvent.y > 0 && (

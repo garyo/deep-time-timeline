@@ -528,7 +528,7 @@
     "categories": ["medicine", "philosophy"]
   },
   {
-    "name": "Mahabharata begun",
+    "name": "_Mahabharata_ begun",
     "date": "-0400",
     "significance": 5,
     "categories": ["literature", "religion"]
@@ -540,7 +540,7 @@
     "categories": ["wars", "politics", "nations"]
   },
   {
-    "name": "Euclid writes \"Elements\"",
+    "name": "Euclid writes _Elements_",
     "date": "-300",
     "significance": 6,
     "categories": ["math", "science", "ideas", "education"]
@@ -654,7 +654,7 @@
     "categories": ["inventions", "nations", "wars"]
   },
   {
-    "name": "The Tale of Genji written (Japan)",
+    "name": "_The Tale of Genji_ written (Japan)",
     "date": "1010",
     "significance": 6,
     "categories": ["literature", "women", "art"]
@@ -774,7 +774,7 @@
     "categories": ["architecture", "art"]
   },
   {
-    "name": "Newton writes Principia Mathematica",
+    "name": "Newton writes _Principia Mathematica_",
     "date": "1687-07-05",
     "significance": 7,
     "categories": ["physics", "math", "science", "ideas"]
@@ -840,7 +840,7 @@
     "categories": ["politics", "wars", "nations"]
   },
   {
-    "name": "Mary Shelley publishes Frankenstein",
+    "name": "Mary Shelley publishes _Frankenstein_",
     "date": "1818-01-01",
     "significance": 6,
     "categories": ["literature", "women", "science", "art"]
@@ -858,7 +858,7 @@
     "categories": ["math", "inventions", "women", "computing"]
   },
   {
-    "name": "Harriet Beecher Stowe publishes \"Uncle Tom's Cabin\"",
+    "name": "Harriet Beecher Stowe publishes _Uncle Tom's Cabin_",
     "date": "1847",
     "significance": 5,
     "categories": ["literature", "women", "slavery", "politics"]
@@ -870,7 +870,7 @@
     "categories": ["astronomy", "women", "science"]
   },
   {
-    "name": "Darwin publishes Origin of Species",
+    "name": "Darwin publishes _Origin of Species_",
     "date": "1859-11-24",
     "significance": 7.5,
     "categories": ["biology", "science", "ideas"]
