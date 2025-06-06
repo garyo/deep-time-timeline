@@ -18,7 +18,7 @@ export default defineConfig({
       }
     },
     optimizeDeps: {
-      include: ['d3', 'temporal-polyfill']
+      include: ['temporal-polyfill']
     }
   }
 });
