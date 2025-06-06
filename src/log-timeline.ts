@@ -1,6 +1,5 @@
-// Install with: npm install temporal-polyfill
-// For bundlers, you may need to add to your import map or configure appropriately
 import { Temporal } from 'temporal-polyfill'
+import { batch } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { DeepTime, MINUTES_PER_YEAR } from './deep-time.ts'
 import type { DeepTimeSpec } from './deep-time.ts'
@@ -27,7 +26,7 @@ class LogTimeline {
     // Input validation
     if (width <= 0) throw new Error('Width must be positive')
 
-    // Create reactive store
+    // Create reactive store for timeline math
     const [store, setStore] = createStore({
       leftmostTime: new DeepTime(leftmostTime),
       rightmostTime: new DeepTime(rightmostTime),
@@ -86,8 +85,10 @@ class LogTimeline {
     }
 
     // Batch both updates together
-    this.setStore('leftmostTime', newLeftmost)
-    this.setStore('rightmostTime', newRightmost)
+    batch(() => {
+      this.setStore('leftmostTime', newLeftmost)
+      this.setStore('rightmostTime', newRightmost)
+    })
     this.scheduleUpdate()
   }
 
@@ -99,35 +100,36 @@ class LogTimeline {
       throw new Error('Zoom factor must be positive')
     }
 
-    // Get current log distances from center to left/right
-    const logDistLeft =
-      this.store.leftmostTime.toLog(this.store.refTime) -
-      focalTime.toLog(this.store.refTime)
-    const logDistRight =
-      focalTime.toLog(this.store.refTime) -
-      this.store.rightmostTime.toLog(this.store.refTime)
+    batch(() => {
+      // Get current log distances from center to left/right
+      const logDistLeft =
+        this.store.leftmostTime.toLog(this.store.refTime) -
+        focalTime.toLog(this.store.refTime)
+      const logDistRight =
+        focalTime.toLog(this.store.refTime) -
+        this.store.rightmostTime.toLog(this.store.refTime)
 
-    // Apply zoom: shrink distances by factor
-    const newLogDistLeft = logDistLeft / factor
-    const newLogDistRight = logDistRight / factor
+      // Apply zoom: shrink distances by factor
+      const newLogDistLeft = logDistLeft / factor
+      const newLogDistRight = logDistRight / factor
 
-    // Set new left/right times, keeping the time at focal point fixed
-    const logFocalTime = focalTime.toLog(this.store.refTime)
-    const newLeftmost = new DeepTime()
-    newLeftmost.minutesSince1970 = DeepTime.fromLog(
-      logFocalTime + newLogDistLeft,
-      this.store.refTime
-    )
-    const newRightmost = new DeepTime()
-    newRightmost.minutesSince1970 = DeepTime.fromLog(
-      logFocalTime - newLogDistRight,
-      this.store.refTime
-    )
+      // Set new left/right times, keeping the time at focal point fixed
+      const logFocalTime = focalTime.toLog(this.store.refTime)
+      const newLeftmost = new DeepTime()
+      newLeftmost.minutesSince1970 = DeepTime.fromLog(
+        logFocalTime + newLogDistLeft,
+        this.store.refTime
+      )
+      const newRightmost = new DeepTime()
+      newRightmost.minutesSince1970 = DeepTime.fromLog(
+        logFocalTime - newLogDistRight,
+        this.store.refTime
+      )
 
-    // Batch both updates together
-    this.setStore('leftmostTime', newLeftmost)
-    this.setStore('rightmostTime', newRightmost)
-    this.scheduleUpdate()
+      this.setStore('leftmostTime', newLeftmost)
+      this.setStore('rightmostTime', newRightmost)
+      this.scheduleUpdate()
+    })
   }
 
   // Method to zoom around a specific pixel position
@@ -186,8 +188,10 @@ class LogTimeline {
     // Ensure the times are valid
     if (newLeftTime.compare(newRightTime) < 0) {
       // Batch both updates together
-      this.setStore('leftmostTime', newLeftTime)
-      this.setStore('rightmostTime', newRightTime)
+      batch(() => {
+        this.setStore('leftmostTime', newLeftTime)
+        this.setStore('rightmostTime', newRightTime)
+      })
       this.scheduleUpdate()
     }
   }
@@ -336,8 +340,10 @@ class LogTimeline {
     )
 
     // Batch both updates together
-    this.setStore('rightmostTime', now)
-    this.setStore('leftmostTime', now.subtract({ minutes: timeSpanMinutes }))
+    batch(() => {
+      this.setStore('rightmostTime', now)
+      this.setStore('leftmostTime', now.subtract({ minutes: timeSpanMinutes }))
+    })
     this.scheduleUpdate()
 
     return true
