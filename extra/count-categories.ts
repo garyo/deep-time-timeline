@@ -130,6 +130,7 @@ function analyzeCoverage(topN: number) {
       const categories = event.categories
         ? event.categories.join(', ')
         : 'NO CATEGORIES'
+      console.log(`❌${event.name}, sig ${event.significance}, (${categories})`)
     })
   } else {
     console.log('\n✅ All events are covered!')
@@ -177,6 +178,27 @@ if (categoriesNotInGroups.length > 0) {
   })
 }
 
-if (eventsWithoutGroups.length === 0 && categoriesNotInGroups.length === 0) {
+// Final validation and exit code
+let hasErrors = false
+
+if (eventsWithoutGroups.length > 0) {
+  console.error('\n❌ FAILURE: Some events are not covered by any group!')
+  hasErrors = true
+}
+
+if (categoriesNotInGroups.length > 0) {
+  console.error('\n❌ FAILURE: Some categories are not in any group!')
+  hasErrors = true
+}
+
+if (hasErrors) {
+  console.error(
+    '\n💥 Validation FAILED! Some events would be invisible in the timeline.'
+  )
+  process.exit(1)
+} else {
   console.log('\n✅ All events and categories are properly grouped!')
+  console.log(
+    '✅ Validation PASSED! All events will be visible in the timeline.'
+  )
 }

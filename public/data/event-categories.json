@@ -7,9 +7,12 @@
     "music",
     "literature",
     "design",
+    "urban planning",
     "sports",
     "entertainment",
-    "journalism"
+    "journalism",
+    "film",
+    "theater"
   ],
   "Natural History": ["geology", "paleontology", "anthropology", "climate"],
   "Sci/Tech": [
@@ -56,6 +59,7 @@
     "slavery",
     "human rights",
     "civil rights",
+    "education",
     "law",
     "trade",
     "economics",
@@ -66,7 +70,13 @@
     "revolution",
     "terrorism",
     "exploration",
-    "geography"
+    "geography",
+    "humanitarian",
+    "social movement",
+    "Africa",
+    "Asia",
+    "United States",
+    "Middle East"
   ],
   "Women": ["women"],
   "Environment": [

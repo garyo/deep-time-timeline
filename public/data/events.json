@@ -324,6 +324,12 @@
     "categories": ["anthropology", "migration"]
   },
   {
+    "name": "Lascaux cave paintings created",
+    "date": "15000BC",
+    "significance": 6,
+    "categories": ["painting", "art", "anthropology"]
+  },
+  {
     "name": "Dogs domesticated",
     "date": "14000BC",
     "significance": 6,
@@ -492,6 +498,12 @@
     "categories": ["nations", "civilization"]
   },
   {
+    "name": "Homer composes _Iliad_ and _Odyssey_",
+    "date": "750BC",
+    "significance": 7,
+    "categories": ["literature", "art"]
+  },
+  {
     "name": "Sappho born",
     "date": "-0620",
     "significance": 4,
@@ -526,6 +538,12 @@
     "date": "-0460",
     "significance": 6,
     "categories": ["medicine", "philosophy"]
+  },
+  {
+    "name": "Parthenon built (Athens)",
+    "date": "432BC",
+    "significance": 7,
+    "categories": ["architecture", "art", "civilization"]
   },
   {
     "name": "_Mahabharata_ begun",
@@ -618,6 +636,12 @@
     "categories": ["politics", "women", "nations", "law"]
   },
   {
+    "name": "Hagia Sophia built (Constantinople)",
+    "date": "537",
+    "significance": 6,
+    "categories": ["architecture", "art", "religion"]
+  },
+  {
     "name": "Islam founded",
     "date": "610",
     "significance": 6,
@@ -648,6 +672,12 @@
     "categories": ["math", "ideas"]
   },
   {
+    "name": "_One Thousand and One Nights_ compiled",
+    "date": "900",
+    "significance": 6,
+    "categories": ["literature", "art"]
+  },
+  {
     "name": "Song dynasty, gunpowder",
     "date": "904",
     "significance": 7,
@@ -672,10 +702,28 @@
     "categories": ["wars", "religion", "politics"]
   },
   {
+    "name": "Angkor Wat temple complex completed",
+    "date": "1150",
+    "significance": 7,
+    "categories": ["architecture", "art", "religion"]
+  },
+  {
     "name": "Mongol Empire rises",
     "date": "1206",
     "significance": 5,
     "categories": ["nations", "wars", "politics"]
+  },
+  {
+    "name": "Dante writes _Divine Comedy_",
+    "date": "1320",
+    "significance": 7,
+    "categories": ["literature", "art", "religion"]
+  },
+  {
+    "name": "Notre-Dame Cathedral completed (Paris)",
+    "date": "1345",
+    "significance": 6,
+    "categories": ["architecture", "art", "religion"]
   },
   {
     "name": "Black Death peaks",
@@ -720,6 +768,12 @@
     "categories": ["art", "painting"]
   },
   {
+    "name": "Michelangelo creates _David_",
+    "date": "1504",
+    "significance": 6,
+    "categories": ["sculpture", "art"]
+  },
+  {
     "name": "Michelangelo paints Sistine Chapel ceiling",
     "date": "1512",
     "significance": 7,
@@ -756,6 +810,18 @@
     "categories": ["wars", "nations", "naval"]
   },
   {
+    "name": "Shakespeare writes _Hamlet_",
+    "date": "1601",
+    "significance": 7,
+    "categories": ["literature", "art", "theater"]
+  },
+  {
+    "name": "Miguel Cervantes publishes _Don Quixote_",
+    "date": "1605",
+    "significance": 7,
+    "categories": ["literature", "art"]
+  },
+  {
     "name": "Jamestown settlement founded",
     "date": "1607",
     "significance": 5,
@@ -784,6 +850,12 @@
     "date": "1700",
     "significance": 5,
     "categories": ["geology", "climate"]
+  },
+  {
+    "name": "Bach writes _Well-Tempered Clavier_",
+    "date": "1722",
+    "significance": 6,
+    "categories": ["music", "art"]
   },
   {
     "name": "Enlightenment peaks",
@@ -844,6 +916,12 @@
     "date": "1818-01-01",
     "significance": 6,
     "categories": ["literature", "women", "science", "art"]
+  },
+  {
+    "name": "Beethoven's 9th Symphony premieres",
+    "date": "1824",
+    "significance": 6,
+    "categories": ["music", "art"]
   },
   {
     "name": "Mary Anning discovers the first complete Plesiosaurus skeleton",
@@ -910,6 +988,18 @@
     "date": "1879-10-01",
     "significance": 6,
     "categories": ["inventions", "electricity"]
+  },
+  {
+    "name": "van Gogh paints _Starry Night_",
+    "date": "1889",
+    "significance": 6,
+    "categories": ["painting", "art"]
+  },
+  {
+    "name": "Eiffel Tower completed",
+    "date": "1889",
+    "significance": 5,
+    "categories": ["architecture", "art", "engineering"]
   },
   {
     "name": "Nellie Bly circles globe in 72 days",
@@ -984,10 +1074,22 @@
     "categories": ["architecture", "art", "design"]
   },
   {
+    "name": "Picasso paints _Guernica_",
+    "date": "1937",
+    "significance": 6,
+    "categories": ["painting", "art", "wars"]
+  },
+  {
     "name": "World War II",
     "date": "1939-09-01",
     "significance": 8,
     "categories": ["wars", "politics", "nations"]
+  },
+  {
+    "name": "_Citizen Kane_ released",
+    "date": "1941",
+    "significance": 5,
+    "categories": ["art", "film"]
   },
   {
     "name": "Nuclear weapons (Hiroshima)",
@@ -1068,10 +1170,28 @@
     "categories": ["politics", "human rights", "nations"]
   },
   {
+    "name": "The Beatles release _Sgt. Pepper's Lonely Hearts Club Band_",
+    "date": "1967",
+    "significance": 5,
+    "categories": ["music", "art"]
+  },
+  {
+    "name": "_2001: A Space Odyssey_ released",
+    "date": "1968",
+    "significance": 5,
+    "categories": ["art", "film", "science"]
+  },
+  {
     "name": "First moon landing",
     "date": "1969-07-20",
     "significance": 7,
     "categories": ["astronomy", "space exploration", "inventions"]
+  },
+  {
+    "name": "Sydney Opera House completed",
+    "date": "1973",
+    "significance": 5,
+    "categories": ["architecture", "art", "design"]
   },
   {
     "name": "Isabel Perón of Argentina becomes first female president",
@@ -1161,7 +1281,7 @@
     "name": "Paris Climate Accord",
     "date": "2015-12-12",
     "significance": 5,
-    "categories": ["politics", "environment", "international relations"]
+    "categories": ["politics", "environment", "international relations", "climate"]
   },
   {
     "name": "Hillary Clinton becomes first female U.S. major-party presidential nominee",

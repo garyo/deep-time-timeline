@@ -2,6 +2,8 @@
 node_modules/
 .wrangler/
 dist/
+public/data/events-tmp.*
+public/data/*.bak
 
 # Environment variables  
 .env

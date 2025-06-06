@@ -1,8 +1,13 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync, copyFileSync } from 'fs'
 import { DeepTime } from '../src/deep-time'
 
 const srcFile = 'public/data/events.json'
-const dstFile = 'public/data/sorted-events.json'
+const testOutputFile = 'public/data/events-tmp.json'
+const backupFile = 'public/data/events.json.bak'
+
+// Check for command line arguments
+const args = process.argv.slice(2)
+const testOnly = args.includes('--test-only')
 
 interface Event {
   name: string
@@ -131,20 +136,31 @@ function sortEvents() {
     return dateA - dateB
   })
 
-  // Save the sorted events back to a file with inline arrays
+  // Format the sorted events
   const formattedJson = formatJsonWithInlineArrays(events, {
     indent: 2,
     maxInlineArrayLength: 6,
     maxInlineArrayItems: 100
   })
-  writeFileSync(dstFile, formattedJson)
+
+  if (testOnly) {
+    // Test mode: write to separate file for comparison
+    writeFileSync(testOutputFile, formattedJson)
+    console.log(`Events sorted into ${testOutputFile} (test mode)`)
+  } else {
+    // Normal mode: backup original and write to events.json
+    copyFileSync(srcFile, backupFile)
+    writeFileSync(srcFile, formattedJson)
+    console.log(`Events sorted and saved to ${srcFile}`)
+    console.log(`Original backed up to ${backupFile}`)
+    console.log(`Use 'git diff ${srcFile}' to review changes`)
+  }
 
   return events
 }
 
 // Execute the function
 const sortedEvents = sortEvents()
-console.log(`Events sorted into ${dstFile}`)
 
 // Generate and display histogram
 generateSignificanceHistogram(sortedEvents)

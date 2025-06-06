@@ -12,6 +12,10 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:watch": "vitest --watch",
+    "test:categories": "bun extra/count-categories.ts",
+    "test:sorted": "bun extra/sort-events.ts --test-only",
+    "sort-events": "bun extra/sort-events.ts",
+    "test:all": "bun check && bun format:check && bun test:categories && bun test:sorted",
     "test-timeline": "node --loader tsx log-timeline.ts",
     "format": "prettier --write '{src,test,extra}/**/*.{ts,tsx,js,jsx,json,md,astro}'",
     "format:check": "prettier --check '{src,test,extra}/**/*.{ts,tsx,js,jsx,json,md,astro}'"
