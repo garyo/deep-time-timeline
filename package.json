@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "VITE_GIT_COMMIT=$(git rev-parse --short HEAD) VITE_GIT_BRANCH=$(git branch --show-current) astro build",
     "preview": "astro preview",
     "astro": "astro",
     "check": "tsc --noEmit",

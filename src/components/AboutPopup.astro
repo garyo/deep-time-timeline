@@ -1,3 +1,9 @@
+---
+const buildInfo = {
+  timestamp: new Date().toISOString() // Build time
+}
+---
+
 <!-- Help/About popup -->
 <div id="about-popup" class="about-popup">
   <div class="about-popup-content">
@@ -48,8 +54,16 @@
         >
         and even make your own version.
       </p>
-      <p style="font-size: 0.8rem; margin-top: 20px">
-        Created by Gary Oberbrunner, (c) 2025
+      <p
+        style="font-size: 0.9rem; margin-top: 20px; display: flex; justify-content: space-between; align-items: baseline;"
+      >
+        <span>Created by Gary Oberbrunner, (c) 2025</span>
+        <span class="build-info">
+          [Build: {import.meta.env.VITE_GIT_BRANCH || 'local'}@{
+            import.meta.env.VITE_GIT_COMMIT || 'xxxxx'
+          } at {buildInfo.timestamp}
+          {import.meta.env.DEV ? ' (dev)' : ''}]
+        </span>
       </p>
     </div>
   </div>
@@ -163,5 +177,8 @@
   }
   .about-content p {
     margin-bottom: 8px;
+  }
+  .build-info {
+    font-size: 0.5rem;
   }
 </style>
