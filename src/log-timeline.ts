@@ -52,7 +52,7 @@ class LogTimeline {
     rightmostTime?: DeepTime | DeepTimeSpec
   ): void {
     const newLeftmost = new DeepTime(leftmostTime)
-    const newRightmost = new DeepTime(rightmostTime)
+    let newRightmost = new DeepTime(rightmostTime)
 
     // Ensure leftmost is older than rightmost
     if (newLeftmost.compare(newRightmost) >= 0) {
@@ -60,6 +60,9 @@ class LogTimeline {
         'Leftmost time must be older (smaller) than rightmost time'
       )
     }
+    // Ensure rightmost is in range (<= refTime)
+    const state = this.getState()
+    if (newRightmost.compare(state.refTime) > 0) newRightmost = state.refTime
 
     // Batch both updates together
     batch(() => {
@@ -113,15 +116,7 @@ class LogTimeline {
     this.zoomAroundTime(factor, focalTime)
   }
 
-  // Method to shift the timeline window
-  public shift(years: number): void {
-    const state = this.getState()
-    const newLeftmost = state.leftmostTime.add({ years })
-    const newRightmost = state.rightmostTime.add({ years })
-    this.setEndpoints(newLeftmost, newRightmost)
-  }
-
-  // Method to pan the timeline so that a specific time appears at a specific pixel position
+  // Pan the timeline so that a specific time appears at a specific pixel position
   public panToPosition(targetTime: DeepTime, targetPixel: number): void {
     const state = this.getState()
     const nowMinutes = state.refTime.minutesSince1970
@@ -171,26 +166,14 @@ class LogTimeline {
     }
   }
 
-  // Method to shift the timeline window by pixels
+  // Method to shift the timeline window by N pixels
   // Positive pixels shift right (forward in time), negative shifts left (backward in time)
   public shiftPixels(pixels: number): void {
     if (pixels === 0) return
 
-    // Calculate what time should be at the left edge after shifting
-    // If we shift right by +N pixels, then what's currently at pixel N should be at pixel 0
-    const newLeftTime = this.getTimeAtPixel(pixels)
-
-    // Calculate the time span to maintain in minutes
-    const state = this.getState()
-    const currentSpanMinutes =
-      state.rightmostTime.minutesSince1970 - state.leftmostTime.minutesSince1970
-
-    // Set new right time to maintain the same time span
-    const newRightTime = newLeftTime.add({
-      minutes: Math.round(currentSpanMinutes)
-    })
-
-    this.setEndpoints(newLeftTime, newRightTime)
+    const x = this.pixelWidth / 2
+    const targetTime = this.getTimeAtPixel(x - pixels)
+    this.panToPosition(targetTime, x)
   }
 
   public getPixelPosition(time: DeepTime | DeepTimeSpec): number {

@@ -91,6 +91,15 @@ Timeline.tsx (orchestrator)
 - Uses Reddit's r/worldnews as current events source
 - Event clustering algorithm prevents visual overlap
 
+### Gesture Server
+For museum or touchless use, there's an SSE (Server-Sent Events)-based
+gesture interface controller at `src/gesture-interface.ts` with a
+store at `src/stores/gesture-store.ts`. There is a demo gesture server
+which serves random pan/zoom gestures for testing. To enable it, pass
+`gestureEnabled={true}` to the Timeline component in
+LogTimelineVisualization.astro. It is normally set to false for
+production use.
+
 ## Development Patterns
 
 ### Code Style

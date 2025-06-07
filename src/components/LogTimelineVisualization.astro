@@ -7,12 +7,14 @@ export interface Props {
   initialYearsAgo?: number
   apiUrl?: string
   autoUpdateInterval?: number // Auto-update interval in milliseconds (0 to disable)
+  gestureEnabled?: boolean // Override automatic dev mode gesture detection
 }
 
 const {
   initialYearsAgo = 10000,
   apiUrl = 'https://timeline-events-api.garyo.workers.dev',
-  autoUpdateInterval = 5000
+  autoUpdateInterval = 5000,
+  gestureEnabled = import.meta.env.DEV // Default to dev mode, but allow override
 } = Astro.props
 
 // Load category groups server-side
@@ -116,6 +118,7 @@ try {
         apiUrl={apiUrl}
         autoUpdateInterval={autoUpdateInterval}
         categoryGroups={categoryGroups}
+        gestureEnabled={gestureEnabled}
       />
     </div>
   </div>

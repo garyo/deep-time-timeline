@@ -465,6 +465,11 @@ export class DeepTime {
     throw new Error('Cannot convert ancient DeepTime to Date')
   }
 
+  // Used to compare DeepTime objects
+  valueOf(): number {
+    return this.minutesSinceEpoch
+  }
+
   // Get raw minutes since epoch
   get minutesSince1970(): number {
     return this.minutesSinceEpoch

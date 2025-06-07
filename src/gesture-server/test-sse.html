@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSE Test Client</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #eee;
+        }
+        .status {
+            background: #333;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .events {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 4px;
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #333;
+            font-size: 12px;
+        }
+        .connected { background: #0a4; }
+        .disconnected { background: #a40; }
+        .connecting { background: #aa0; }
+        button {
+            background: #333;
+            color: #eee;
+            border: 1px solid #666;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>🧪 SSE Test Client</h1>
+
+    <div class="status" id="status">Disconnected</div>
+
+    <div>
+        <button onclick="connect()">Connect</button>
+        <button onclick="disconnect()">Disconnect</button>
+        <button onclick="clearEvents()">Clear Events</button>
+    </div>
+
+    <p>Events received: <span id="eventCount">0</span></p>
+
+    <div class="events" id="events">Ready to connect...</div>
+
+    <script>
+        let eventSource = null;
+        let eventCount = 0;
+
+        const statusEl = document.getElementById('status');
+        const eventsEl = document.getElementById('events');
+        const countEl = document.getElementById('eventCount');
+
+        function updateStatus(text, className) {
+            statusEl.textContent = text;
+            statusEl.className = `status ${className}`;
+        }
+
+        function addEvent(text) {
+            const timestamp = new Date().toLocaleTimeString();
+            eventsEl.innerHTML += `[${timestamp}] ${text}\n`;
+            eventsEl.scrollTop = eventsEl.scrollHeight;
+
+            // Keep only last 50 lines
+            const lines = eventsEl.innerHTML.split('\n');
+            if (lines.length > 50) {
+                eventsEl.innerHTML = lines.slice(-45).join('\n');
+            }
+        }
+
+        function connect() {
+            if (eventSource) {
+                eventSource.close();
+            }
+
+            updateStatus('Connecting...', 'connecting');
+            addEvent('Attempting to connect to gesture server...');
+
+            eventSource = new EventSource('http://localhost:8080/gestures/stream');
+
+            eventSource.onopen = function() {
+                updateStatus('✅ Connected', 'connected');
+                addEvent('✅ Connected successfully');
+                console.log('SSE connection opened');
+            };
+
+            eventSource.onmessage = function(event) {
+                eventCount++;
+                countEl.textContent = eventCount;
+
+                try {
+                    const gesture = JSON.parse(event.data);
+                    console.log('Received gesture:', gesture);
+
+                    let display = `${gesture.type.toUpperCase()}`;
+                    if (gesture.type === 'pan' && gesture.deltaX !== undefined) {
+                        const dir = gesture.deltaX < 0 ? 'LEFT' : 'RIGHT';
+                        display += ` ${dir} (${gesture.deltaX.toFixed(1)})`;
+                    } else if (gesture.type === 'zoom' && gesture.scaleFactor !== undefined) {
+                        const dir = gesture.scaleFactor > 1.0 ? 'IN' : 'OUT';
+                        display += ` ${dir} (${gesture.scaleFactor.toFixed(3)})`;
+                    }
+                    display += ` conf:${gesture.confidence.toFixed(2)}`;
+
+                    // Only show non-idle gestures in the UI
+                    if (gesture.type !== 'idle') {
+                        addEvent(`📱 ${display}`);
+                    }
+
+                } catch (error) {
+                    console.error('Failed to parse gesture:', error);
+                    addEvent(`❌ Parse error: ${error.message}`);
+                }
+            };
+
+            eventSource.onerror = function(event) {
+                updateStatus('❌ Connection Error', 'disconnected');
+                addEvent('🚨 Connection error - will auto-reconnect');
+                console.error('SSE error:', event);
+            };
+        }
+
+        function disconnect() {
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+            }
+            updateStatus('Disconnected', 'disconnected');
+            addEvent('🔌 Disconnected');
+            console.log('SSE connection closed');
+        }
+
+        function clearEvents() {
+            eventsEl.innerHTML = '';
+            eventCount = 0;
+            countEl.textContent = eventCount;
+        }
+
+        // Auto-connect on page load
+        window.addEventListener('load', connect);
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', disconnect);
+    </script>
+</body>
+</html>

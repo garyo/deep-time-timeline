@@ -304,17 +304,16 @@ describe('LogTimeline', () => {
     let timeline: LogTimeline
 
     beforeEach(() => {
-      timeline = createTestTimeline(400, { yearsAgo: 1000 }, { yearsAgo: 1 })
+      const rightmost = Temporal.ZonedDateTime.from('2025-05-21T12:00:00[UTC]')
+      const leftmost = rightmost.subtract({ years: 1000 })
+      timeline = createTestTimeline(400, leftmost, rightmost)
     })
 
     it('should shift timeline correctly', () => {
-      const originalLeft = timeline.leftmost.year
-      const originalRight = timeline.rightmost.year
+      timeline.shiftPixels(-100) // Shift 100 pixels into the past
 
-      timeline.shift(-100) // Shift 100 years into the past
-
-      expect(timeline.leftmost.year).toBeCloseTo(originalLeft - 100, 0)
-      expect(timeline.rightmost.year).toBeCloseTo(originalRight - 100, 0)
+      expect(timeline.leftmost.year).toBeCloseTo(1942, 0)
+      expect(timeline.rightmost.year).toBeCloseTo(2025, 0)
     })
 
     it('should set new endpoints correctly', () => {

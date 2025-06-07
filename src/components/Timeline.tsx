@@ -11,6 +11,7 @@ import {
   timelineState,
   setTimelineState
 } from '../stores/global-timeline.ts'
+import { useGestureControl } from '../stores/gesture-store.ts'
 import { TimelineSVG } from './TimelineSVG.tsx'
 import { TimelineControls } from './TimelineControls.tsx'
 import { CategoryControls } from './CategoryControls.tsx'
@@ -22,6 +23,7 @@ import {
   EventUpdater,
   EventFileWatcher
 } from '../scripts/events.ts'
+import type { GestureConfig } from '../gesture-interface.ts'
 
 interface TimelineProps {
   /** Initial time range in years ago (default: 10000) */
@@ -32,6 +34,10 @@ interface TimelineProps {
   autoUpdateInterval?: number
   /** Category groups for event filtering */
   categoryGroups?: Record<string, string[]>
+  /** Enable gesture control (default: false) */
+  gestureEnabled?: boolean
+  /** Gesture control configuration */
+  gestureConfig?: Partial<GestureConfig>
 }
 
 /**
@@ -43,6 +49,7 @@ interface TimelineProps {
  * - Sets up event handlers for user interactions
  * - Manages auto-update functionality
  * - Coordinates with SolidJS stores for reactive updates
+ * - Optionally enables touchless gesture control
  */
 export const Timeline: Component<TimelineProps> = (props) => {
   let eventUpdater: EventUpdater | null = null
@@ -51,6 +58,15 @@ export const Timeline: Component<TimelineProps> = (props) => {
   let resizeTimeout: number | null = null
   const appStartTime = new DeepTime()
 
+  // Initialize gesture control (will only activate if gestureEnabled is true)
+  const gestureControl = useGestureControl(
+    () => globalTimeline() ?? null,
+    () => {
+      const enabled = props.gestureEnabled ?? false
+      return enabled
+    },
+    props.gestureConfig
+  )
   // Initialize timeline
   onMount(async () => {
     try {
@@ -174,6 +190,8 @@ export const Timeline: Component<TimelineProps> = (props) => {
       }
 
       // Timeline is now ready (timeline instance is set)
+      // To enable gesture control, pass gestureEnabled={true} as a prop
+      // Example: <Timeline gestureEnabled={true} gestureConfig={{...}} />
     } catch (error) {
       console.error('Error in Timeline onMount:', error)
     }

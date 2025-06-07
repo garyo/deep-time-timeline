@@ -1,7 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "timeline-events-worker"],
+  "exclude": ["dist", "timeline-events-worker", "src/gesture-server/**/*"],
   "compilerOptions": {
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
