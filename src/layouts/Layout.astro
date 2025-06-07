@@ -132,6 +132,9 @@ const { title, description, url, ogImage } = Astro.props
 </html>
 
 <script>
+  import { globalTimeline } from '../stores/global-timeline.ts'
+  import { updateTimelineWidth } from '../utils/timeline-resize.ts'
+
   // Hamburger menu functionality
   function initHamburgerMenu() {
     const hamburgerMenu = document.getElementById('hamburger-menu')
@@ -158,9 +161,20 @@ const { title, description, url, ogImage } = Astro.props
         hamburgerMenu.classList.toggle('active', isOpen)
         document.body.style.overflow = isOpen ? 'hidden' : ''
       } else {
-        // Desktop: toggle collapsed
+        // Desktop: toggle collapsed and animate timeline width
         const isCollapsed = sidebar.classList.toggle('collapsed')
         hamburgerMenu.classList.toggle('active', isCollapsed)
+
+        // Animate timeline width during sidebar transition
+        const animationDuration = 300
+        const steps = 20
+        const stepInterval = animationDuration / steps
+
+        for (let i = 0; i <= steps; i++) {
+          setTimeout(() => {
+            updateTimelineWidth()
+          }, i * stepInterval)
+        }
       }
     }
 
@@ -227,6 +241,7 @@ const { title, description, url, ogImage } = Astro.props
   :root {
     --header-height: 60px;
     --sidebar-width: 180px;
+    --sidebar-transition: 0.3s ease-in-out;
     --background: #1a1a1a;
     --surface: #2a2a2a;
     --text: #e0e0e0;
@@ -370,17 +385,18 @@ const { title, description, url, ogImage } = Astro.props
     border-right: 1px solid var(--border);
     padding: 0;
     overflow-y: auto;
-    transition: all 0.3s ease-in-out;
+    transition:
+      transform var(--sidebar-transition),
+      opacity var(--sidebar-transition);
     z-index: 1000;
     display: flex;
     flex-direction: column;
   }
 
-  /* Desktop collapsed state */
+  /* Desktop collapsed state - slide left and fade out */
   .sidebar.collapsed {
-    width: 0;
-    border-right: none;
-    overflow: hidden;
+    transform: translateX(-100%);
+    opacity: 0;
   }
 
   .sidebar-content {
@@ -466,7 +482,14 @@ const { title, description, url, ogImage } = Astro.props
     background-color: var(--background);
     display: flex;
     flex-direction: column;
-    transition: margin-left 0.3s ease-in-out;
+    transition: margin-left var(--sidebar-transition);
+  }
+
+  /* Expand main content when sidebar is collapsed on desktop */
+  @media (min-width: 769px) {
+    .sidebar.collapsed ~ .main-content {
+      margin-left: calc(-1 * var(--sidebar-width));
+    }
   }
 
   /* Mobile Styles */
