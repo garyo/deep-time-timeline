@@ -364,7 +364,8 @@ class LogTimeline {
     }
 
     function prevNiceYear(val: number): number {
-      // every 10 years for recent years
+      // every 1-10 years for recent years
+      if (val > 2000) return roundDownToMultiple(val, 2)
       if (val > 1900) return roundDownToMultiple(val, 10)
       if (val > 1000) return roundDownToMultiple(val, 100)
       if (val > -1000) return roundDownToMultiple(val, 500)
@@ -451,7 +452,7 @@ class LogTimeline {
     // deep past: "years ago"
     for (
       let val = -10000, lastCheckPos = 100000;
-      val > -1e12 && lastCheckPos > 0;
+      val > -1e15 && lastCheckPos > 0;
       val = prevNiceYear(val)
     ) {
       let tickTime = state.refTime.subtract({ years: -val })
