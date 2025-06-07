@@ -142,55 +142,59 @@ const { title, description, url, ogImage } = Astro.props
       return
     }
 
-    function toggleSidebar() {
-      const isOpen = sidebar?.classList.contains('open')
+    // Initialize sidebar state
+    const isMobile = () => window.innerWidth <= 768
+    // Sidebar always starts expanded on desktop
+    if (isMobile()) {
+      sidebar.classList.remove('collapsed')
+      hamburgerMenu.classList.remove('active')
+    }
 
-      if (isOpen) {
-        closeSidebar()
+    function toggleSidebar() {
+      if (isMobile()) {
+        // Mobile: toggle overlay
+        const isOpen = sidebar.classList.toggle('open')
+        sidebarOverlay.classList.toggle('show', isOpen)
+        hamburgerMenu.classList.toggle('active', isOpen)
+        document.body.style.overflow = isOpen ? 'hidden' : ''
       } else {
-        openSidebar()
+        // Desktop: toggle collapsed
+        const isCollapsed = sidebar.classList.toggle('collapsed')
+        hamburgerMenu.classList.toggle('active', isCollapsed)
       }
     }
 
-    function openSidebar() {
-      sidebar?.classList.add('open')
-      sidebarOverlay?.classList.add('show')
-      hamburgerMenu?.classList.add('active')
-      document.body.style.overflow = 'hidden' // Prevent background scrolling
-    }
-
     function closeSidebar() {
-      sidebar?.classList.remove('open')
-      sidebarOverlay?.classList.remove('show')
-      hamburgerMenu?.classList.remove('active')
-      document.body.style.overflow = '' // Restore scrolling
+      sidebar.classList.remove('open')
+      sidebarOverlay.classList.remove('show')
+      hamburgerMenu.classList.remove('active')
+      document.body.style.overflow = ''
     }
 
     // Event listeners
     hamburgerMenu.addEventListener('click', toggleSidebar)
     sidebarOverlay.addEventListener('click', closeSidebar)
 
-    // Close sidebar when clicking a preset button on mobile
-    const presetButtons = sidebar.querySelectorAll('.preset-button')
-    presetButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-          closeSidebar()
-        }
-      })
-    })
-
-    // Handle window resize
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) {
+    // Close sidebar when clicking preset on mobile
+    sidebar.addEventListener('click', (e) => {
+      if (isMobile() && e.target.matches('.preset-button')) {
         closeSidebar()
       }
     })
 
-    // Handle escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+    // Handle resize and escape
+    window.addEventListener('resize', () => {
+      if (isMobile()) {
         closeSidebar()
+        // Remove collapsed class on mobile since it interferes with transform
+        sidebar.classList.remove('collapsed')
+        hamburgerMenu.classList.remove('active')
+      }
+    })
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (isMobile()) closeSidebar()
+        else toggleSidebar()
       }
     })
   }
@@ -222,7 +226,7 @@ const { title, description, url, ogImage } = Astro.props
 <style>
   :root {
     --header-height: 60px;
-    --sidebar-width: 250px;
+    --sidebar-width: 180px;
     --background: #1a1a1a;
     --surface: #2a2a2a;
     --text: #e0e0e0;
@@ -273,7 +277,7 @@ const { title, description, url, ogImage } = Astro.props
   }
 
   .hamburger-menu {
-    display: none;
+    display: flex;
     flex-direction: column;
     justify-content: space-around;
     width: 24px;
@@ -290,22 +294,20 @@ const { title, description, url, ogImage } = Astro.props
     height: 3px;
     background: var(--text);
     border-radius: 2px;
-    transition: all 0.3s linear;
+    transition: all 0.3s ease;
     position: relative;
-    transform-origin: 1px;
   }
 
   .hamburger-menu.active span:first-child {
-    transform: rotate(45deg);
+    transform: rotate(45deg) translate(6px, 6px);
   }
 
   .hamburger-menu.active span:nth-child(2) {
     opacity: 0;
-    transform: translateX(20px);
   }
 
-  .hamburger-menu.active span:third-child {
-    transform: rotate(-45deg);
+  .hamburger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
   }
 
   .menu-bar h1 {
@@ -368,10 +370,17 @@ const { title, description, url, ogImage } = Astro.props
     border-right: 1px solid var(--border);
     padding: 0;
     overflow-y: auto;
-    transition: transform 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
     z-index: 1000;
     display: flex;
     flex-direction: column;
+  }
+
+  /* Desktop collapsed state */
+  .sidebar.collapsed {
+    width: 0;
+    border-right: none;
+    overflow: hidden;
   }
 
   .sidebar-content {
@@ -457,14 +466,11 @@ const { title, description, url, ogImage } = Astro.props
     background-color: var(--background);
     display: flex;
     flex-direction: column;
+    transition: margin-left 0.3s ease-in-out;
   }
 
   /* Mobile Styles */
   @media (max-width: 768px) {
-    .hamburger-menu {
-      display: flex;
-    }
-
     .sidebar {
       position: fixed;
       top: var(--header-height);
@@ -475,6 +481,14 @@ const { title, description, url, ogImage } = Astro.props
     }
 
     .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sidebar.collapsed {
+      transform: translateX(-100%); /* Override desktop collapsed for mobile */
+    }
+
+    .sidebar.collapsed.open {
       transform: translateX(0);
     }
 
@@ -489,6 +503,7 @@ const { title, description, url, ogImage } = Astro.props
     .main-content {
       width: 100%;
       padding: 15px;
+      margin-left: 0; /* Reset margin for mobile */
     }
 
     .menu-bar {
