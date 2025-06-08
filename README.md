@@ -1,4 +1,4 @@
-# Deep-Time Visualization Project
+# Deep Time Navigator Visualization Project
 
 This is a simple web app to visualize world events through deep time.
 It uses logarithmic scaling, so timescales to the right (toward the

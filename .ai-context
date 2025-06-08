@@ -1,7 +1,7 @@
-# Deep-Time Visualization Project - AI Context
+# Deep Time Navigator Visualization Project - AI Context
 
 ## Project Overview
-The Deep-Time Timeline is an interactive web application that visualizes world events through deep time using logarithmic scaling. It allows users to zoom from the Big Bang to the present day, with recent events taking up more space and ancient events compressed. The project is inspired by a physical log-scale geological timeline created on adding-machine tape in the 1970s.
+The Deep-Time Navigator Timeline is an interactive web application that visualizes world events through deep time using logarithmic scaling. It allows users to zoom from the Big Bang to the present day, with recent events taking up more space and ancient events compressed. The project is inspired by a physical log-scale geological timeline created on adding-machine tape in the 1970s.
 
 **Live Site**: https://deep-timeline.oberbrunner.com
 **License**: MIT
