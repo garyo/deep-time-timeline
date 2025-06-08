@@ -30,20 +30,6 @@
   cursor: pointer;
 }
 
-.right:hover::after {
-  content: 'Reset to now';
-  position: absolute;
-  top: -30px;
-  right: 70px;
-  background-color: #333;
-  color: #fff;
-  padding: 5px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
 .right::after {
   content: '';
   position: absolute;
