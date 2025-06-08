@@ -213,10 +213,22 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
 
     // Add non-passive event listeners for preventDefault support
     svgRef.addEventListener('wheel', handleWheel, { passive: false })
-    svgRef.addEventListener('touchstart', handleTouchStart, { passive: false })
-    svgRef.addEventListener('touchmove', handleTouchMove, { passive: false })
-    svgRef.addEventListener('touchend', handleTouchEnd, { passive: false })
-    svgRef.addEventListener('touchcancel', handleTouchEnd, { passive: false })
+    svgRef.addEventListener('touchstart', handleTouchStart, {
+      passive: false,
+      capture: true
+    })
+    svgRef.addEventListener('touchmove', handleTouchMove, {
+      passive: false,
+      capture: true
+    })
+    svgRef.addEventListener('touchend', handleTouchEnd, {
+      passive: false,
+      capture: true
+    })
+    svgRef.addEventListener('touchcancel', handleTouchEnd, {
+      passive: false,
+      capture: true
+    })
   })
 
   onCleanup(() => {
@@ -241,7 +253,8 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
         height: '100%',
         'user-select': 'none',
         '-webkit-user-select': 'none',
-        '-ms-user-select': 'none'
+        '-ms-user-select': 'none',
+        'touch-action': 'none'
       }}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
