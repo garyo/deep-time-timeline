@@ -1,17 +1,21 @@
 import type { Component } from 'solid-js'
 import { TimeDisplay } from './TimeDisplay.tsx'
-import { globalTimeline } from '../stores/global-timeline.ts'
+import { globalTimeline, timelineState } from '../stores/global-timeline.ts'
 
 export const TimeDisplays: Component = () => {
   return (
     <>
-      {/* Time displays read from global timeline */}
+      {/* Time displays read directly from timeline state for reactivity */}
       <TimeDisplay
-        timeSignal={() => globalTimeline()?.leftmost}
+        timeSignal={() =>
+          globalTimeline() ? timelineState.leftmostTime : undefined
+        }
         position="left"
       />
       <TimeDisplay
-        timeSignal={() => globalTimeline()?.rightmost}
+        timeSignal={() =>
+          globalTimeline() ? timelineState.rightmostTime : undefined
+        }
         position="right"
         onRightClick={() => (window as any).handleRightTimeReset?.()}
       />
