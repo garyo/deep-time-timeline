@@ -23,4 +23,15 @@ const [globalTimeline, setGlobalTimeline] = createSignal<
   LogTimeline | undefined
 >(undefined)
 
-export { timelineState, setTimelineState, globalTimeline, setGlobalTimeline }
+// Timeline ready state - true when timeline has been initialized
+// Explicitly initialized to false to ensure proper initial state
+const [timelineReady, setTimelineReady] = createSignal<boolean>(false)
+
+export {
+  timelineState,
+  setTimelineState,
+  globalTimeline,
+  setGlobalTimeline,
+  timelineReady,
+  setTimelineReady
+}

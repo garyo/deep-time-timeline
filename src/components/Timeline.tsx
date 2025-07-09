@@ -9,7 +9,8 @@ import {
   globalTimeline,
   setGlobalTimeline,
   timelineState,
-  setTimelineState
+  setTimelineState,
+  setTimelineReady
 } from '../stores/global-timeline.ts'
 import { useGestureControl } from '../stores/gesture-store.ts'
 import { TimelineSVG } from './TimelineSVG.tsx'
@@ -106,6 +107,7 @@ export const Timeline: Component<TimelineProps> = (props) => {
       )
 
       setGlobalTimeline(timelineInstance)
+      setTimelineReady(true)
 
       // Initialize stores with interaction dimensions only
       interactionActions.setDimensions(width, height)
@@ -322,6 +324,10 @@ export const Timeline: Component<TimelineProps> = (props) => {
 
     window.removeEventListener('resize', handleResize)
     document.removeEventListener('keydown', handleKeyDown)
+
+    // Reset timeline state
+    setTimelineReady(false)
+    setGlobalTimeline(undefined)
   })
 
   return (
