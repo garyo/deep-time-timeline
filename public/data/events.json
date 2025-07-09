@@ -174,8 +174,8 @@
     "categories": ["geology", "paleontology"]
   },
   {
-    "name": "K-Pg dinosaur extinction event",
-    "date": "-66.0e6",
+    "name": "K-Pg dinosaur extinction event (Chicxulub meteor)",
+    "date": "-66.043e6",
     "significance": 9,
     "categories": ["paleontology", "geology", "astronomy"]
   },

@@ -25,11 +25,11 @@ export const TimelineTicks: Component<TimelineTicksProps> = (props) => {
       <For each={ticks()}>
         {(tick) => (
           <g class="tick-group" transform={`translate(${tick.pos}, 0)`}>
-            <line y1="-10" y2="10" stroke="#666" stroke-width="1" />
+            <line class="tick-line" y1="-10" y2="10" stroke-width="1" />
             <text
+              class="tick-text"
               y="15"
               text-anchor="start"
-              fill="#b0b0b0"
               font-size="12px"
               transform="rotate(25)"
               style={{ 'pointer-events': 'none' }}

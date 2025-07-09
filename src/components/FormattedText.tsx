@@ -11,6 +11,7 @@ interface FormattedTextProps {
   opacity?: number
   transform?: string
   textAnchor?: 'start' | 'middle' | 'end'
+  class?: string
 }
 
 export const FormattedText: Component<FormattedTextProps> = (props) => {
@@ -21,10 +22,11 @@ export const FormattedText: Component<FormattedTextProps> = (props) => {
       x={props.x ?? 0}
       y={props.y ?? 0}
       text-anchor={props.textAnchor ?? 'start'}
-      fill={props.fill ?? '#e0e0e0'}
+      fill={props.fill}
       font-size={props.fontSize ?? '11px'}
       transform={props.transform}
-      opacity={props.opacity ?? 1}
+      opacity={props.opacity}
+      class={props.class}
     >
       <For each={segments()}>
         {(segment) => (

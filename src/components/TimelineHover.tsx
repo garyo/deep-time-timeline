@@ -11,9 +11,7 @@ export const TimelineHover: Component = () => {
         y1="0"
         x2={interactionState.hoverPosition![0]}
         y2={interactionState.dimensions.height}
-        stroke="#ff4a4a"
         stroke-width="1"
-        opacity="0.5"
         style={{ 'pointer-events': 'none' }}
       />
     </Show>

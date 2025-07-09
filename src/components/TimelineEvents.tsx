@@ -169,9 +169,8 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
             >
               {/* Event marker circle */}
               <circle
+                class="event-marker-circle"
                 r="4"
-                fill="#ff9f1a"
-                stroke="#fff"
                 stroke-width="1"
                 opacity={opacity}
               />
@@ -187,7 +186,7 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
                     text={visibleEvent.event.name}
                     x={textOffsetX + 1}
                     y={textOffsetY + 1}
-                    fill="black"
+                    class="event-text-shadow"
                     fontSize="11px"
                     transform={slant}
                     opacity={opacity}
@@ -200,7 +199,7 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
                     text={visibleEvent.event.name}
                     x={textOffsetX - 1}
                     y={textOffsetY - 1}
-                    fill="black"
+                    class="event-text-shadow"
                     fontSize="11px"
                     transform={slant}
                     opacity={opacity}
@@ -212,7 +211,7 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
                   text={visibleEvent.event.name}
                   x={textOffsetX}
                   y={textOffsetY}
-                  fill="#e0e0e0"
+                  class="event-text"
                   fontSize="11px"
                   transform={slant}
                   opacity={opacity}
@@ -221,11 +220,11 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
                 {/* Vertical line for clustered events */}
                 {visibleEvent.y > 0 && (
                   <line
+                    class="event-cluster-line"
                     x1="0"
                     y1="-5.5"
                     x2="0"
                     y2={-5.5 + visibleEvent.y}
-                    stroke="#fff"
                     opacity={opacity}
                     stroke-width="1"
                   />

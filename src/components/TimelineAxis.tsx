@@ -15,7 +15,6 @@ export const TimelineAxis: Component<TimelineAxisProps> = (props) => {
         y1="0"
         x2={timelineState.width}
         y2="0"
-        stroke="#4a9eff"
         stroke-width="2"
         style={{ 'pointer-events': 'none' }}
       />

@@ -1,5 +1,7 @@
 ---
+import '../styles/global.css'
 import AboutPopup from '../components/AboutPopup.astro'
+import { ThemeToggle } from '../components/ThemeToggle.tsx'
 export interface Props {
   title: string
   description: string
@@ -54,12 +56,14 @@ const { title, description, url, ogImage } = Astro.props
           <button id="zoom-in" class="nav-button">Zoom In</button>
           <button id="zoom-out" class="nav-button">Zoom Out</button>
           <button id="reset-view" class="nav-button">Reset View</button>
+          <ThemeToggle client:load />
           <button
             id="about-button"
             class="nav-button about-button"
             title="About this app"
-            aria-label="About">?</button
-          >
+            aria-label="About"
+            >?
+          </button>
         </nav>
       </header>
 
@@ -144,6 +148,8 @@ const { title, description, url, ogImage } = Astro.props
 <script>
   import { globalTimeline } from '../stores/global-timeline.ts'
   import { updateTimelineWidth } from '../utils/timeline-resize.ts'
+  // Import theme store to initialize theme system
+  import '../stores/theme-store.ts'
 
   // Hamburger menu functionality
   function initHamburgerMenu() {
@@ -271,29 +277,6 @@ const { title, description, url, ogImage } = Astro.props
     --header-height: 60px;
     --sidebar-width: 180px;
     --sidebar-transition: 0.3s ease-in-out;
-    --background: #1a1a1a;
-    --surface: #2a2a2a;
-    --text: #e0e0e0;
-    --text-secondary: #b0b0b0;
-    --accent: #006ef5;
-    --accent-hover: #3a8eef;
-    --border: #3a3a3a;
-  }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family:
-      system-ui,
-      -apple-system,
-      sans-serif;
-    background-color: var(--background);
-    color: var(--text);
-    overflow: hidden;
   }
 
   .app-container {
@@ -306,6 +289,7 @@ const { title, description, url, ogImage } = Astro.props
     height: var(--header-height);
     background-color: var(--surface);
     border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 4px var(--shadow-light);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -380,22 +364,26 @@ const { title, description, url, ogImage } = Astro.props
 
   .menu-bar nav {
     display: flex;
+    align-items: center;
     gap: 10px;
   }
 
   .nav-button {
-    background-color: var(--accent);
-    color: white;
-    border: none;
+    background-color: var(--button-background);
+    color: var(--button-text);
+    border: 1px solid var(--border-light);
     padding: 8px 16px;
-    border-radius: 4px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px var(--shadow-light);
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
   }
 
   .nav-button:hover {
-    background-color: var(--accent);
+    background-color: var(--button-background-hover);
+    box-shadow: 0 4px 8px var(--shadow-medium);
+    transform: translateY(-1px);
   }
 
   .about-button {
@@ -407,6 +395,34 @@ const { title, description, url, ogImage } = Astro.props
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  /* Has to be global to be seen by the solid.js component */
+  :global(.theme-toggle) {
+    background-color: var(--button-background);
+    color: var(--button-text);
+    border: 1px solid var(--border-light);
+    padding: 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px var(--shadow-light);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+  }
+
+  :global(.theme-toggle:hover) {
+    background-color: var(--button-background-hover);
+    box-shadow: 0 4px 8px var(--shadow-medium);
+    transform: translateY(-1px) scale(1.05);
+  }
+
+  :global(.theme-toggle:active) {
+    transform: translateY(0) scale(0.95);
   }
 
   .heading-mobile {
@@ -431,6 +447,7 @@ const { title, description, url, ogImage } = Astro.props
     width: var(--sidebar-width);
     background-color: var(--surface);
     border-right: 1px solid var(--border);
+    box-shadow: 2px 0 4px var(--shadow-light);
     padding: 0;
     overflow-y: auto;
     transition:
@@ -529,19 +546,23 @@ const { title, description, url, ogImage } = Astro.props
 
   .preset-button {
     width: 100%;
-    background-color: transparent;
+    background-color: var(--surface-elevated);
     color: var(--text);
     border: 1px solid var(--border);
     padding: 8px 12px;
-    border-radius: 4px;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px var(--shadow-light);
     cursor: pointer;
     text-align: left;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
   }
 
   .preset-button:hover {
     background-color: var(--accent);
+    color: var(--button-text);
     border-color: var(--accent);
+    box-shadow: 0 2px 4px var(--shadow-medium);
+    transform: translateY(-1px);
   }
 
   .event-list li {

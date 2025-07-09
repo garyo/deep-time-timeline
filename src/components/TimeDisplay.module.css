@@ -1,28 +1,12 @@
-.timeDisplay {
+.timeDisplayContainer {
   position: absolute;
   top: 0;
   font-size: 14px;
-  color: #e0e0e0;
-  background-color: #2a2a2a;
-  padding: 8px 12px;
-  border-radius: 4px;
+  color: var(--text);
 }
 
 .left {
   left: 0;
-}
-
-.left::after {
-  content: '';
-  position: absolute;
-  bottom: -14px;
-  left: 0px;
-  width: 0;
-  height: 0;
-  border-top: 8px solid #2a2a2a;
-  border-left: 8px solid #2a2a2a;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid transparent;
 }
 
 .right {
@@ -30,15 +14,28 @@
   cursor: pointer;
 }
 
-.right::after {
-  content: '';
+.timeDisplaySvg {
   position: absolute;
-  bottom: -14px;
-  right: 0px;
-  width: 0;
-  height: 0;
-  border-top: 8px solid #2a2a2a;
-  border-right: 8px solid #2a2a2a;
-  border-left: 8px solid transparent;
-  border-bottom: 8px solid transparent;
+  top: 0;
+  height: 48px;
+  z-index: 1;
+}
+
+.left .timeDisplaySvg {
+  left: 0;
+}
+
+.right .timeDisplaySvg {
+  right: 0;
+}
+
+.timeDisplayText {
+  position: relative;
+  z-index: 2;
+  padding: 8px 12px;
+  /* Remove background and borders since SVG handles the shape */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  pointer-events: none; /* Let clicks pass through to SVG */
 }
