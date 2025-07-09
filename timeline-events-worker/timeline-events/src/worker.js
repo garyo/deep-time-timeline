@@ -138,16 +138,25 @@ async function getToken(env) {
   });
   if (res.ok) {
     const data = await res.json();
+    if (data.error) {
+      console.error(`Error getting Reddit access token for ${env.REDDIT_USERNAME}: ${data.error} (maybe wrong password?)`)
+      return undefined
+    }
     return data.access_token;
+  }
+  else {
+    console.error(`Can't get reddit token for ${env.REDDIT_USERNAME}`)
+    return undefined
   }
 }
 
 async function getTopPosts(token, n = 10, period) {
-  const res = await fetch(`https://oauth.reddit.com/r/worldnews/top?limit=${n}&t=${period}`, {
-    headers: {
+  const headers = {
       'Authorization': `Bearer ${token}`,
       'User-Agent': 'my-news-proxy/0.1 by simplex5d'
     }
+  const res = await fetch(`https://oauth.reddit.com/r/worldnews/top?limit=${n}&t=${period}`, {
+    headers: headers
   });
   const data = await res.json();
   return data.data.children.map(x => {
@@ -167,6 +176,8 @@ async function getTopPosts(token, n = 10, period) {
  */
 async function fetchNews(env) {
   const token = await getToken(env);
+  if (!token)
+    return []
   const [posts1, posts2] = await Promise.all([
     getTopPosts(token, MAX_ARTICLES, REDDIT_NEWS_PERIOD),
     getTopPosts(token, MAX_ARTICLES, 'day')
@@ -225,7 +236,7 @@ export default {
     if (cresponse) {
       return cresponse;
     }
-      
+
 
     let articles;
     let timelineEvents = [];
