@@ -336,6 +336,12 @@
     "categories": ["biology", "anthropology", "domestication"]
   },
   {
+    "name": "Göbekli Tepe, pre-agricultural settlement",
+    "date": "9500BC",
+    "significance": 10,
+    "categories": ["agriculture", "anthropology", "civilization"]
+  },
+  {
     "name": "Agriculture",
     "date": "8000BC",
     "significance": 10,
