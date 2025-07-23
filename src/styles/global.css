@@ -1,2 +1,18 @@
 @import "./theme.css";
 @import "tailwindcss";
+
+/* Timeline cursor styles for performance */
+.timeline-svg {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  touch-action: none;
+}
+
+.timeline-svg.grab {
+  cursor: grab;
+}
+
+.timeline-svg.grabbing {
+  cursor: grabbing;
+}
