@@ -231,9 +231,11 @@ export default {
     // Check cache
     let cache = caches.default;
     const cacheUrl = new URL(request.url);
+    console.log(`Checking cache URL ${cacheUrl}.`);
     const cacheKey = new Request(`https://${cacheUrl.hostname}${cacheUrl.pathname}`, request)
     let cresponse = await cache.match(cacheKey);
     if (cresponse) {
+      console.log(`Cache hit; returning cached response.`);
       return cresponse;
     }
 
@@ -270,6 +272,7 @@ export default {
     });
 
     // cache it
+    console.log(`Caching response under ${cacheKey.url} with TTL=${CACHE_TTL}`)
     ctx.waitUntil(cache.put(cacheKey, response.clone()))
 
     return response;
