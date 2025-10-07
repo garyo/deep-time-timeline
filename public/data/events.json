@@ -345,7 +345,13 @@
     "name": "Agriculture",
     "date": "8000BC",
     "significance": 10,
-    "categories": ["agriculture", "inventions", "anthropology", "women", "civilization"]
+    "categories": [
+      "agriculture",
+      "inventions",
+      "anthropology",
+      "women",
+      "civilization"
+    ]
   },
   {
     "name": "First evidence of woven cloth",
@@ -1047,7 +1053,7 @@
     "name": "Panama Canal completed",
     "date": "1914-08-15",
     "significance": 6,
-    "categories": ["engineering", "transportation", "trade"]
+    "categories": ["engineering", "transportation", "trade", "civilization"]
   },
   {
     "name": "Russian Revolution",
@@ -1287,7 +1293,12 @@
     "name": "Paris Climate Accord",
     "date": "2015-12-12",
     "significance": 5,
-    "categories": ["politics", "environment", "international relations", "climate"]
+    "categories": [
+      "politics",
+      "environment",
+      "international relations",
+      "climate"
+    ]
   },
   {
     "name": "Hillary Clinton becomes first female U.S. major-party presidential nominee",
@@ -1299,7 +1310,7 @@
     "name": "Global temps cross 1°C above pre-industrial level",
     "date": "2017",
     "significance": 5,
-    "categories": ["climate", "environment"]
+    "categories": ["climate", "environment", "science"]
   },
   {
     "name": "#MeToo movement goes global",
