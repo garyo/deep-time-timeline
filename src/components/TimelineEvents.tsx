@@ -8,6 +8,7 @@ import { RangeQueryableEvents } from '../scripts/events.ts'
 import type { VisibleEvent } from '../scripts/events.ts'
 import { rescaleClamp } from '../utils.ts'
 import { FormattedText } from './FormattedText.tsx'
+import { textSize, textSizeScale } from '../stores/text-size-store.ts'
 
 function remap(
   x: number,
@@ -41,11 +42,16 @@ function getLocalSignificanceThreshold(
   return remap(localDensity, 0, maxDensity, 0, 10)
 }
 
-function pushClustersForVisibility(eventStore: RangeQueryableEvents) {
+function pushClustersForVisibility(
+  eventStore: RangeQueryableEvents,
+  textSizeScale: number = 1
+) {
   const clusterMaxLength = 4
-  const eventXSize = 16
+  const baseEventXSize = 16 // in pixels
+  const eventXSize = baseEventXSize * textSizeScale
   const clusterXSize = eventXSize * 2
-  const pushYAmount = 8
+  const basePushYAmount = 8
+  const pushYAmount = basePushYAmount * textSizeScale
   const clusterLeftMargin = eventXSize * 1.75
 
   let cluster: Readonly<VisibleEvent>[] = []
@@ -121,8 +127,10 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
   const visibleEvents = createMemo(() => {
     // Access timeline state for reactivity, use timeline for methods
     const timeline = props.timeline
-    // Force reactivity by accessing timelineState
+    // Force reactivity by accessing timelineState and textSize
     const _ = timelineState.width // This makes the memo reactive to state changes
+    const currentTextSize = textSize() // Make reactive to text size changes
+    const scale = textSizeScale() // Get current text size scale factor
 
     // Calculate visible events
     let events: VisibleEvent[] = []
@@ -136,10 +144,10 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
       }
     })
 
-    // Apply clustering
+    // Apply clustering with text size scale
     const eventStore = new RangeQueryableEvents()
     eventStore.addAll(events)
-    pushClustersForVisibility(eventStore)
+    pushClustersForVisibility(eventStore, scale)
 
     // Sort by significance (lowest first so highest renders on top)
     return events.sort((a, b) => a.event.significance - b.event.significance)
@@ -187,7 +195,6 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
                     x={textOffsetX + 1}
                     y={textOffsetY + 1}
                     class="event-text-shadow"
-                    fontSize="11px"
                     transform={slant}
                     opacity={opacity}
                   />
@@ -200,7 +207,6 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
                     x={textOffsetX - 1}
                     y={textOffsetY - 1}
                     class="event-text-shadow"
-                    fontSize="11px"
                     transform={slant}
                     opacity={opacity}
                   />
@@ -212,7 +218,6 @@ export const TimelineEvents: Component<TimelineEventsProps> = (props) => {
                   x={textOffsetX}
                   y={textOffsetY}
                   class="event-text"
-                  fontSize="11px"
                   transform={slant}
                   opacity={opacity}
                 />

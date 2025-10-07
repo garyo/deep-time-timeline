@@ -30,11 +30,14 @@
     "temporal-polyfill": "^0.3.0"
   },
   "devDependencies": {
+    "@solidjs/testing-library": "^0.8.10",
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/d3": "^7.4.3",
     "@vitest/ui": "^3.1.4",
     "happy-dom": "^17.6.1",
     "prettier-plugin-astro": "^0.14.1",
     "tsx": "^4.16.5",
+    "vite-plugin-solid": "^2.11.9",
     "vitest": "^3.1.4"
   },
   "prettier": {

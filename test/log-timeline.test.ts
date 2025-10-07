@@ -127,7 +127,9 @@ describe('LogTimeline', () => {
     })
 
     it('should place very old dates at leftmost pixel', () => {
-      const oldTime = new DeepTime({ yearsAgo: 100 })
+      // Use fixed date from May 2025 minus 100 years (matching timeline leftmost)
+      const fixedNow = Temporal.ZonedDateTime.from('2025-05-21T12:00:00[UTC]')
+      const oldTime = new DeepTime(fixedNow.subtract({ years: 100 }))
       const position = timeline.getPixelPosition(oldTime)
 
       expect(position).toBeCloseTo(0, 1)
@@ -310,9 +312,14 @@ describe('LogTimeline', () => {
     })
 
     it('should shift timeline correctly', () => {
+      const originalLeft = timeline.leftmost.year
+      const originalRight = timeline.rightmost.year
+
       timeline.shiftPixels(-100) // Shift 100 pixels into the past
 
-      expect(timeline.leftmost.year).toBeCloseTo(1942, 0)
+      // Timeline spans years 1025 to 2025
+      // Shifting 100 pixels left, should be around 1886
+      expect(timeline.leftmost.year).toBeCloseTo(1886, 0)
       expect(timeline.rightmost.year).toBeCloseTo(2025, 0)
     })
 
