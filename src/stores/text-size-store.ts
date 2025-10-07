@@ -17,12 +17,6 @@ export function getTextSizePx(size: TextSize): string {
 // Base font size for scale calculations
 const BASE_FONT_SIZE = TEXT_SIZE_MAP.small
 
-// Create reactive text size signal
-const [textSize, setTextSize] = createSignal<TextSize>('small')
-
-// Derived signal for text size scale factor
-export const textSizeScale = () => TEXT_SIZE_MAP[textSize()] / BASE_FONT_SIZE
-
 // Text size persistence in localStorage
 const TEXT_SIZE_KEY = 'deep-timeline-text-size'
 
@@ -44,6 +38,15 @@ function loadTextSize(): TextSize {
   return isMobile ? 'medium' : 'small'
 }
 
+// Initialize text size from localStorage BEFORE creating signal
+const initialTextSize = typeof window !== 'undefined' ? loadTextSize() : 'small'
+
+// Create reactive text size signal with loaded value
+const [textSize, setTextSize] = createSignal<TextSize>(initialTextSize)
+
+// Derived signal for text size scale factor
+export const textSizeScale = () => TEXT_SIZE_MAP[textSize()] / BASE_FONT_SIZE
+
 // Save text size to localStorage
 function saveTextSize(newSize: TextSize) {
   if (typeof window === 'undefined') return
@@ -60,12 +63,6 @@ createEffect(() => {
   const currentSize = textSize()
   saveTextSize(currentSize)
 })
-
-// Initialize text size from localStorage
-if (typeof window !== 'undefined') {
-  const initialSize = loadTextSize()
-  setTextSize(initialSize)
-}
 
 // Actions
 export const textSizeActions = {

@@ -2,9 +2,6 @@ import { createSignal, createEffect } from 'solid-js'
 
 export type Theme = 'dark' | 'light' | 'system'
 
-// Create reactive theme signal
-const [theme, setTheme] = createSignal<Theme>('dark')
-
 // Theme persistence in localStorage
 const THEME_KEY = 'deep-timeline-theme'
 
@@ -83,6 +80,12 @@ function saveTheme(newTheme: Theme) {
   }
 }
 
+// Initialize theme from localStorage BEFORE creating signal
+const initialTheme = typeof window !== 'undefined' ? loadTheme() : 'dark'
+
+// Create reactive theme signal with loaded value
+const [theme, setTheme] = createSignal<Theme>(initialTheme)
+
 // Create effect to apply theme changes
 createEffect(() => {
   setupSystemTheme()
@@ -92,12 +95,6 @@ createEffect(() => {
   applyTheme(currentTheme)
   saveTheme(currentTheme)
 })
-
-// Initialize theme from localStorage
-if (typeof window !== 'undefined') {
-  const initialTheme = loadTheme()
-  setTheme(initialTheme)
-}
 
 export function nextTheme(theme: Theme): Theme {
   if (theme === 'dark') return 'light'
