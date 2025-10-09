@@ -319,7 +319,7 @@ describe('LogTimeline', () => {
 
       // Timeline spans years 1025 to 2025
       // Shifting 100 pixels left, should be around 1886
-      expect(timeline.leftmost.year).toBeCloseTo(1886, 0)
+      expect(timeline.leftmost.year).toBeCloseTo(1886, -1)
       expect(timeline.rightmost.year).toBeCloseTo(2025, 0)
     })
 

@@ -385,87 +385,86 @@ class LogTimeline {
       }
     }
 
+    // Configuration for different tick types
+    type TickSpec = {
+      startVal: number
+      shouldContinue: (val: number) => boolean
+      getNextVal: (val: number) => number
+      createTime: (val: number) => DeepTime
+      createLabel: (val: number, time: DeepTime) => string
+    }
+
+    const tickSpecs: TickSpec[] = [
+      // minutes ago
+      {
+        startVal: 1,
+        shouldContinue: (val) => val < 180,
+        getNextVal: nextNiceValue,
+        createTime: (val) => state.refTime.subtract({ minutes: val }),
+        createLabel: (val) => `${val} minutes ago`
+      },
+      // hours ago
+      {
+        startVal: 1,
+        shouldContinue: (val) => val < 48,
+        getNextVal: nextNiceValue,
+        createTime: (val) => state.refTime.subtract({ hours: val }),
+        createLabel: (val) => `${val} hours ago`
+      },
+      // days ago
+      {
+        startVal: 1,
+        shouldContinue: (val) => val < 365,
+        getNextVal: nextNiceValue,
+        createTime: (val) => state.refTime.subtract({ days: val }),
+        createLabel: (val) => `${val} days ago`
+      },
+      // years (CE/BCE)
+      {
+        startVal: 2025,
+        shouldContinue: (val) => val > -10000,
+        getNextVal: prevNiceYear,
+        createTime: (val) => new DeepTime({ year: val }),
+        createLabel: (val, time) =>
+          time.year < 0 ? `${-time.year} BCE` : `${time.year} CE`
+      },
+      // deep past (years ago)
+      {
+        startVal: -10000,
+        shouldContinue: (val) => val > -1e15,
+        getNextVal: prevNiceYear,
+        createTime: (val) => state.refTime.subtract({ years: -val }),
+        createLabel: (val, time) => time.toRelativeString()
+      }
+    ]
+
     // We'll create ticks in order from right (now) to left (past)
     let ticks: { t: DeepTime; pos: number; label: string }[] = []
     let lastTickPos = state.width + 100
 
-    // minutes ago
-    for (
-      let val = 1, lastCheckPos = 1000;
-      val < 3600 && lastCheckPos > 0;
-      val = nextNiceValue(val)
-    ) {
-      let tickTime = state.refTime.subtract({ minutes: val })
-      let tickPos = this.getPixelPosition(tickTime)
-      lastCheckPos = tickPos
-      if (
-        tickPos < state.width &&
-        tickPos > 0 &&
-        tickPos < lastTickPos - minPixelSpacing
+    // Process each tick spec
+    for (const spec of tickSpecs) {
+      for (
+        let val = spec.startVal, lastCheckPos = 1000;
+        spec.shouldContinue(val) && lastCheckPos > 0;
+        val = spec.getNextVal(val)
       ) {
-        // it's a candidate
-        ticks.push({ t: tickTime, pos: tickPos, label: `${val} minutes ago` })
-        lastTickPos = tickPos
-      }
-    }
+        const tickTime = spec.createTime(val)
+        const tickPos = this.getPixelPosition(tickTime)
+        lastCheckPos = tickPos
 
-    // days ago
-    for (
-      let val = 1, lastCheckPos = 1;
-      val < 365 && lastCheckPos > 0;
-      val = nextNiceValue(val)
-    ) {
-      let tickTime = state.refTime.subtract({ days: val })
-      let tickPos = this.getPixelPosition(tickTime)
-      lastCheckPos = tickPos
-      if (
-        tickPos < state.width &&
-        tickPos > 0 &&
-        tickPos < lastTickPos - minPixelSpacing
-      ) {
-        ticks.push({ t: tickTime, pos: tickPos, label: `${val} days ago` })
-        lastTickPos = tickPos
-      }
-    }
-
-    // years
-    for (
-      let val = 2025, lastCheckPos = 1;
-      val > -10000 && lastCheckPos > 0;
-      val = prevNiceYear(val)
-    ) {
-      let tickTime = new DeepTime({ year: val })
-      let tickPos = this.getPixelPosition(tickTime)
-      lastCheckPos = tickPos
-      if (
-        tickPos < state.width &&
-        tickPos > 0 &&
-        tickPos < lastTickPos - minPixelSpacing
-      ) {
-        let label = `${tickTime.year} CE`
-        if (tickTime.year < 0) label = `${-tickTime.year} BCE`
-        ticks.push({ t: tickTime, pos: tickPos, label })
-        lastTickPos = tickPos
-      }
-    }
-
-    // deep past: "years ago"
-    for (
-      let val = -10000, lastCheckPos = 100000;
-      val > -1e15 && lastCheckPos > 0;
-      val = prevNiceYear(val)
-    ) {
-      let tickTime = state.refTime.subtract({ years: -val })
-      let tickPos = this.getPixelPosition(tickTime)
-      lastCheckPos = tickPos
-      if (
-        tickPos < state.width &&
-        tickPos > 0 &&
-        tickPos < lastTickPos - minPixelSpacing
-      ) {
-        const label = `${tickTime.toRelativeString()}`
-        ticks.push({ t: tickTime, pos: tickPos, label })
-        lastTickPos = tickPos
+        if (
+          tickPos < state.width &&
+          tickPos > 0 &&
+          tickPos < lastTickPos - minPixelSpacing
+        ) {
+          ticks.push({
+            t: tickTime,
+            pos: tickPos,
+            label: spec.createLabel(val, tickTime)
+          })
+          lastTickPos = tickPos
+        }
       }
     }
 
