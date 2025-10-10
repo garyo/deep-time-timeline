@@ -153,11 +153,11 @@ export const Timeline: Component<TimelineProps> = (props) => {
             ]
             eventsActions.updateAllEvents(combinedEvents)
 
-            // Set up periodic updates
+            // Set up periodic updates (aligned with worker cache TTL)
             eventUpdater = new EventUpdater(
               props.apiUrl,
               handleAdditionalEvents,
-              15 * 60 * 1000
+              60 * 60 * 1000 // 1 hour - matches worker cache
             )
             eventUpdater.start()
 
@@ -182,6 +182,10 @@ export const Timeline: Component<TimelineProps> = (props) => {
 
       // Set up keyboard navigation
       document.addEventListener('keydown', handleKeyDown)
+
+      // Handle tab visibility changes - refresh news when tab becomes visible
+      // (browsers throttle timers in background tabs)
+      document.addEventListener('visibilitychange', handleVisibilityChange)
 
       // Make right-time reset handler available globally
       ;(window as any).handleRightTimeReset = function () {
@@ -315,6 +319,19 @@ export const Timeline: Component<TimelineProps> = (props) => {
     }
   }
 
+  async function handleVisibilityChange() {
+    // When tab becomes visible after being hidden, check for news updates
+    if (!document.hidden && props.apiUrl) {
+      console.log('Tab visible - checking for news updates')
+      try {
+        const additionalEvents = await loadEventsFromAPI(props.apiUrl)
+        handleAdditionalEvents(additionalEvents)
+      } catch (error) {
+        console.warn('Failed to refresh news on visibility change:', error)
+      }
+    }
+  }
+
   // Cleanup
   onCleanup(() => {
     if (eventUpdater) eventUpdater.stop()
@@ -324,6 +341,7 @@ export const Timeline: Component<TimelineProps> = (props) => {
 
     window.removeEventListener('resize', handleResize)
     document.removeEventListener('keydown', handleKeyDown)
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
 
     // Reset timeline state
     setTimelineReady(false)
