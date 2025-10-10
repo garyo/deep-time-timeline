@@ -345,13 +345,7 @@
     "name": "Agriculture",
     "date": "8000BC",
     "significance": 10,
-    "categories": [
-      "agriculture",
-      "inventions",
-      "anthropology",
-      "women",
-      "civilization"
-    ]
+    "categories": ["agriculture", "inventions", "anthropology", "women", "civilization"]
   },
   {
     "name": "First evidence of woven cloth",
@@ -1293,12 +1287,7 @@
     "name": "Paris Climate Accord",
     "date": "2015-12-12",
     "significance": 5,
-    "categories": [
-      "politics",
-      "environment",
-      "international relations",
-      "climate"
-    ]
+    "categories": ["politics", "environment", "international relations", "climate"]
   },
   {
     "name": "Hillary Clinton becomes first female U.S. major-party presidential nominee",
@@ -1377,6 +1366,72 @@
     "date": "2023-12-08",
     "significance": 5,
     "categories": ["medicine", "biology", "genetics"]
+  },
+  {
+    "name": "India’s Aditya-L1 reaches Sun–Earth L1 halo orbit",
+    "date": "2024-01-06",
+    "significance": 5,
+    "categories": ["space exploration", "astronomy", "science", "news"]
+  },
+  {
+    "name": "JAXA’s SLIM achieves Japan’s first lunar soft landing",
+    "date": "2024-01-20",
+    "significance": 6,
+    "categories": ["space exploration", "engineering", "science", "news"]
+  },
+  {
+    "name": "Vineyard Wind begins delivering power—first large-scale U.S. offshore wind",
+    "date": "2024-02-22",
+    "significance": 6,
+    "categories": ["energy", "environment", "engineering", "news"]
+  },
+  {
+    "name": "Sweden joins NATO",
+    "date": "2024-03-07",
+    "significance": 8,
+    "categories": ["international relations", "politics", "wars", "news"]
+  },
+  {
+    "name": "UN adopts first global AI resolution",
+    "date": "2024-03-21",
+    "significance": 6,
+    "categories": ["ethics", "ideas", "international relations", "communication", "news"]
+  },
+  {
+    "name": "AI Seoul Summit Frontier Safety Commitments",
+    "date": "2024-05-21",
+    "significance": 5,
+    "categories": ["ethics", "computing", "ideas", "international relations", "news"]
+  },
+  {
+    "name": "Mexico elects first woman president (Claudia Sheinbaum)",
+    "date": "2024-06-02",
+    "significance": 6,
+    "categories": ["women", "politics", "nations", "news"]
+  },
+  {
+    "name": "NVIDIA becomes world’s most valuable company (>$3.3T)",
+    "date": "2024-06-18",
+    "significance": 5,
+    "categories": ["economics", "computing", "trade", "news"]
+  },
+  {
+    "name": "UK general election: Labour landslide; Starmer becomes PM",
+    "date": "2024-07-04",
+    "significance": 5,
+    "categories": ["politics", "government", "news"]
+  },
+  {
+    "name": "EU AI Act enters into force",
+    "date": "2024-08-01",
+    "significance": 7,
+    "categories": ["computing", "government", "news"]
+  },
+  {
+    "name": "2024 confirmed as warmest year on record",
+    "date": "2025-01-10",
+    "significance": 7,
+    "categories": ["climate", "environment", "meteorology", "news"]
   },
   {
     "name": "First gene-therapy cure",
