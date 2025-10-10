@@ -6,6 +6,7 @@
 // Configuration
 const CACHE_TTL = 60 * 60; // Cache for 1 hour. Reddit limit is 60 req/min, 10M req/day
 const MAX_ARTICLES = 200;
+const MIN_ARTICLES = 8;
 const BASE_SIGNIFICANCE = 0;
 const SIGNIFICANCE_THRESHOLD = 5;
 const MAX_SIGNIFICANCE = 9
@@ -17,16 +18,18 @@ const SIGNIFICANCE_KEYWORDS = {
   5: [
     'war declared', 'nuclear', 'world war', 'pandemic declared', 'climate emergency',
     'major earthquake', 'volcanic eruption', 'asteroid', 'breakthrough discovery',
-    'peace treaty signed', 'independence declared'
+    'peace treaty signed', 'independence declared', 'powerful earthquake'
   ],
   4: [
     'president elected', 'prime minister', 'major election', 'constitutional',
     'supreme court', 'invasion', 'cease fire', 'historic agreement',
-    'breakthrough', 'first time', 'record breaking', 'unconstitutional'
+    'breakthrough', 'first time', 'record breaking', 'unconstitutional', 'earthquake',
+    'peace agreement'
   ],
   3: [
     'election', 'protest', 'strike', 'scandal', 'resignation', 'appointed',
-    'trade agreement', 'sanctions', 'diplomat', 'summit', 'crisis', 'pandemic'
+    'trade agreement', 'sanctions', 'diplomat', 'summit', 'crisis', 'pandemic',
+    'nobel prize'
   ],
   // Medium significance 
   2: [
@@ -36,7 +39,7 @@ const SIGNIFICANCE_KEYWORDS = {
   ],
   1: [
     'company', 'business', 'merger', 'acquisition', 'bankruptcy',
-    'innovation', 'research', 'study', 'report'
+    'innovation', 'research', 'study', 'report', 'president'
   ],
   1: [
     'culture', 'art', 'music', 'film', 'book', 'award'
@@ -109,12 +112,24 @@ function calculateSignificance(article) {
  * Filter articles to only include significant ones
  */
 function filterSignificantEvents(articles) {
-  return articles
-    .map(article => ({
+  let articlesWithSignificance = articles.map(article => ({
       ...article,
       significance: calculateSignificance(article)
     }))
-    .filter(article => article.significance >= SIGNIFICANCE_THRESHOLD) // Only include significance above threshold
+
+  // Find a threshold that returns "enough" articles
+  let threshold= SIGNIFICANCE_THRESHOLD
+  while (threshold > BASE_SIGNIFICANCE) {
+    const n = articlesWithSignificance.filter(article => article.significance >= threshold).length
+    console.log(`Threshold of ${threshold} gives ${n} articles (need ${MIN_ARTICLES})`)
+    if (n >= MIN_ARTICLES)
+      break
+    threshold--
+  }
+  console.log(`Using threshold of ${threshold}`)
+
+  return articlesWithSignificance
+    .filter(article => article.significance >= threshold) // Only include significance above threshold
     .sort((a, b) => b.significance - a.significance) // Sort by significance
 }
 
@@ -193,7 +208,7 @@ async function fetchNews(env) {
   });
 
   posts.forEach(post => {
-    console.log(`Post object has keys ${Object.keys(posts[0])}`); // title, date, content, url
+    // console.log(`Post object has keys ${Object.keys(posts[0])}`); // title, date, content, url
     console.log(`"${post.title}"\n  Date: ${post.date}\n  Content: ${post.content}\n  URL: ${post.url}`);
   });
   const articles = posts.map(post => {
