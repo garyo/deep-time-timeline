@@ -40,7 +40,7 @@ export const interactionActions = {
     setInteractionState('dimensions', {
       width,
       height,
-      axisPosition: height * 0.6
+      axisPosition: Math.min(height * 0.7, height - 80)
     })
   },
 
