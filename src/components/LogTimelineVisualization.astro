@@ -8,13 +8,17 @@ export interface Props {
   apiUrl?: string
   autoUpdateInterval?: number // Auto-update interval in milliseconds (0 to disable)
   gestureEnabled?: boolean // Override automatic dev mode gesture detection
+  syncRole?: 'controller' | 'display' | 'standalone'
+  syncMethod?: 'broadcast' | 'websocket' | 'none'
 }
 
 const {
   initialYearsAgo = 10000,
   apiUrl = 'https://timeline-events-api.garyo.workers.dev',
   autoUpdateInterval = 5000,
-  gestureEnabled = import.meta.env.DEV // Default to dev mode, but allow override
+  gestureEnabled = import.meta.env.DEV, // Default to dev mode, but allow override
+  syncRole = 'standalone',
+  syncMethod = 'none'
 } = Astro.props
 
 // Load category groups server-side
@@ -24,6 +28,9 @@ try {
 } catch (error) {
   console.error('Failed to load event-categories.json:', error)
 }
+
+// Determine if this is display mode (hide UI chrome)
+const isDisplayMode = syncRole === 'display'
 ---
 
 <div
@@ -32,6 +39,8 @@ try {
   data-api-url={apiUrl}
   data-auto-update-interval={autoUpdateInterval}
   data-category-groups={JSON.stringify(categoryGroups)}
+  data-sync-role={syncRole}
+  data-sync-method={syncMethod}
 >
   <div class="timeline-controls">
     <!-- SolidJS Time Display Components -->
@@ -60,8 +69,8 @@ try {
       </svg>
     </button>
   </div>
-  <!-- Heads-up display overlay -->
-  <div class="hud-overlay">
+  <!-- Heads-up display overlay (hidden in display mode) -->
+  <div class:list={['hud-overlay', { 'display-mode-hidden': isDisplayMode }]}>
     <div class="hud-header">
       <div class="hud-title" id="hud-title">Timeline Controls</div>
       <button class="hud-toggle" id="hud-toggle" title="Toggle controls">
@@ -200,6 +209,8 @@ try {
         autoUpdateInterval={autoUpdateInterval}
         categoryGroups={categoryGroups}
         gestureEnabled={gestureEnabled}
+        syncRole={syncRole}
+        syncMethod={syncMethod}
       />
     </div>
   </div>
@@ -632,6 +643,11 @@ try {
       margin: 0;
     }
   }
+
+  /* Display mode: hide UI chrome */
+  .display-mode-hidden {
+    display: none !important;
+  }
 </style>
 
 <script>
@@ -802,6 +818,41 @@ try {
   }
 
   function initializeApp() {
+    // Check URL params for display mode and hide UI chrome
+    const params = new URLSearchParams(window.location.search)
+    const mode = params.get('mode')
+    if (mode === 'display') {
+      // Hide HUD in display mode
+      const hud = document.querySelector('.hud-overlay')
+      if (hud) hud.style.display = 'none'
+
+      // Hide the fullscreen toggle button
+      const fullscreenBtn = document.querySelector('.fullscreen-btn')
+      if (fullscreenBtn) fullscreenBtn.style.display = 'none'
+
+      // Hide the sidebar
+      const sidebar = document.getElementById('sidebar')
+      if (sidebar) sidebar.style.display = 'none'
+
+      // Hide the hamburger menu
+      const hamburger = document.getElementById('hamburger-menu')
+      if (hamburger) hamburger.style.display = 'none'
+
+      // Hide the top navigation buttons (zoom in/out, reset, about)
+      const nav = document.querySelector('.menu-bar nav')
+      if (nav) nav.style.display = 'none'
+
+      // Hide the theme toggle
+      const themeToggle = document.querySelector('.theme-toggle')
+      if (themeToggle) themeToggle.style.display = 'none'
+
+      // Center the title on display mode
+      const menuBar = document.querySelector('.menu-bar')
+      if (menuBar) {
+        menuBar.style.justifyContent = 'center'
+      }
+    }
+
     // Setup fullscreen toggle
     setupFullscreenToggle()
 

@@ -1,6 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import LogTimelineVisualization from '../components/LogTimelineVisualization.astro'
+
+// Parse URL parameters for museum display sync
+const url = new URL(Astro.request.url)
+const mode = url.searchParams.get('mode') || 'standalone'
+const syncMethod = url.searchParams.get('sync') || 'none'
+
+// Validate mode parameter
+const validModes = ['controller', 'display', 'standalone']
+const syncRole = validModes.includes(mode) ? mode : 'standalone'
+
+// Validate sync method parameter
+const validSyncMethods = ['broadcast', 'websocket', 'none']
+const syncType = validSyncMethods.includes(syncMethod) ? syncMethod : 'none'
 ---
 
 <Layout
@@ -9,5 +22,9 @@ import LogTimelineVisualization from '../components/LogTimelineVisualization.ast
   ogImage="https://deep-timeline.oberbrunner.com/deep-time-social.jpg"
   description="Visualize world events through deep time, with log scaling, so you can see how the present (a day, a week, a year) smoothly fades into the very deepest past."
 >
-  <LogTimelineVisualization initialYearsAgo={100000} />
+  <LogTimelineVisualization
+    initialYearsAgo={100000}
+    syncRole={syncRole as 'controller' | 'display' | 'standalone'}
+    syncMethod={syncType as 'broadcast' | 'websocket' | 'none'}
+  />
 </Layout>

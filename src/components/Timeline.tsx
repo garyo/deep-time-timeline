@@ -16,6 +16,7 @@ import { useGestureControl } from '../stores/gesture-store.ts'
 import { TimelineSVG } from './TimelineSVG.tsx'
 import { TimelineControls } from './TimelineControls.tsx'
 import { CategoryControls } from './CategoryControls.tsx'
+import { SyncManager } from './SyncManager.tsx'
 import { LogTimeline, DeepTime } from '../log-timeline.ts'
 import type { Event } from '../scripts/events.ts'
 import {
@@ -25,6 +26,7 @@ import {
   EventFileWatcher
 } from '../scripts/events.ts'
 import type { GestureConfig } from '../gesture-interface.ts'
+import type { SyncRole } from '../stores/sync-store.ts'
 
 interface TimelineProps {
   /** Initial time range in years ago (default: 10000) */
@@ -39,6 +41,10 @@ interface TimelineProps {
   gestureEnabled?: boolean
   /** Gesture control configuration */
   gestureConfig?: Partial<GestureConfig>
+  /** Sync role for museum display (default: 'standalone') */
+  syncRole?: SyncRole
+  /** Sync method for museum display (default: 'none') */
+  syncMethod?: 'broadcast' | 'websocket' | 'none'
 }
 
 /**
@@ -58,6 +64,29 @@ export const Timeline: Component<TimelineProps> = (props) => {
   let autoUpdateIntervalId: number | null = null
   let resizeTimeout: number | null = null
   const appStartTime = new DeepTime()
+
+  // Read sync parameters from URL (client-side only)
+  // URL parameters take precedence over props for client-side components
+  const getSyncRole = (): SyncRole => {
+    if (typeof window === 'undefined') return props.syncRole || 'standalone'
+
+    const params = new URLSearchParams(window.location.search)
+    const mode = params.get('mode')
+    if (mode === 'controller' || mode === 'display') return mode
+    return props.syncRole || 'standalone'
+  }
+
+  const getSyncMethod = (): 'broadcast' | 'websocket' | 'none' => {
+    if (typeof window === 'undefined') return props.syncMethod || 'none'
+
+    const params = new URLSearchParams(window.location.search)
+    const sync = params.get('sync')
+    if (sync === 'broadcast' || sync === 'websocket') return sync
+    return props.syncMethod || 'none'
+  }
+
+  const syncRole = getSyncRole()
+  const syncMethod = getSyncMethod()
 
   // Initialize gesture control (will only activate if gestureEnabled is true)
   const gestureControl = useGestureControl(
@@ -365,9 +394,17 @@ export const Timeline: Component<TimelineProps> = (props) => {
         </div>
       }
     >
+      {/* Sync manager for museum display synchronization */}
+      <SyncManager
+        role={syncRole}
+        syncMethod={syncMethod}
+        config={{
+          viewportDebounce: 50 // Batch viewport updates
+        }}
+      />
       <TimelineControls />
       <CategoryControls />
-      <TimelineSVG timeline={globalTimeline()!} />
+      <TimelineSVG timeline={globalTimeline()!} syncRole={syncRole} />
     </Show>
   )
 }

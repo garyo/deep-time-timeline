@@ -11,9 +11,11 @@ import { TimelineTicks } from './TimelineTicks.tsx'
 import { TimelineEvents } from './TimelineEvents.tsx'
 import { TimelineHover } from './TimelineHover.tsx'
 import { LogTimeline, DeepTime } from '../log-timeline.ts'
+import type { SyncRole } from '../stores/sync-store.ts'
 
 interface TimelineSVGProps {
   timeline: LogTimeline
+  syncRole?: SyncRole
 }
 
 export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
@@ -123,7 +125,10 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
       if (interactionState.lastTouchDistance > 0) {
         const factor = currentDistance / interactionState.lastTouchDistance
         props.timeline.zoomAroundPixel(factor, x)
-        updateHoverInfo(null, null)
+
+        // Keep hover at zoom center so display shows where zoom is happening
+        const time = props.timeline.getTimeAtPixel(x)
+        updateHoverInfo(x, time)
       }
 
       interactionActions.setTouchDistance(currentDistance)
@@ -158,7 +163,11 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
       // Two pointers - start zooming
       interactionActions.stopPanning()
       interactionActions.setTouchDistance(getPointerDistance())
-      updateHoverInfo(null, null)
+
+      // Keep hover at zoom center so display shows where zoom is happening
+      const [x] = getPointerCenter()
+      const time = props.timeline.getTimeAtPixel(x)
+      updateHoverInfo(x, time)
     }
   }
 
@@ -215,7 +224,10 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
 
       // Zoom around mouse position
       props.timeline.zoomAroundPixel(factor, x)
-      updateHoverInfo(null, null)
+
+      // Keep hover at zoom center so display shows where zoom is happening
+      const time = props.timeline.getTimeAtPixel(x)
+      updateHoverInfo(x, time)
     } else {
       // Pan
       const targetTime = props.timeline.getTimeAtPixel(x - deltaX)
@@ -233,11 +245,16 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
     // Cache initial rect
     updateCachedRect()
 
-    // Set initial cursor style
-    svgRef.classList.add('grab')
+    const isInteractive = props.syncRole !== 'display'
 
-    // Add non-passive event listeners for preventDefault support
-    svgRef.addEventListener('wheel', handleWheel, { passive: false })
+    // Only make SVG interactive if not in display mode
+    if (isInteractive) {
+      // Set initial cursor style
+      svgRef.classList.add('grab')
+
+      // Add non-passive event listeners for preventDefault support
+      svgRef.addEventListener('wheel', handleWheel, { passive: false })
+    }
 
     // Update cached rect on resize
     const resizeObserver = new ResizeObserver(() => {
@@ -261,6 +278,9 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
     }
   })
 
+  // Determine if this instance should be interactive
+  const isInteractive = () => props.syncRole !== 'display'
+
   return (
     <svg
       ref={svgRef!}
@@ -272,12 +292,12 @@ export const TimelineSVG: Component<TimelineSVGProps> = (props) => {
         width: '100%',
         height: '100%'
       }}
-      onPointerEnter={handlePointerEnter}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerCancel}
+      onPointerEnter={isInteractive() ? handlePointerEnter : undefined}
+      onPointerMove={isInteractive() ? handlePointerMove : undefined}
+      onPointerLeave={isInteractive() ? handlePointerLeave : undefined}
+      onPointerDown={isInteractive() ? handlePointerDown : undefined}
+      onPointerUp={isInteractive() ? handlePointerUp : undefined}
+      onPointerCancel={isInteractive() ? handlePointerCancel : undefined}
     >
       <g>
         <g
