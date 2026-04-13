@@ -5,6 +5,11 @@ export interface RawEvent {
   categories?: string[]
   date: string // ISO date or "YYYYBCE" or "YYYYCE" or "YYYYAD" format - will be parsed by DeepTime
   significance: number // 1-10, where 10 is most significant
+  startDate?: string // optional range start (same format as date)
+  endDate?: string // optional range end
+  description?: string // optional description
+  url?: string // optional reference URL (e.g. Wikipedia)
+  source?: string // who suggested/contributed this event
 }
 
 // Each event can have any number of categories.
@@ -17,6 +22,11 @@ export interface Event {
   date: DeepTime
   categories: string[]
   significance: number
+  startDate?: DeepTime
+  endDate?: DeepTime
+  description?: string
+  url?: string
+  source?: string
 }
 
 /**
@@ -45,12 +55,30 @@ export function processEvents(events: RawEvent[]): Event[] {
         )
         return null
       }
-      return {
+      const result: Event = {
         name: event.name,
         date,
         categories: event.categories || [],
         significance: event.significance
       }
+      if (event.startDate) {
+        try {
+          result.startDate = new DeepTime(event.startDate)
+        } catch {
+          /* skip */
+        }
+      }
+      if (event.endDate) {
+        try {
+          result.endDate = new DeepTime(event.endDate)
+        } catch {
+          /* skip */
+        }
+      }
+      if (event.description) result.description = event.description
+      if (event.url) result.url = event.url
+      if (event.source) result.source = event.source
+      return result
     })
     .filter((item) => item != null)
 }

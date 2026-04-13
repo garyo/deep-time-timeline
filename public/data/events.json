@@ -78,16 +78,122 @@
     "categories": ["biology"]
   },
   {
+    "name": "Kenoran orogeny forms proto-North America",
+    "date": "-2.6e9",
+    "startDate": "-2.7e9",
+    "endDate": "-2.5e9",
+    "significance": 5,
+    "categories": ["geology"],
+    "description": "Archean continents collide, welding many small terranes together to form the core of North America and supercontinent Kenorland",
+    "url": "https://en.wikipedia.org/wiki/Algoman_orogeny",
+    "source": "Marcia Bjornerud"
+  },
+  {
     "name": "Oxygenation of atmosphere begins",
     "date": "-2.4e9",
     "significance": 7,
     "categories": ["biology", "geology"]
   },
   {
+    "name": "Huronian glaciation",
+    "date": "-2.4e9",
+    "startDate": "-2.45e9",
+    "endDate": "-2.22e9",
+    "significance": 6,
+    "categories": ["geology", "climate"],
+    "description": "Series of at least three ice ages; one of the earliest known prolonged glacial periods, linked to the Great Oxidation Event",
+    "url": "https://en.wikipedia.org/wiki/Huronian_glaciation",
+    "source": "Marcia Bjornerud"
+  },
+  {
+    "name": "Lomagundi carbon isotope excursion",
+    "date": "-2.2e9",
+    "startDate": "-2.3e9",
+    "endDate": "-2.1e9",
+    "significance": 5,
+    "categories": ["geology", "biology"],
+    "description": "Largest positive carbon isotope excursion in Earth's history; massive organic carbon burial linked to the Great Oxidation Event",
+    "url": "https://en.wikipedia.org/wiki/Great_Oxidation_Event",
+    "source": "Marcia Bjornerud"
+  },
+  {
+    "name": "Vredefort impact (largest on Earth)",
+    "date": "-2.023e9",
+    "significance": 6,
+    "categories": ["geology", "astronomy"],
+    "description": "Largest known impact structure on Earth (~160 km diameter), in present-day South Africa; heavily eroded since formation",
+    "url": "https://en.wikipedia.org/wiki/Vredefort_impact_structure",
+    "source": "Marcia Bjornerud"
+  },
+  {
     "name": "Eukaryotes evolve",
     "date": "-2.0e9",
     "significance": 5,
     "categories": ["biology", "paleontology"]
+  },
+  {
+    "name": "Penokean & Trans-Hudson orogenies",
+    "date": "-1.9e9",
+    "startDate": "-2.0e9",
+    "endDate": "-1.8e9",
+    "significance": 5,
+    "categories": ["geology"],
+    "description": "Largest Paleoproterozoic orogenic belt; sutured the Superior, Hearne-Rae, and Wyoming Archean cratons to build the North American continent",
+    "url": "https://en.wikipedia.org/wiki/Trans-Hudson_orogeny",
+    "source": "Marcia Bjornerud"
+  },
+  {
+    "name": "Sudbury impact",
+    "date": "-1.849e9",
+    "significance": 5,
+    "categories": ["geology", "astronomy"],
+    "description": "Third-largest known impact structure on Earth (130 km diameter), in Ontario, Canada; now one of the world's most important mining districts",
+    "url": "https://en.wikipedia.org/wiki/Sudbury_Basin",
+    "source": "Marcia Bjornerud"
+  },
+  {
+    "name": "Yavapai orogeny",
+    "date": "-1.71e9",
+    "startDate": "-1.71e9",
+    "endDate": "-1.68e9",
+    "significance": 5,
+    "categories": ["geology"],
+    "description": "Island arc terranes collide with southern margin of growing North America; includes rocks of the lower Grand Canyon",
+    "url": "https://en.wikipedia.org/wiki/Yavapai_orogeny",
+    "source": "Marcia Bjornerud"
+  },
+  {
+    "name": "Mazatzal & Baraboo orogenies",
+    "date": "-1.5e9",
+    "startDate": "-1.65e9",
+    "endDate": "-1.34e9",
+    "significance": 5,
+    "categories": ["geology"],
+    "description": "Two related mountain-building episodes extending from Wisconsin to Arizona; part of a ~5000 km trans-Laurentian orogenic belt",
+    "url": "https://en.wikipedia.org/wiki/Mazatzal_orogeny",
+    "source": "Marcia Bjornerud"
+  },
+  {
+    "name": "Midcontinent Rift",
+    "date": "-1.1e9",
+    "startDate": "-1.11e9",
+    "endDate": "-1.09e9",
+    "significance": 6,
+    "categories": ["geology"],
+    "description": "North America nearly split in two; a 3,000 km rift centered on Lake Superior, the deepest failed rift ever discovered, halted by the Grenville orogeny",
+    "url": "https://en.wikipedia.org/wiki/Midcontinent_Rift_System",
+    "source": "Marcia Bjornerud"
+  },
+  {
+    "name": "Grenville orogeny",
+    "date": "-1.1e9",
+    "startDate": "-1.25e9",
+    "endDate": "-0.98e9",
+    "significance": 7,
+    "categories": ["geology"],
+    "description": "Himalaya-scale mountains form during assembly of supercontinent Rodinia; remnants include the Blue Ridge, Adirondacks, and equivalent structures in E Greenland, Norway, and Svalbard",
+    "url": "https://en.wikipedia.org/wiki/Grenville_orogeny",
+    "source": "Marcia Bjornerud"
   },
   {
     "name": "Multicellular life begins",
