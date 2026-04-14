@@ -23,7 +23,7 @@ const syncType = validSyncMethods.includes(syncMethod) ? syncMethod : 'none'
   description="Visualize world events through deep time, with log scaling, so you can see how the present (a day, a week, a year) smoothly fades into the very deepest past."
 >
   <LogTimelineVisualization
-    initialYearsAgo={100000}
+    initialYearsAgo={13_900_000_000}
     syncRole={syncRole as 'controller' | 'display' | 'standalone'}
     syncMethod={syncType as 'broadcast' | 'websocket' | 'none'}
   />
