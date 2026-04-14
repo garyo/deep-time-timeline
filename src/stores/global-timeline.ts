@@ -12,7 +12,7 @@ export interface TimelineState {
 
 // Global timeline state - the single source of truth
 const [timelineState, setTimelineState] = createStore<TimelineState>({
-  leftmostTime: new DeepTime({ yearsAgo: 10000 }),
+  leftmostTime: new DeepTime({ yearsAgo: 13_900_000_000 }),
   rightmostTime: new DeepTime(),
   refTime: new DeepTime(),
   width: 800
