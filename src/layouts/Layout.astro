@@ -29,6 +29,28 @@ const { title, description, url, ogImage } = Astro.props
       src="https://analytics.oberbrunner.com/script.js"
       data-website-id="aeb36b39-c0a5-40b9-bfab-6e551796fd63"
       data-domains="deep-timeline.org,www.deep-timeline.org"></script>
+    <!-- Matomo (trial alongside Umami); cookie-less, prod hostnames only -->
+    <script is:inline>
+      if (
+        ['deep-timeline.org', 'www.deep-timeline.org'].includes(
+          location.hostname
+        )
+      ) {
+        var _paq = (window._paq = window._paq || [])
+        _paq.push(['disableCookies'])
+        _paq.push(['trackPageView'])
+        _paq.push(['enableLinkTracking'])
+        _paq.push([
+          'setTrackerUrl',
+          'https://matomo.oberbrunner.com/matomo.php'
+        ])
+        _paq.push(['setSiteId', '4'])
+        var mg = document.createElement('script')
+        mg.async = true
+        mg.src = 'https://matomo.oberbrunner.com/matomo.js'
+        document.head.appendChild(mg)
+      }
+    </script>
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
