@@ -23,13 +23,7 @@ const { title, description, url, ogImage } = Astro.props
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
-    <script
-      is:inline
-      defer
-      src="https://analytics.oberbrunner.com/script.js"
-      data-website-id="aeb36b39-c0a5-40b9-bfab-6e551796fd63"
-      data-domains="deep-timeline.org,www.deep-timeline.org"></script>
-    <!-- Matomo (trial alongside Umami); cookie-less, prod hostnames only -->
+    <!-- Matomo analytics; cookie-less, prod hostnames only -->
     <script is:inline>
       if (
         ['deep-timeline.org', 'www.deep-timeline.org'].includes(
