@@ -63,6 +63,19 @@ because it's free and simple to access.
 See that dir for how to deploy.
 
 
+## Deployment
+
+The site auto-deploys to https://deep-timeline.org on every push to
+`main`. Cloudflare builds it directly from the GitHub repo — the build
+is configured in the Cloudflare dashboard, so there's no workflow file
+or deploy script here to find. Nothing to run by hand; just push.
+
+The news-feed worker above is separate and deploys on its own, from
+`timeline-events-worker`.
+
+(The `wrangler.toml` in this directory is untracked and not part of the
+site deploy.)
+
 ## Commands
 
 All commands are run from the root of the project, from a terminal:
