@@ -70,9 +70,20 @@ The site auto-deploys to https://deep-timeline.org on every push to
 workflow file or deploy script here to find. Nothing to run by hand;
 just push.
 
-`wrangler.toml` holds the serving config and is meant to reflect what is
-deployed — including `not_found_handling`, which decides whether an
-unknown URL gets the app or a real 404. Keep it in step with reality.
+This is a **Pages** project, so the `wrangler.toml` in this directory is
+not part of the site deploy and is deliberately untracked. Committing it
+proved the point: the build log said "A Wrangler configuration file was
+found but it does not appear to be valid. Did you mean to use
+wrangler.toml to configure Pages? ... Skipping file and continuing."
+Its `[assets]` block is Workers syntax, which Pages ignores.
+
+Unknown URLs are handled by having a `404.html` in the build output —
+`src/pages/404.astro` — which Pages serves with a real 404 status. Before
+that file existed, every mistyped or probed address answered 200 with the
+whole timeline. There is no `not_found_handling` setting in play here.
+
+(Converting this project from Pages to Workers is worth doing eventually;
+then `wrangler.toml` would drive the deploy and should be committed.)
 
 The news-feed worker above is separate and deploys on its own, from
 `timeline-events-worker`.
