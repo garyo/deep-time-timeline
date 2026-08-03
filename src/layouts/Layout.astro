@@ -7,9 +7,11 @@ export interface Props {
   description: string
   url: string
   ogImage: string
+  /** This page is a "not found" response — see the analytics note below. */
+  missing?: boolean
 }
 
-const { title, description, url, ogImage } = Astro.props
+const { title, description, url, ogImage, missing = false } = Astro.props
 ---
 
 <!doctype html>
@@ -23,27 +25,35 @@ const { title, description, url, ogImage } = Astro.props
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
-    <!-- Matomo analytics; cookie-less, prod hostnames only -->
+    <!-- The 404 page renders from this layout like any other page, so without
+         this marker the tracker would report every mistyped or probed URL as a
+         real page of its own. The snippet below reads it. -->
+    {missing && <meta name="featherstat:missing" content="1" />}
+    <!-- featherstat analytics; cookie-less, prod hostnames only. Dynamic import
+         so the module is never even fetched off production. -->
     <script is:inline>
       if (
         ['deep-timeline.org', 'www.deep-timeline.org'].includes(
           location.hostname
         )
       ) {
-        var _paq = (window._paq = window._paq || [])
-        _paq.push(['disableCookies'])
-        _paq.push(['enableHeartBeatTimer', 15])
-        _paq.push(['trackPageView'])
-        _paq.push(['enableLinkTracking'])
-        _paq.push([
-          'setTrackerUrl',
-          'https://analytics.oberbrunner.com/matomo.php'
-        ])
-        _paq.push(['setSiteId', '4'])
-        var mg = document.createElement('script')
-        mg.async = true
-        mg.src = 'https://analytics.oberbrunner.com/matomo.js'
-        document.head.appendChild(mg)
+        import('https://analytics.oberbrunner.com/tracker.js').then(
+          ({ init, page }) => {
+            init({
+              site: 4,
+              endpoint: 'https://analytics.oberbrunner.com/api/collect',
+              autoPageviews: false
+            })
+            // A page that does not exist reports as one canonical /404 carrying
+            // the URL that was asked for, so a mistyped or probed link stays
+            // findable as a prop instead of becoming a page of its own.
+            document.querySelector('meta[name="featherstat:missing"]')
+              ? page(new URL('/404', location.origin).href, document.title, {
+                  missing: location.pathname.slice(0, 200)
+                })
+              : page()
+          }
+        )
       }
     </script>
 

@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<!-- Cloudflare serves this page, with a real 404 status, for any path that is
+     not a file in the build — which needs `not_found_handling = "404-page"` in
+     wrangler.toml. It used to be "single-page-application", so every mistyped
+     or probed URL answered 200 with the whole timeline, and each one landed in
+     analytics as a real page. -->
+<Layout
+  title="Not found — Deep Time Navigator"
+  url="https://deep-timeline.org/404"
+  ogImage="https://deep-timeline.oberbrunner.com/deep-time-social.jpg"
+  description="That address doesn't match anything on Deep Time Navigator."
+  missing
+>
+  <main class="nf">
+    <h1>Page not found</h1>
+    <p>That address doesn't match anything here.</p>
+    <p><a href="/">Go to the Deep Time Navigator</a></p>
+  </main>
+</Layout>
+
+<style>
+  .nf {
+    display: flex;
+    min-height: 80vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+    padding: 2rem;
+  }
+  .nf p {
+    max-width: 32rem;
+    opacity: 0.8;
+  }
+</style>
