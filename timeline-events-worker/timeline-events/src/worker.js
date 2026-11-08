@@ -68,13 +68,11 @@ function calculateSignificance(article) {
   let maxScore = BASE_SIGNIFICANCE; // Default minimum significance
   
   // Check for significance keywords
-  let kwdsMatched = []
   let sigScore = 0
   for (const [score, keywords] of Object.entries(SIGNIFICANCE_KEYWORDS)) {
     for (const keyword of keywords) {
       const pat = keyword instanceof RegExp ? keyword : new RegExp(`\\b${keyword}\\b`, 'i')
       if (content.match(pat)) {
-        kwdsMatched.push(keyword)
         sigScore += parseInt(score)
       }
     }
@@ -94,7 +92,6 @@ function calculateSignificance(article) {
     }
   }
   maxScore = maxScore + sourceBoost;
-  const sourceScore = maxScore;
   
   // Additional heuristics
   if (title.length > 100) maxScore += 1; // Detailed headlines often important
@@ -103,8 +100,7 @@ function calculateSignificance(article) {
   if (content.includes('viral')) maxScore -= 2;
   if (content.match(/(lad|sport).?bible/i)) maxScore -= 5;
   if (content.match(/\/r.*thread/i)) maxScore -= 2; // reddit meta
-  
-  console.log(`Score ${maxScore} for "${title.slice(0, 60)}": from sig -> ${sigScore}(${kwdsMatched}) -> source -> ${sourceScore}(${sourceBoost})`)
+
   return Math.min(MAX_SIGNIFICANCE, Math.max(1, maxScore));
 }
 
@@ -207,10 +203,6 @@ async function fetchNews(env) {
     return true;
   });
 
-  posts.forEach(post => {
-    // console.log(`Post object has keys ${Object.keys(posts[0])}`); // title, date, content, url
-    console.log(`"${post.title}"\n  Date: ${post.date}\n  Content: ${post.content}\n  URL: ${post.url}`);
-  });
   const articles = posts.map(post => {
     return {title: post.title,
       date: post.date,
@@ -265,10 +257,7 @@ export default {
       // Process articles
       articles = filterSignificantEvents(articles);
       // timeline events have name, date, significance
-      timelineEvents = articles.map(a => {
-        console.log(`Sig ${a.significance} for Article "${a.title}"`)
-        return {name: a.title, date: a.date, significance: a.significance};
-      });
+      timelineEvents = articles.map(a => ({name: a.title, date: a.date, significance: a.significance}));
 
       console.log(`Processed ${articles.length} articles, returning ${timelineEvents.length} events`);
 
