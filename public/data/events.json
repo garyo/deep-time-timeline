@@ -1446,7 +1446,7 @@
   {
     "name": "Ukraine invasion",
     "date": "2022-02-24",
-    "significance": 5,
+    "significance": 6,
     "categories": ["wars", "politics", "nations"]
   },
   {
@@ -1464,8 +1464,16 @@
   {
     "name": "India Moon landing",
     "date": "2023-08-23",
-    "significance": 3,
+    "significance": 4,
     "categories": ["astronomy", "space exploration", "nations"]
+  },
+  {
+    "name": "Hamas attacks Israel; Gaza war begins",
+    "date": "2023-10-07",
+    "significance": 6,
+    "categories": ["wars", "politics", "Middle East"],
+    "description": "Hamas-led attack kills about 1,200 people in Israel; Israel's war in Gaza follows, killing tens of thousands and devastating the territory",
+    "url": "https://en.wikipedia.org/wiki/Gaza_war"
   },
   {
     "name": "CRISPR treats sickle cell",
@@ -1494,7 +1502,7 @@
   {
     "name": "Sweden joins NATO",
     "date": "2024-03-07",
-    "significance": 8,
+    "significance": 4,
     "categories": ["international relations", "politics", "wars", "news"]
   },
   {
@@ -1540,15 +1548,88 @@
     "categories": ["climate", "environment", "meteorology", "news"]
   },
   {
-    "name": "First gene-therapy cure",
-    "date": "2025-04-01",
+    "name": "US \"Liberation Day\" tariffs",
+    "date": "2025-04-02",
     "significance": 5,
-    "categories": ["medicine", "biology", "genetics"]
+    "categories": ["economics", "trade", "politics", "news"],
+    "description": "Sweeping US tariffs on nearly all trading partners, the largest increase since the 1930s, upend the post-WWII free-trade order",
+    "url": "https://en.wikipedia.org/wiki/Liberation_Day_tariffs"
   },
   {
-    "name": "HIV vaccine trials succeed",
-    "date": "2025-05-16",
+    "name": "Leo XIV becomes first American pope",
+    "date": "2025-05-08",
     "significance": 4,
-    "categories": ["medicine", "disease", "biology"]
+    "categories": ["religion", "news"],
+    "description": "Chicago-born Robert Prevost is elected pope after the death of Francis",
+    "url": "https://en.wikipedia.org/wiki/Pope_Leo_XIV"
+  },
+  {
+    "name": "First personalized CRISPR therapy (baby KJ Muldoon)",
+    "date": "2025-05-15",
+    "significance": 5,
+    "categories": ["medicine", "biology", "genetics", "news"],
+    "description": "A gene-editing treatment custom-built for one infant's rare metabolic disorder is reported to work, opening the door to on-demand genetic medicine",
+    "url": "https://en.wikipedia.org/wiki/KJ_Muldoon"
+  },
+  {
+    "name": "FDA approves lenacapavir, twice-yearly HIV prevention shot",
+    "date": "2025-06-18",
+    "significance": 5,
+    "categories": ["medicine", "disease", "news"],
+    "description": "An injection given every six months prevents nearly all HIV infections in trials, the closest thing yet to an HIV vaccine",
+    "url": "https://en.wikipedia.org/wiki/Lenacapavir"
+  },
+  {
+    "name": "AI models reach gold-medal level at International Math Olympiad",
+    "date": "2025-07-19",
+    "significance": 5,
+    "categories": ["computing", "math", "ideas", "news"],
+    "description": "Systems from OpenAI and Google DeepMind solve five of six olympiad problems in natural-language proofs, under contest conditions"
+  },
+  {
+    "name": "World Court rules nations have legal duty to act on climate",
+    "date": "2025-07-23",
+    "significance": 5,
+    "categories": ["climate", "law", "environment", "international relations", "news"],
+    "description": "Unanimous International Court of Justice advisory opinion: failing to protect the climate system can breach international law"
+  },
+  {
+    "name": "Sanae Takaichi becomes Japan's first female prime minister",
+    "date": "2025-10-21",
+    "significance": 5,
+    "categories": ["women", "politics", "government", "Asia", "news"],
+    "url": "https://en.wikipedia.org/wiki/Sanae_Takaichi"
+  },
+  {
+    "name": "US forces capture Venezuela's President Maduro",
+    "date": "2026-01-03",
+    "significance": 5,
+    "categories": ["politics", "international relations", "nations", "news"],
+    "description": "US strikes on Caracas and a special-forces raid seize a sitting head of state, who is flown to New York to face charges",
+    "url": "https://en.wikipedia.org/wiki/2026_United_States_intervention_in_Venezuela"
+  },
+  {
+    "name": "US and Israel go to war with Iran; Khamenei killed",
+    "date": "2026-02-28",
+    "significance": 7,
+    "categories": ["wars", "politics", "nations", "Middle East", "news"],
+    "description": "Joint strikes kill Supreme Leader Ali Khamenei and many senior officials; Iran retaliates against Israel and US bases across the Gulf",
+    "url": "https://en.wikipedia.org/wiki/2026_Iran_war"
+  },
+  {
+    "name": "Iran closes Strait of Hormuz",
+    "date": "2026-03-02",
+    "significance": 5,
+    "categories": ["wars", "economics", "trade", "energy", "Middle East", "news"],
+    "description": "Shipping through the route for a fifth of the world's oil nearly stops; oil tops $100 a barrel",
+    "url": "https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis"
+  },
+  {
+    "name": "Artemis II carries astronauts around the Moon",
+    "date": "2026-04-01",
+    "significance": 6,
+    "categories": ["space exploration", "astronomy", "engineering", "news"],
+    "description": "First crewed lunar flight since Apollo 17 in 1972; its crew travels farther from Earth than any humans before",
+    "url": "https://en.wikipedia.org/wiki/Artemis_II"
   }
 ]
