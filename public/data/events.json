@@ -1591,7 +1591,8 @@
     "date": "2025-07-23",
     "significance": 5,
     "categories": ["climate", "law", "environment", "international relations", "news"],
-    "description": "Unanimous International Court of Justice advisory opinion: failing to protect the climate system can breach international law"
+    "description": "Unanimous International Court of Justice advisory opinion: failing to protect the climate system can breach international law",
+    "url": "https://en.wikipedia.org/wiki/Obligations_of_States_in_respect_of_climate_change"
   },
   {
     "name": "Sanae Takaichi becomes Japan's first female prime minister",
@@ -1631,5 +1632,36 @@
     "categories": ["space exploration", "astronomy", "engineering", "news"],
     "description": "First crewed lunar flight since Apollo 17 in 1972; its crew travels farther from Earth than any humans before",
     "url": "https://en.wikipedia.org/wiki/Artemis_II"
+  },
+  {
+    "name": "WHO declares Ebola outbreak in Congo and Uganda a global emergency",
+    "date": "2026-05-17",
+    "significance": 5,
+    "categories": ["disease", "medicine", "Africa", "news"],
+    "description": "Outbreak of the rare Bundibugyo strain, which has no approved vaccine or treatment, grows to about 1,600 confirmed cases and 500 deaths by July",
+    "url": "https://en.wikipedia.org/wiki/2026_Ebola_epidemic"
+  },
+  {
+    "name": "El Niño declared; \"super El Niño\" forecast",
+    "date": "2026-06-11",
+    "significance": 4,
+    "categories": ["climate", "meteorology", "environment", "news"],
+    "description": "NOAA announces El Niño conditions; forecasters expect a very strong event peaking around December, likely pushing global temperatures to new records",
+    "url": "https://en.wikipedia.org/wiki/2026%E2%80%932027_El_Ni%C3%B1o_event"
+  },
+  {
+    "name": "Record northern summer: hottest on record in US, worst French fires since 1949",
+    "date": "2026-09-09",
+    "significance": 4,
+    "categories": ["climate", "meteorology", "environment", "news"],
+    "description": "Contiguous US has its hottest summer and hottest month (July) on record; Western Europe has its hottest June, and France its worst wildfire season since 1949"
+  },
+  {
+    "name": "First self-stabilizing nuclear clock",
+    "date": "2026-10-08",
+    "significance": 4,
+    "categories": ["physics", "timekeeping", "inventions"],
+    "description": "TU Wien's thorium-229 clock runs unattended for over a day by locking its laser to a nuclear transition, a step toward clocks beyond atomic-clock precision",
+    "url": "https://en.wikipedia.org/wiki/Nuclear_clock"
   }
 ]
